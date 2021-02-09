@@ -1,0 +1,12 @@
+= Yupiik IO aggregator site
+
+== Mecanism
+
+* An open source repository has a root pom.xml and its groupId is `io.yupiik`.
+* Each open source repository can have a `yupiik.io.json` in its root with metadata for the site generation
+
+== Command
+
+`mvn package` or `mvn clean package -Pgh-pages` to deploy it.
+
+IMPORTANT: requires a `github.com` server in your `$HOME/.m2/settings.xml` (password=your github token).

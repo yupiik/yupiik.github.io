@@ -255,7 +255,7 @@ public class GenerateProjectsPage implements Runnable {
             try (final var stream = new ByteArrayInputStream(rawPomXml)) {
                 parser.parse(stream, handler);
             }
-            return handler.group != null && handler.group.startsWith("io.yupiik") && !handler.group.equals("io.yupiik.size");
+            return handler.group != null && handler.group.startsWith("io.yupiik") && !handler.group.equals("io.yupiik.site");
         } catch (final Exception e) {
             return false;
         }

@@ -1,0 +1,9 @@
+<settings>
+  <servers>
+    <server> <!-- todo: set it in CI env -->
+      <id>github.com</id>
+      <username>${env.GITHUB_COM_USERNAME}</username>
+      <password>${env.GITHUB_COM_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>

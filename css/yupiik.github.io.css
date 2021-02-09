@@ -1,0 +1,20 @@
+/* reset the centered content (better for landing pages) */
+.page-content {
+  border: none;
+}
+.container, .page-content-body {
+  max-width: none !important;
+}
+svg[role="group"] > g > g > g:nth-child(2) {
+  visibility: hidden;
+}
+#project-diagram {
+  min-height: 500px;
+}
+.project-ulist li, .project-ulist li > p {
+  display: inline;
+}
+.project-ulist ul {
+  margin: auto;
+  width: 1140px;
+}

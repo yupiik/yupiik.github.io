@@ -83,6 +83,7 @@
           <generateIndex>false</generateIndex>
           <generateSiteMap>false</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>
+          <siteBase>https://yupiik.github.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
           <templateSuffixes>footer-end.html</templateSuffixes>
           <customHead>&lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;

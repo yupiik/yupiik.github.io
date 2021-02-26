@@ -20,6 +20,7 @@ on: [push]
 
 env:
   MAVEN_OPTS: -Dmaven.repo.local=/home/runner/work/yupiik.github.io/yupiik.github.io/.m2 -Dmaven.artifact.threads=256 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+  YUPIIK_SETTINGS_XML: /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml
 
 jobs:
   build:
@@ -38,6 +39,6 @@ jobs:
         with:
           java-version: '11.0.10'
       - name: Build
-        run: mvn clean package -Pgh-pages -s /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml -e
+        run: mvn clean package -Pgh-pages -s /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml -Dyupiik.settings.xml=/home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml  -e
       - name: Remove Snapshots Before Caching
         run: find /home/runner/work/yupiik.github.io/yupiik.github.io/.m2 -name '*SNAPSHOT' | xargs rm -Rf

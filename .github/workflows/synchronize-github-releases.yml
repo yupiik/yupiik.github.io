@@ -41,4 +41,4 @@ jobs:
         with:
           java-version: '11.0.9'
       - name: Synchronize
-        run: mvn initialize -s .github/settings-synchronize-github-releases.xml -Psynchronize-github-releases
+        run: mvn initialize -s .github/settings-synchronize-github-releases.xml -Psynchronize-github-releases -e

@@ -1,0 +1,44 @@
+#
+# Copyright (c) 2021 - Yupiik SAS - https://www.yupiik.com
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: Github CI
+
+on:
+  schedule:
+    # daily
+    - cron:  '0 12 * * *'
+
+env:
+  MAVEN_OPTS: -Dmaven.repo.local=/home/runner/work/yupiik.github.io/yupiik.github.io/.m2 -Dmaven.artifact.threads=256 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+jobs:
+  build:
+    name: Synchronize Github Releases
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone
+        uses: actions/checkout@v1
+      - name: Cache Maven Repository
+        uses: actions/cache@v1
+        with:
+          path: /home/runner/work/yupiik.github.io/yupiik.github.io/.m2
+          key: m2_repository
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.9'
+      - name: Synchronize
+        run: mvn initialize -s .github/settings-synchronize-github-releases.xml -Psynchronize-github-releases

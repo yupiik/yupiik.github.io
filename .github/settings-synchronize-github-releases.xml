@@ -1,0 +1,9 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <servers>
+    <server>
+      <id>github.com</id>
+      <username />
+      <password>Bearer ${env.GITHUB_TOKEN}</password>
+    </server>
+  </servers>
+</settings>

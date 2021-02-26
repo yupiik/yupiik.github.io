@@ -13,6 +13,8 @@
 
   <properties>
     <githubServerId>github.com</githubServerId>
+    <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
+    <yupiik-tools.force>false</yupiik-tools.force>
   </properties>
 
   <dependencies>
@@ -40,6 +42,16 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.yupiik.maven</groupId>
+          <artifactId>yupiik-tools-maven-plugin</artifactId>
+          <version>1.0.8</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +81,6 @@
       <plugin>
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
         <executions>
           <execution>
             <id>site</id>
@@ -102,6 +113,147 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>synchronize-github-releases</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.yupiik.maven</groupId>
+            <artifactId>yupiik-tools-maven-plugin</artifactId>
+            <executions>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@yupiik-tools -->
+                <id>yupiik-tools</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/tools-maven-plugin</githubRepository>
+                  <tagPattern>{artifactId}-parent-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.maven</groupId>
+                      <artifactId>yupiik-tools-maven-plugin</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@bundlebee -->
+                <id>bundlebee</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/bundlebee</githubRepository>
+                  <tagPattern>bundlebee-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik</groupId>
+                      <artifactId>bundlebee-core</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>fat</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>bin</type>
+                          <classifier>Linux-amd64</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>fat</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>bin.asc</type>
+                          <classifier>Linux-amd64</classifier>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <!-- for synchronize-github -->
+              <force>${yupiik-tools.force}</force>
+              <dryRun>${yupiik-tools.dryRun}</dryRun>
+              <githubServerId>${githubServerId}</githubServerId>
+              <nexusServerId/>
+              <attachIfExists>true</attachIfExists>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>release</id>
       <activation>

@@ -67,7 +67,7 @@ public class GenerateProjectsPage implements Runnable {
     private String generateContent(final String settingsXml) {
         final var githubApiBase = configuration.getOrDefault("githubApiBase", "https://api.github.com");
         final var serverId = configuration.getOrDefault("serverId", "github.com");
-        final var server = newMavenDecrypter(settingsXml).find(serverId);
+        final var server = findServer(settingsXml, serverId);
         final var basic = server.getUsername() == null || server.getUsername().isBlank() ?
                 server.getPassword() :
                 ("Basic " + Base64.getEncoder().encodeToString((server.getUsername() + ':' + server.getPassword())
@@ -216,6 +216,21 @@ public class GenerateProjectsPage implements Runnable {
                     "++++\n";
         } catch (final Exception e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private MavenDecrypter.Server findServer(final String settingsXml, final String serverId) {
+        try {
+            return newMavenDecrypter(settingsXml).find(serverId);
+        } catch (final RuntimeException re) {
+            return ofNullable(System.getenv("GITHUB_TOKEN"))
+                    .map(token -> {
+                        final var server = new MavenDecrypter.Server();
+                        server.setId("github.com");
+                        server.setPassword("Bearer " + token);
+                        return server;
+                    })
+                    .orElseThrow(() -> re);
         }
     }
 

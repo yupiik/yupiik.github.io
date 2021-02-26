@@ -117,6 +117,9 @@
   <profiles>
     <profile>
       <id>synchronize-github-releases</id>
+      <properties>
+        <yupiik.settings.xml>/home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml</yupiik.settings.xml>
+      </properties>
       <build>
         <plugins>
           <plugin>

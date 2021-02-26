@@ -24,6 +24,7 @@ on:
 env:
   MAVEN_OPTS: -Dmaven.repo.local=/home/runner/work/yupiik.github.io/yupiik.github.io/.m2 -Dmaven.artifact.threads=256 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   YUPIIK_SETTINGS_XML: /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 jobs:
   build:

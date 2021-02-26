@@ -42,6 +42,6 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: '11.0.9'
+          java-version: '11.0.10'
       - name: Synchronize
         run: mvn initialize -s /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml -Dyupiik.settings.xml=/home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml -Psynchronize-github-releases -e

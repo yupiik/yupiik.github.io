@@ -23,14 +23,16 @@
         <div class="branding docs-branding">
             <div class="container-fluid position-relative py-2">
                 <div class="docs-logo-wrapper">
-	                <div class="site-logo"><a class="navbar-brand" href="index.html">
+	                <div class="site-logo"><a class="navbar-brand" href="https://yupiik.github.io/index.html">
 	                <img class="logo-icon mr-2" src="//www.yupiik.com/img/favicon.png" alt="logo">
 	                <span class="logo-text">yupiik.github.io <span class="text-alt">Docs</span></span></a></div>
                 </div>
 	            <div class="docs-top-utilities d-flex justify-content-end align-items-center">
+					
 					<li class="list-inline-item"><a id="search-button" href="#" data-toggle="modal" data-target="#searchModal"><i data-toggle="tooltip" data-placement="top" title="Search" class="fas fa-search"></i></a></li>
 
 					<ul class="social-list list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex">
+						
 						<li class="list-inline-item"><a href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
 		            </ul>
 	            </div>
@@ -55,13 +57,16 @@
 <p><a href="https://github.com/yupiik/maven-shade-transformers" target="_blank" rel="noopener">maven-shade-transformers</a></p>
 </li>
 <li>
+<p><a href="https://github.com/yupiik/renamer" target="_blank" rel="noopener">renamer</a></p>
+</li>
+<li>
+<p><a href="https://github.com/yupiik/tomcat-debug" target="_blank" rel="noopener">tomcat-debug</a></p>
+</li>
+<li>
 <p><a href="https://github.com/yupiik/tools-maven-plugin" target="_blank" rel="noopener">tools-maven-plugin</a></p>
 </li>
 <li>
 <p><a href="https://github.com/yupiik/yupiik-logging" target="_blank" rel="noopener">yupiik-logging</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yupiik/yupiik.github.io" target="_blank" rel="noopener">yupiik.github.io</a></p>
 </li>
 </ul>
 </div>
@@ -87,8 +92,8 @@ chart.data = [
     children: [
       {
         name: "bundlebee",
-        value: 390,
-        data: {"created_at":"2021-02-03T17:38:06Z","full_name":"yupiik/bundlebee","html_url":"https://github.com/yupiik/bundlebee","private":false,"description":"A light Java Kubernetes package manager.","forks":0,"homepage":"https://www.yupiik.com","id":"335705264","license":{"spdx_id":"Apache-2.0","key":"apache-2.0","name":"Apache License 2.0","url":"https://api.github.com/licenses/apache-2.0"},"size":390},
+        value: 936,
+        data: {"created_at":"2021-02-03T17:38:06Z","full_name":"yupiik/bundlebee","html_url":"https://github.com/yupiik/bundlebee","private":false,"description":"A light Java Kubernetes package manager.","forks":0,"homepage":"https://www.yupiik.com","id":"335705264","license":{"spdx_id":"Apache-2.0","key":"apache-2.0","name":"Apache License 2.0","url":"https://api.github.com/licenses/apache-2.0"},"size":936},
         root: false
       },
       {
@@ -110,21 +115,27 @@ chart.data = [
         root: false
       },
       {
+        name: "renamer",
+        value: 6,
+        data: {"created_at":"2021-02-17T10:25:06Z","full_name":"yupiik/renamer","html_url":"https://github.com/yupiik/renamer","private":false,"description":"Small utility to change a project name","forks":0,"id":"339685372","size":6},
+        root: false
+      },
+      {
+        name: "tomcat-debug",
+        value: 4,
+        data: {"created_at":"2021-02-22T19:31:49Z","full_name":"yupiik/tomcat-debug","html_url":"https://github.com/yupiik/tomcat-debug","private":false,"forks":0,"id":"341314215","size":4},
+        root: false
+      },
+      {
         name: "tools-maven-plugin",
-        value: 563,
-        data: {"created_at":"2020-05-27T08:54:54Z","full_name":"yupiik/tools-maven-plugin","html_url":"https://github.com/yupiik/tools-maven-plugin","private":false,"description":"An Apache Maven plugin set of tools.","forks":0,"homepage":"https://www.yupiik.com","id":"267269537","license":{"spdx_id":"Apache-2.0","key":"apache-2.0","name":"Apache License 2.0","url":"https://api.github.com/licenses/apache-2.0"},"size":563},
+        value: 736,
+        data: {"created_at":"2020-05-27T08:54:54Z","full_name":"yupiik/tools-maven-plugin","html_url":"https://github.com/yupiik/tools-maven-plugin","private":false,"description":"An Apache Maven plugin set of tools.","forks":0,"homepage":"https://www.yupiik.com","id":"267269537","license":{"spdx_id":"Apache-2.0","key":"apache-2.0","name":"Apache License 2.0","url":"https://api.github.com/licenses/apache-2.0"},"size":736},
         root: false
       },
       {
         name: "yupiik-logging",
         value: 106,
         data: {"created_at":"2021-01-08T11:00:06Z","full_name":"yupiik/yupiik-logging","html_url":"https://github.com/yupiik/yupiik-logging","private":false,"description":"Yupiik Logging Extensions (JUL + GraalVM integration)","forks":0,"homepage":"https://www.yupiik.com","id":"327877851","license":{"spdx_id":"Apache-2.0","key":"apache-2.0","name":"Apache License 2.0","url":"https://api.github.com/licenses/apache-2.0"},"size":106},
-        root: false
-      },
-      {
-        name: "yupiik.github.io",
-        value: 0,
-        data: {"created_at":"2021-02-09T12:57:34Z","full_name":"yupiik/yupiik.github.io","html_url":"https://github.com/yupiik/yupiik.github.io","private":false,"forks":0,"id":"337404847","size":0},
         root: false
       }
     ]
@@ -177,7 +188,6 @@ networkSeries.nodes.template.events.on("hit", function(event) {
             </div>
         </div>
 
-    </div>
     <hr />
     <footer class="footer pb-5">
 	    <div class="footer-bottom text-center">

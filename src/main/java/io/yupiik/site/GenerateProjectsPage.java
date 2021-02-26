@@ -39,6 +39,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.stream.Collectors.joining;
 import static lombok.AccessLevel.PRIVATE;
@@ -52,7 +53,9 @@ public class GenerateProjectsPage implements Runnable {
     @Override
     public void run() {
         final var projectPage = sourceBase.resolve("content/generated/projects.adoc");
-        final var settingsXml = configuration.get("settingsXml");
+        final var settingsXml = ofNullable(configuration.get("settingsXml"))
+                .orElseGet(() -> System.getenv("YUPIIK_SETTINGS_XML"));
+        log.info("Configured settings.xml: " + settingsXml);
         try {
             Files.createDirectories(projectPage.getParent());
             Files.writeString(projectPage, generateContent(settingsXml));

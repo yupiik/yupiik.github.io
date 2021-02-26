@@ -230,7 +230,7 @@ public class GenerateProjectsPage implements Runnable {
                         server.setPassword("Bearer " + token);
                         return server;
                     })
-                    .orElseThrow(() -> re);
+                    .orElseThrow(() -> new IllegalStateException("No $GITHUB_TOKEN", re));
         }
     }
 

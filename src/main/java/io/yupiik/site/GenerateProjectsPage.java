@@ -26,6 +26,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -220,6 +221,9 @@ public class GenerateProjectsPage implements Runnable {
         if (exists) {
             log.info("Using settings.xml: '" + settings + "'");
         } else {
+            if (settings != null && !settings.isBlank()) {
+                log.warning("'" + settings + "' does not exist in " + Paths.get(".").normalize());
+            }
             log.info("Using default settings.xml");
         }
         final var settingsXml = !exists ? null : new File(settings);

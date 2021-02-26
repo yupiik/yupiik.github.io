@@ -17,9 +17,6 @@
 name: Synchronize Github Releases
 
 on:
-  push:
-    branches:
-      - master
   schedule:
     # daily
     - cron:  '0 12 * * *'

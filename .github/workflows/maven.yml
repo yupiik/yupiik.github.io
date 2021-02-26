@@ -38,6 +38,6 @@ jobs:
         with:
           java-version: '11.0.10'
       - name: Build
-        run: mvn clean package -Pgh-pages -s /home/runner/work/yupiik.github.io/yupiik.github.io/ .github/settings.xml -e
+        run: mvn clean package -Pgh-pages -s /home/runner/work/yupiik.github.io/yupiik.github.io/.github/settings.xml -e
       - name: Remove Snapshots Before Caching
         run: find /home/runner/work/yupiik.github.io/yupiik.github.io/.m2 -name '*SNAPSHOT' | xargs rm -Rf

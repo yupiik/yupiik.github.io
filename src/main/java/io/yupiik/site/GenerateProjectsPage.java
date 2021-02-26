@@ -19,7 +19,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -52,18 +51,19 @@ public class GenerateProjectsPage implements Runnable {
     @Override
     public void run() {
         final var projectPage = sourceBase.resolve("content/generated/projects.adoc");
+        final var settingsXml = configuration.get("settingsXml");
         try {
             Files.createDirectories(projectPage.getParent());
-            Files.writeString(projectPage, generateContent());
+            Files.writeString(projectPage, generateContent(settingsXml));
         } catch (final IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private String generateContent() {
+    private String generateContent(final String settingsXml) {
         final var githubApiBase = configuration.getOrDefault("githubApiBase", "https://api.github.com");
         final var serverId = configuration.getOrDefault("serverId", "github.com");
-        final var server = newMavenDecrypter().find(serverId);
+        final var server = newMavenDecrypter(settingsXml).find(serverId);
         final var basic = server.getUsername() == null || server.getUsername().isBlank() ?
                 server.getPassword() :
                 ("Basic " + Base64.getEncoder().encodeToString((server.getUsername() + ':' + server.getPassword())
@@ -215,15 +215,19 @@ public class GenerateProjectsPage implements Runnable {
         }
     }
 
-    private MavenDecrypter newMavenDecrypter() {
-        final var arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-        final var settings = arguments.indexOf("-s");
-        final var settingsXml = new File(arguments.get(settings + 1));
-        if (settings > 0) {
-            log.info("Using settings.xml: '" + settingsXml + "'");
+    private MavenDecrypter newMavenDecrypter(final String settings) {
+        final var exists = settings != null && !settings.isBlank() && new File(settings).exists();
+        if (exists) {
+            log.info("Using settings.xml: '" + settings + "'");
+        } else {
+            log.info("Using default settings.xml");
         }
-        return settings < 0 ? new MavenDecrypter() : new MavenDecrypter(
-                settingsXml, new File(settingsXml.getParentFile(), "settings-security.xml"));
+        final var settingsXml = !exists ? null : new File(settings);
+        return settingsXml == null ?
+                new MavenDecrypter() :
+                new MavenDecrypter(
+                        settingsXml,
+                        new File(settingsXml.getParentFile(), "settings-security.xml"));
     }
 
     private CompletionStage<YupiikSiteMetadata> loadOssMetadata(final HttpClient client, final String githubApiBase, final String basic,

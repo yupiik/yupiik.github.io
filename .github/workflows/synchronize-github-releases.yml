@@ -17,6 +17,9 @@
 name: Synchronize Github Releases
 
 on:
+  push:
+    branches:
+      - master
   schedule:
     # daily
     - cron:  '0 12 * * *'
@@ -41,4 +44,4 @@ jobs:
         with:
           java-version: '11.0.9'
       - name: Synchronize
-        run: mvn initialize -s .github/settings.xml -Psynchronize-github-releases -e
+        run: mvn initialize -s .github/settings.xml -Dyupiik.settings.xml=.github/settings.xml -Psynchronize-github-releases -e

@@ -15,6 +15,7 @@
     <githubServerId>github.com</githubServerId>
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
+    <yupiik.settings.xml />
   </properties>
 
   <dependencies>
@@ -104,6 +105,7 @@
               <type>io.yupiik.site.GenerateProjectsPage</type>
               <configuration>
                 <serverId>${githubServerId}</serverId>
+                <settingsXml>${yupiik.settings.xml}</settingsXml>
               </configuration>
             </action>
           </preActions>

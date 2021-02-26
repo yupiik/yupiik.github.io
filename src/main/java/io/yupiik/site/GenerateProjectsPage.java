@@ -17,7 +17,9 @@ import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -61,9 +63,11 @@ public class GenerateProjectsPage implements Runnable {
     private String generateContent() {
         final var githubApiBase = configuration.getOrDefault("githubApiBase", "https://api.github.com");
         final var serverId = configuration.getOrDefault("serverId", "github.com");
-        final var basic = "Basic " + Base64.getEncoder().encodeToString(
-                (serverId + ':' + new MavenDecrypter().find(serverId).getPassword())
-                        .getBytes(StandardCharsets.ISO_8859_1));
+        final var server = newMavenDecrypter().find(serverId);
+        final var basic = server.getUsername() == null || server.getUsername().isBlank() ?
+                server.getPassword() :
+                ("Basic " + Base64.getEncoder().encodeToString((server.getUsername() + ':' + server.getPassword())
+                        .getBytes(StandardCharsets.ISO_8859_1)));
 
         final var httpClient = HttpClient.newHttpClient();
 
@@ -209,6 +213,17 @@ public class GenerateProjectsPage implements Runnable {
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private MavenDecrypter newMavenDecrypter() {
+        final var arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        final var settings = arguments.indexOf("-s");
+        final var settingsXml = new File(arguments.get(settings + 1));
+        if (settings > 0) {
+            log.info("Using settings.xml: '" + settingsXml + "'");
+        }
+        return settings < 0 ? new MavenDecrypter() : new MavenDecrypter(
+                settingsXml, new File(settingsXml.getParentFile(), "settings-security.xml"));
     }
 
     private CompletionStage<YupiikSiteMetadata> loadOssMetadata(final HttpClient client, final String githubApiBase, final String basic,

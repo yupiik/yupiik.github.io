@@ -14,7 +14,7 @@
 # under the License.
 #
 
-name: Github CI
+name: Synchronize Github Releases
 
 on:
   schedule:

@@ -123,7 +123,7 @@
             <groupId>io.yupiik.maven</groupId>
             <artifactId>yupiik-tools-maven-plugin</artifactId>
             <executions>
-              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@yupiik-tools -->
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@yupiik-tools -Psynchronize-github-releases -->
                 <id>yupiik-tools</id>
                 <phase>initialize</phase>
                 <goals>
@@ -175,7 +175,7 @@
                   </artifacts>
                 </configuration>
               </execution>
-              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@bundlebee -->
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@bundlebee -Psynchronize-github-releases -->
                 <id>bundlebee</id>
                 <phase>initialize</phase>
                 <goals>

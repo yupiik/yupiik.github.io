@@ -1,0 +1,404 @@
+= Configuration SDK to automate Kubernetes deployments
+:minisite-blog-published-date: 2021-06-15
+:minisite-blog-categories: Infrastructure
+:minisite-blog-authors: Romain Manni-Bucau
+:minisite-blog-summary: CI/CD and modern environments enable to deploy faster, let see how a configuration SDK can make it even smoother.
+
+[abstract]
+A configuration SDK is basically a SDK enabling to work with a tool configuration.
+Let see how to integrate with modern CI/CD and why using such a solution instead of doing its configuration manually.
+
+
+== Configuration SDK, what is it?
+
+SDK can have various forms and we get the same kind of packaging for configuration oriented SDK:
+
+- A library you integrate with your "application"/deployment code providing Application Programming Interface entry points (API),
+- A distribution bringing tools (Command Line Interface oriented or UI oriented) and documentation,
+- A full software suite (i.e. the library but also a testing toolkit),
+- A docker image prebundling one or multiple of the previous images,
+- And much more flavor.
+
+At the end the goal is to share some existing code to enable consumers (users) to integrate the underlying software faster.
+
+In the case of configuration it is exactly the same but the provided API enables to generate configuration files or their content.
+
+== Configuration SDK: a first (typescript) example
+
+To illustrate this concept, let's take a simple example:
+
+- Assume we have a software which is configured thanks to a `com.yupiik.demo.json` configuration file
+- The previous JSON generally looks like:
++
+[source,json]
+----
+{
+    "com.yupiik.demo": {
+        "workDir": "/opt/app/work",
+        "database:": {
+            "url": "jdbc:mysql://localhost:3306/demo",
+            "username": "demo",
+            "password": "d$m0"
+        }
+    }
+}
+----
+
+Quite quickly, we can envision the a binding for this configuration.
+
+We will use typescript to illustrate this example but Python, ruby, PHP, Java, ..., and even JSON with its JSON-Schema would have worked too.
+
+Here is what a library can provide as configuration binding:
+
+[source,typescript]
+----
+export interface DemoDatabase {
+    url: string;
+    username: string;
+    password: string;
+}
+
+export interface DemoConfiguration {
+    workDir?: string;
+    database: DemoDatabase;
+}
+
+
+----
+
+Nothing crazy but it then enables to generate the configuration from this model:
+
+[source,typescript]
+----
+import { <1>
+    DemoDatabase,
+    DemoConfiguration
+} from '@yupiik/demo-configuration';
+
+const configuration: DemoConfiguration = { <2>
+    workDir: '/opt/app/work',
+    database: {
+        url: 'jdbc:postgresql://demo.yupiik.io/demo',
+        username: 'demo',
+        password: 'd3m0'
+    },
+};
+
+console.log( <3>
+    JSON.stringify(configuration, null, 2)
+)
+----
+<.> We *import* our configuration SDK/library,
+<.> We force our `configuration` variable to be of type `DemoConfiguration`,
+<.> Once configuration is complete we can log it as here or write it to a file.
+
+This does not look way better than before but it is actually quite better than writing the JSON manually:
+
+* If you have a typescript editor you reduce a lot the potential source of errors:
+** the required fields will be enforced and compilation will fail if not respected,
+** you get completion on the attributes
+* Configuration can be injected anywhere (console, file, nested in another configuration file, enterprise storage, git, ...),
+* We can generate multiple configurations at onces (for ex: one per environment using the same code).
+
+The next immediate benefit from such SDK is to be able to "code".
+Since now we are in code land, we can replace some static parts by code with logic:
+
+[source,typescript]
+----
+export function newDatabase(env: string): DemoDatabase { <1>
+    switch (env.toLocaleLowerCase()) { <2>
+        case "preprod":
+            return {
+                url: 'jdbc:postgresql://pre-demo.yupiik.io/demo',
+                username: 'pdemo',
+                password: 'p_d3m0'
+            };
+        case "prod":
+            return {
+                url: 'jdbc:postgresql://demo.yupiik.io/demo',
+                username: 'demo',
+                password: 'd3m0'
+            };
+        default:
+            throw new Error(`Unknown environment: '${env}'`);
+    }
+}
+
+const configuration: DemoConfiguration = {
+    workDir: '/opt/app/work',
+    database: newDatabase(process.env.TARGET_ENV || 'preprod'), <3>
+};
+----
+<.> We create a function to generate a `DemoDatabase` configuration,
+<.> Depending the environment we generate the related configuration,
+<.> We call our database function passing the environment read from the process environment (`TARGET_ENV` variable here).
+
+The goal of this example is to make you feel what a configuration SDK can give you as power.
+Common next steps are:
+
+* Read the environment configuration from a "deployment repository" (it can be a git repository per environment/application with the related permission management or a database-like storage),
+* If the configuration has arrays/lists, you can make it way easier,
+* If the configuration is more complex than the number of inputs (quite common in proxies/gateways cases where input is the target proxy host and rest is quite static), it becomes easy to do a function to hide the complexity and just manipulate the ops data.
+
+TIP: it is important to have an infrastructure storage which enables auditing (who did what).
+
+Some configuration SDK come with a specific DSL but it is generally worth doing a company/team DSL which encapsulates the software specificities to make it company oriented: you always better know what you do than what others do:
+
+[source,typescript]
+----
+const configuration: DemoConfiguration = newDemoConfiguration() <1>
+    .withDatabase(process.env.TARGET_ENV || 'preprod'); <2>
+----
+<.> `newDemoConfiguration` creates a "fluent" builder which hides from the script all the defaults (`workDir` for example),
+<.> `withDatabase` is equivalent to `newDatabase` but is chainable with `newDemoConfiguration` builder.
+
+With such a DSL - you can publish yourself too as a library on your enterprise NPM registry for example, you increase a lot the sharing between teams/teammates will reduces a lot the entrycost when one of your workers move from one application to another.
+It also limits a lot the errors or forgotten points (like forgetting to configure the logs in JSON for example).
+
+== Kubernetes case with CDK8S
+
+Kubernetes uses the phylosophy presented in this post with its Cloud Development Kit (link:https://cdk8s.io/[CDK,window=_blank]).
+It supports the main ops languages except ruby which tends to be less popular these days: Typescript, JavaScript, Python, and Java.
+
+A simple example of CDK usage is to create a ConfigMap hosting the generated configuration and injecting it into a deployment.
+
+The first step to do it is to import the needed dependencies:
+
+[source,typescript]
+----
+import { Construct } from 'constructs';
+import { App, Chart } from 'cdk8s'; <1>
+import { KubeConfigMap, KubeDeployment } from './imports/k8s'; <2>
+import generateDemoConfiguration from './configuration.generator'; <3> 
+----
+<.> We import CDK8S (Kubernetes CDK),
+<.> We import the CDK8S model (it is generated post-installation with a dedicated command),
+<.> We import our configuration generator (assuming we exported it properly in another file)
+
+Then we define our `Chart` which aggregates the different components of our deployment:
+
+[source,typescript]
+----
+export class DemoKube extends Chart {
+    constructor(scope: Construct, id: string) {
+        super(scope, id);
+
+        const configuration: DemoConfiguration = generateDemoConfiguration(); <1>
+
+        const name = 'demo'; <2>
+        const labels = { <2>
+            app: 'generated-config',
+        };
+        const configMapName = `${name}-config`; <2>
+----
+<.> We call our configuration generator and get our configuration as a string,
+<.> We create some reused variables for kubernetes component metadata labels, base name to enforce consistency in the naming
+
+From there, still in the `Chart` constructor, we can define our components (they are attached thanks the first paramter which is the chart itself).
+
+The first one is a `ConfigMap`:
+
+[source,typescript]
+----
+new KubeConfigMap(this, 'configmap', { <1>
+    metadata: { <2>
+        name: configMapName,
+        labels: labels,
+    },
+    data: {
+        'demo.json': configuration, <3>
+    },
+});
+----
+<.> We create a ConfigMap containing our configuration,
+<.> We inject into our ConfigMap the name and labels we expect from the variables previously created,
+<.> We bind our generated configuration into our ConfigMap
+
+Then we create a deployment which is, in this case, nothing more than the aggregation of a `Volume` - with our `ConfigMap` mounted inside - and a `Container`:
+
+[source,typescript]
+----
+const configMapVolume: Volume = { <1>
+    name: 'demo-config-volume',
+    configMap: {
+        name: configMapName, <2>
+    },
+};
+const container: Container = { <3>
+    name: 'demo',
+    image: 'yupiik/demo',
+    ports: [
+        {
+            containerPort: 8080
+        },
+    ],
+    volumeMounts: [{ <4>
+        name: configMapVolume.name,
+        mountPath: '/opt/app/demo/conf',
+    }]
+};
+
+new KubeDeployment(this, 'deployment', { <5>
+    spec: {
+        replicas: 1,
+        selector: {
+            matchLabels: { app: labels.app },
+        },
+        template: {
+            metadata: { labels },
+            spec: {
+                volumes: [ <6>
+                    configMapVolume,
+                ],
+                containers: [
+                    container,
+                ],
+            },
+        },
+    }
+});
+----
+<.> We create a volume we'll be able to mount in containers with our ConfigMap content,
+<.> We reference our ConfigMap name directly from the variable containing the ConfigMap name avoiding errors,
+<.> We create a container which will run our demo application,
+<.> We mount the volume into the container to let it access the ConfigMap content as files in `/opt/app/demo/conf` - it will let the application read its configuration from `/opt/app/demo/conf/demo.json` assuming it is its default configuration location,
+<.> We create a Deployment for our application,
+<.> The deployment defines the volume containing our ConfigMap for the Pod we will deploy our container on which will manage the content for the container properly.
+
+Finally, when we fully defined our model we can create an application - `App` - containing our specifications and dump it on the disk as YAML a file:
+
+[source,typescript]
+----
+const app = new App();
+new DemoKube(app, 'demo'); <1>
+app.synth(); <2>
+----
+<.> We bind all this specification to `demo` name,
+<.> We generate the corresponding YAML.
+
+
+Now our YAML generator is fully coded and integrated with our configuration generator, we can run the program and we will get a `dist/demo.k8s.yaml` file with this content:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap <1>
+metadata:
+  labels:
+    app: generated-config <2>
+  name: demo-config <2>
+data:
+  <3>
+  demo.json: |- 
+    {
+      "workDir": "/opt/app/work",
+      "database": {
+        "url": "jdbc:postgresql://pre-demo.yupiik.io/demo",
+        "username": "demo",
+        "password": "d3m0"
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment <4>
+metadata:
+  name: demo-deployment-c864fc1b
+  spec:
+    containers: <5>
+        image: yupiik/demo
+        name: demo
+        ports:
+          - containerPort: 8080
+        volumeMounts: <5>
+          - mountPath: /opt/app/demo/conf
+            name: demo-config-volume
+    volumes: <5>
+      - configMap:
+          name: demo-config
+        name: demo-config-volume
+
+----
+<.> We find back our ConfigMap,
+<.> The generated ConfigMap YAML contains the expected name and labels,
+<.> And the ConfigMap contains the generated configuration.
+<.> Our `DemoKube` also had a `Deployment` we can find in the generated YAML too,
+<.> The deployment contains the expected container with the mounted volume which contains the ConfigMap data.
+
+At that stage the last remaning task is to run `kubectl` or link:https://yupiik.github.io/bundlebee/[bundlebee,window=_blank] on the generated YAML: `kubectl apply -f dist/demo.k8s.yaml`.
+
+== Integration with a CI/CD pipeline
+
+There are a lot of strategies to automate previous process execution and it would make this post way too long to detail it all here but note that once previous project is coded, it is quite trivial to integrate it with any CI.
+
+The rules are generally something along this rule: when a push/merge is done on branch X (branch name can be environment name or a single branch name like `master` or `main` depending how you structure your source repository) execute the deployment.
+
+The build steps are generally:
+
+* Clone the project
+* Build the project
+* Run the generation
+* (optional) Test the generated files or code
+* Execute the deployment
+
+Here is a skeleton of Github Actions workflow file using CDK8s:
+
+[source,yaml]
+----
+name: Build and Deploy
+
+on: <1>
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy: <2>
+    name: Deploy
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout <3>
+      uses: actions/checkout@v2
+    - name: Build <4>
+      run: |
+        npm install
+        npm build
+        npm run synth
+    - name: Deploy <5>
+      uses: actions-hub/kubectl@master
+      env:
+        KUBE_HOST: ${{ secrets.KUBE_HOST }}
+        KUBE_USERNAME: ${{ secrets.KUBE_USERNAME }}
+        KUBE_PASSWORD: ${{ secrets.KUBE_PASSWORD }}
+        KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
+      with:
+        args: apply -f ./dist/demo.k8s.yaml <6>
+----
+<.> We run the workflow only when code is pushed to master,
+<.> We define the deploy workflow steps,
+<.> First step is to clone the repository,
+<.> Second step is to build and run the project (`synth` script generates the YAML),
+<.> Last command executes a `kubectl` command with the Kubernetes configuration passed as Github secrets,
+<.> We use the generated YAML to deploy the application.
+
+TIP: in practise, the last step is a bit more complicated and can even be generated from second step in case you want to uninstall some Kubernetes components.
+
+Last important point is that this workflow is to setup on the configuration repository in general since it is the one with changes which are impacting the production.
+The generation code can be hosted in the same repository or not - it is really up to you - but it is recommended to either use a library for the generation - limiting a lot the hosted code in the configuration repository - or custom github action which will run the generation properly.
+If you don't do it on the configuration repository, you will deploy each time you modify your generation code.
+It will work in some cases but as soon as your deployment code will be stable it will not be what you want since deployment will never be triggered on configuration changes.
+
+
+== Configuration SDK and migrations
+
+When migrating from one version to another one, in particular when the new version is a new major, it can be hard to not loose configuration or be perfectly aware of the changes.
+
+With a configuration SDK and coded configuration as we saw previously, this task becomes a standard coding task which will be able to leverage all the well known related tools:
+
+* SCM to identify the differences (git for example),
+* The SDK will enable to validate the new configuration automatically,
+* Thanks to the "function" you can create to share code for parts of the configuration, you can migrate faster (no need to do it per environment if you already managed it with functions for example),
+* It is less error prone if you code your configuration value lookups from a data repository (values not being hardcoded, no risk to wrongly copy/paste them for example).
+
+== Conclusion
+
+In this post we saw that being able to "code" its configuration is a key feature to integrate with CI/CD.
+It enables to reduce the errors, validate quickly its configuration and do migrations was easier since the "new" configuration will be revalidated once the SDK upgraded.

@@ -18,3 +18,22 @@ svg[role="group"] > g > g > g:nth-child(2) {
   margin: auto;
   width: 1140px;
 }
+.yupiik-logo {
+  max-height: 30px;
+  margin-top: -0.25rem;
+}
+.sect1+.sect1 {
+  border-top: none;
+}
+.icon-important:before {
+    color: #fa131b !important;
+}
+.icon-note:before {
+    color: #1845AA !important;
+}
+.icon-tip:before {
+    color: #01c1fc !important;
+}
+.icon-warning:before {
+    color: #ffc300 !important;
+}

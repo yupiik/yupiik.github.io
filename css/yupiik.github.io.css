@@ -1,10 +1,27 @@
 /* reset the centered content (better for landing pages) */
 .page-content {
   border: none;
+  padding: 0;
 }
 .container, .page-content-body {
   max-width: none !important;
 }
+
+.banner-home {
+  min-height: 30rem;
+  font-size: 24px;
+}
+
+.section {
+  min-height: 20rem;
+  font-size: 24px;
+}
+
+.section-content {
+  max-width: 1140px;
+  margin: auto;
+}
+
 svg[role="group"] > g > g > g:nth-child(2) {
   visibility: hidden;
 }
@@ -17,4 +34,18 @@ svg[role="group"] > g > g > g:nth-child(2) {
 .project-ulist ul {
   margin: auto;
   width: 1140px;
+}
+
+.project {
+  margin: auto;
+  width: 960px;
+}
+
+.card {
+  border-radius: 0rem !important;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  background: none !important;
 }

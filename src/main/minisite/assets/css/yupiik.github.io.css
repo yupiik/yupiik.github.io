@@ -2,9 +2,6 @@
 .page-content {
   border: none;
 }
-.container, .page-content-body {
-  max-width: none !important;
-}
 svg[role="group"] > g > g > g:nth-child(2) {
   visibility: hidden;
 }

@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.0.12</yupiik-tools.version>
+    <yupiik-tools.version>1.0.13</yupiik-tools.version>
   </properties>
 
   <dependencies>
@@ -103,7 +103,18 @@
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://yupiik.github.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
-          <customHead>&lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;</customHead>
+          <customHead>
+            &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
+
+            &lt;script async src="https://www.googletagmanager.com/gtag/js?id=UA-128075922-1"&gt;&lt;/script&gt;
+            &lt;script&gt;
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'UA-128075922-1');
+            &lt;/script&gt;
+            &lt;meta name="google-site-verification" content="oSMuDCwO2aQLjpEHxlMGjfbAeYoTPv9qNGLCHPObvmY" /&gt;
+          </customHead>
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
@@ -113,18 +124,6 @@
               &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="http://www.yupiik.com/"&gt;&lt;img class="yupiik-logo" src="/images/yupiik.png"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/li&gt;
             </socialLinks>
           </templateExtensionPoints>
-          <!-- todo: GA
-          <customScripts>
-            &lt;script&gt;
-              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-              ga('create', 'UA-xxxx-1', 'auto');
-              ga('send', 'pageview');
-            &lt;/script&gt;
-          </customScripts>
-          -->
           <blogPageSize>5</blogPageSize>
           <blogCategoriesCustomizations>
             <Infrastructure>

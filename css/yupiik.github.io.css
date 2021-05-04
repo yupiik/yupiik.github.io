@@ -114,3 +114,8 @@ svg[role="group"] > g > g > g:nth-child(2) {
 .icon-warning:before {
     color: #ffc300 !important;
 }
+
+div.content > img {
+    display:block;
+    margin:auto;
+}

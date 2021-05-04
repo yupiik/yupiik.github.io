@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.0.14</yupiik-tools.version>
+    <yupiik-tools.version>1.0.15</yupiik-tools.version>
   </properties>
 
   <dependencies>
@@ -120,12 +120,12 @@
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
-              &lt;li class="list-inline-item"&gt;&lt;a href="/projects.html"&gt;&lt;i class="fas fa-project-diagram fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a href="/community.html"&gt;&lt;i class="fas fa-users fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.linkedin.com/company/yupiik/"&gt;&lt;i class="fab fa-linkedin fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.github.com/yupiik"&gt;&lt;i class="fab fa-github fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="/sitemap.xml"&gt;&lt;i class="fas fa-rss-square fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="http://www.yupiik.com/"&gt;&lt;img class="yupiik-logo" src="/images/yupiik.png"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Projects" href="/projects.html"&gt;&lt;i class="fas fa-project-diagram fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Community" href="/community.html"&gt;&lt;i class="fas fa-users fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"&gt;&lt;i class="fab fa-linkedin fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Github" target="_blank" href="https://www.github.com/yupiik"&gt;&lt;i class="fab fa-github fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Sitemap" target="_blank" href="/sitemap.xml"&gt;&lt;i class="fas fa-rss-square fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Yupiik" target="_blank" href="http://www.yupiik.com/"&gt;&lt;img class="yupiik-logo" src="/images/yupiik.png"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/li&gt;
             </socialLinks>
           </templateExtensionPoints>
           <blogPageSize>5</blogPageSize>

@@ -16,13 +16,14 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
+    <yupiik-tools.version>1.0.14</yupiik-tools.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.16</version>
+      <version>1.18.20</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -38,7 +39,7 @@
     <dependency>
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
-      <version>1.2.10</version>
+      <version>1.2.11</version>
     </dependency>
   </dependencies>
 
@@ -48,7 +49,7 @@
         <plugin>
           <groupId>io.yupiik.maven</groupId>
           <artifactId>yupiik-tools-maven-plugin</artifactId>
-          <version>1.0.8</version>
+          <version>${yupiik-tools.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -82,8 +83,7 @@
       <plugin><!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.0.11</version>
-        <executions>
+        <executions> <!-- write/human mode: $ mvn compile yupiik-tools:serve-minisite -e -->
           <execution>
             <id>site</id>
             <phase>process-classes</phase>
@@ -95,20 +95,55 @@
         <configuration>
           <title>Yupiik Open Source</title>
           <logoText>Yupiik Open Source</logoText>
+          <attributes>
+              <partialsdir>content/_partials</partialsdir>
+              <icons>font</icons>
+          </attributes>
           <generateIndex>false</generateIndex>
-          <generateSiteMap>false</generateSiteMap>
+          <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>
+          <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://yupiik.github.io</siteBase>
-          <templateDirs>templates</templateDirs>
-          <!-- drop the right menu removing footer-top.html -->
           <templateSuffixes>footer-end.html</templateSuffixes>
+          <!-- drop the right menu removing footer-top.html -->
+          <customHead>
+            &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
+
+            &lt;script async src="https://www.googletagmanager.com/gtag/js?id=UA-128075922-1"&gt;&lt;/script&gt;
+            &lt;script&gt;
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'UA-128075922-1');
+            &lt;/script&gt;
+            &lt;meta name="google-site-verification" content="oSMuDCwO2aQLjpEHxlMGjfbAeYoTPv9qNGLCHPObvmY" /&gt;
+          </customHead>
           <customMenu>
-            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/generated/projects.html"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/projects.html"&gt;Projects&lt;/a&gt;&lt;/li&gt;
             &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/community.html"&gt;Community&lt;/a&gt;&lt;/li&gt;
-            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/blog.html"&gt;Blog&lt;/a&gt;&lt;/li&gt;
           </customMenu>
-          <customHead>&lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;</customHead>
-          <copyright>&copy; 2009-2021, Yupiik, All Rights Reserved</copyright>
+          <siteBase>/</siteBase>
+          <templateExtensionPoints>
+            <socialLinks>
+              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.linkedin.com/company/yupiik/"&gt;&lt;i class="fab fa-linkedin fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.github.com/yupiik"&gt;&lt;i class="fab fa-github fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="/sitemap.xml"&gt;&lt;i class="fas fa-rss-square fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="http://www.yupiik.com/"&gt;&lt;img class="yupiik-logo" src="/images/yupiik.png"&gt;&lt;/img&gt;&lt;/a&gt;&lt;/li&gt;
+            </socialLinks>
+          </templateExtensionPoints>
+          <blogPageSize>5</blogPageSize>
+          <blogCategoriesCustomizations>
+            <Infrastructure>
+              <order>3</order>
+              <icon>fas network-wired</icon>
+              <description>Kubernetes and deployment related posts.</description>
+            </Infrastructure>
+            <Other>
+              <order>4</order>
+              <icon>fa fa-random</icon>
+              <description>All other posts.</description>
+            </Other>
+          </blogCategoriesCustomizations>
           <preActions>
             <action>
               <type>io.yupiik.site.GenerateProjectsPage</type>

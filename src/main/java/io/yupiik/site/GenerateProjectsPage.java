@@ -52,7 +52,7 @@ public class GenerateProjectsPage implements Runnable {
 
     @Override
     public void run() {
-        final var projectPage = sourceBase.resolve("content/generated/projects.adoc");
+        final var projectPage = sourceBase.resolve("content/_partials/generated/projects.adoc");
         final var settingsXml = ofNullable(configuration.get("settingsXml"))
                 .orElseGet(() -> System.getenv("YUPIIK_SETTINGS_XML"));
         log.info("Configured settings.xml: " + settingsXml);

@@ -1,5 +1,4 @@
-// include to keep the generation in an excluded folder (git)
-//include::content/generated/projects.adoc[]
+= Community
 
 ++++
 <div class="bg-dark section">

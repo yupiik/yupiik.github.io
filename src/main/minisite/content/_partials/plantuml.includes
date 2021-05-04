@@ -1,0 +1,12 @@
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+!define CloudInsight https://raw.githubusercontent.com/plantuml/plantuml-stdlib/master/cloudinsight
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+!includeurl KubernetesPuml/OSS/KubernetesSvc.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl CloudInsight/mysql.puml

@@ -95,6 +95,9 @@
         <configuration>
           <title>Yupiik Open Source</title>
           <logoText>Yupiik Open Source</logoText>
+          <requires>
+              <require>asciidoctor-diagram</require>
+          </requires>
           <attributes>
               <partialsdir>content/_partials</partialsdir>
               <icons>font</icons>

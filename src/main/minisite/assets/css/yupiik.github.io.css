@@ -3,6 +3,9 @@
   border: none;
   padding: 0;
 }
+p {
+  font-size: large;
+}
 #index-html-container.container,
 #community-html-container.container,
 #projects-html-container.container {

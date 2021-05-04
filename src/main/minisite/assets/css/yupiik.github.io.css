@@ -21,6 +21,35 @@
   display: none;
 }
 
+#content h1>a.anchor:before,
+#toctitle>a.anchor:before,
+.sidebarblock>.content>.title>a.anchor:before,
+h2>a.anchor:before,
+h3>a.anchor:before,
+h4>a.anchor:before,
+h5>a.anchor:before,
+h6>a.anchor:before {
+  display: none;
+}
+#content h1:hover>a.anchor,
+#content h1>a.anchor:hover,
+#toctitle:hover>a.anchor,
+#toctitle>a.anchor:hover,
+.sidebarblock>.content>.title:hover>a.anchor,
+.sidebarblock>.content>.title>a.anchor:hover,
+h2:hover>a.anchor,
+h2>a.anchor:hover,
+h3:hover>a.anchor,
+h3>a.anchor:hover,
+h4:hover>a.anchor,
+h4>a.anchor:hover,
+h5:hover>a.anchor,
+h5>a.anchor:hover,
+h6:hover>a.anchor,
+h6>a.anchor:hover {
+  visibility: hidden;
+}
+
 .banner-home {
   min-height: 30rem;
   font-size: 24px;

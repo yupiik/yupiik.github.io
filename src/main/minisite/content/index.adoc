@@ -5,6 +5,7 @@
 
 ++++
 <div class="bg-dark text-white text-center banner-home">
+    <h1>Yupiik Open Source</h1>
     <p class="lead pt-5">We have the expertise of the people who actually do the open source products that you trust.</p>
 </div>
 <div class="bg-light section">

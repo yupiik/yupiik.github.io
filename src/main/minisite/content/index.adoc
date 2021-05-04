@@ -1,2 +1,15 @@
 // include to keep the generation in an excluded folder (git)
-include::content/generated/projects.adoc[]
+//include::content/generated/projects.adoc[]
+
+++++
+<div class="bg-dark text-white text-center banner-home">
+    <p class="lead pt-5">We have the expertise of the people who actually do the open source products that you trust.</p>
+</div>
+<div class="bg-light section">
+    <div class="section-content pt-3">
+    <h2>Open Source Software</h2>
+    We have the expertise of the people who actually do the open source products that you trust.
+    </div>
+</div>
+++++
+

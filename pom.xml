@@ -6,7 +6,7 @@
 
   <groupId>io.yupiik.site</groupId>
   <artifactId>yupiik.github.io</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>yupiik.github.io</name>
   <description>OpenSource home site generator.</description>
   <url>https://github.com/yupiik/yupiik.github.io</url>
@@ -79,9 +79,10 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.2.0</version>
       </plugin>
-      <plugin>
+      <plugin><!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
+        <version>1.0.11</version>
         <executions>
           <execution>
             <id>site</id>
@@ -92,14 +93,22 @@
           </execution>
         </executions>
         <configuration>
+          <title>Yupiik Open Source</title>
+          <logoText>Yupiik Open Source</logoText>
           <generateIndex>false</generateIndex>
           <generateSiteMap>false</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>
           <siteBase>https://yupiik.github.io</siteBase>
+          <templateDirs>templates</templateDirs>
           <!-- drop the right menu removing footer-top.html -->
           <templateSuffixes>footer-end.html</templateSuffixes>
-          <customHead>&lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
-          </customHead>
+          <customMenu>
+            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/generated/projects.html"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/community.html"&gt;Community&lt;/a&gt;&lt;/li&gt;
+            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/blog.html"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+          </customMenu>
+          <customHead>&lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;</customHead>
+          <copyright>&copy; 2009-2021, Yupiik, All Rights Reserved</copyright>
           <preActions>
             <action>
               <type>io.yupiik.site.GenerateProjectsPage</type>

@@ -75,10 +75,6 @@ public class GenerateProjectsPage implements Runnable {
 
         final var httpClient = HttpClient.newHttpClient();
 
-        final var saxParserFactory = SAXParserFactory.newInstance();
-        saxParserFactory.setNamespaceAware(false);
-        saxParserFactory.setValidating(false);
-
         final var ossRepos = new CopyOnWriteArrayList<GithubRepo>();
         try (final Jsonb jsonb = JsonbBuilder.create()) {
             final var repositories = new ArrayList<GithubRepo>();
@@ -105,7 +101,7 @@ public class GenerateProjectsPage implements Runnable {
             }
 
             allOf(repositories.stream()
-                    .map(repo -> isOpenSourceRepo(httpClient, githubApiBase, basic, saxParserFactory, jsonb, repo)
+                    .map(repo -> isOpenSourceRepo(httpClient, githubApiBase, basic, repo)
                             .thenCompose(isOss -> {
                                 if (isOss) {
                                     return loadOssMetadata(httpClient, githubApiBase, basic, jsonb, repo)
@@ -123,96 +119,32 @@ public class GenerateProjectsPage implements Runnable {
                     .toArray(CompletableFuture<?>[]::new))
                     .toCompletableFuture().get();
 
-            final var dropYupiikPrefix = Pattern.compile("^yupiik/");
-
             return "" +
-                    "= Yupiik OSS Projects\n" +
-                    "\n" +
-                    "[role=\"project-ulist\"]\n" +
-                    ossRepos.stream()
-                            .sorted(comparing(GithubRepo::getFullName))
-                            .map(repo -> "* link:" + repo.getHtmlUrl() + '[' + dropYupiikPrefix.matcher(repo.getFullName()).replaceFirst("") + "^]")
-                            .collect(joining("\n", "", "\n")) +
-                    "\n" +
-                    "\n" +
                     "++++\n" +
-                    "<div id=\"project-details\">\n" +
-                    "  <h3 id=\"project-details-title\"></h3>\n" +
-                    "  <p id=\"project-details-link\"></p>\n" +
-                    "  <p id=\"project-details-description\"></p>\n" +
-                    "</div>\n" +
-                    "<div id=\"project-diagram\"></div>\n" +
-                    "<script src=\"//cdn.amcharts.com/lib/4/core.js\"></script>\n" +
-                    "<script src=\"//cdn.amcharts.com/lib/4/charts.js\"></script>\n" +
-                    "<script src=\"//cdn.amcharts.com/lib/4/plugins/forceDirected.js\"></script>\n" +
-                    "<script src=\"//cdn.amcharts.com/lib/4/themes/animated.js\"></script>\n" +
-                    "<script>\n" +
-                    "(function () {\n" +
-                    "var chart = am4core.create(\"project-diagram\", am4plugins_forceDirected.ForceDirectedTree);\n" +
-                    "var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())\n" +
-                    "\n" +
-                    "chart.data = [\n" +
-                    "  {\n" +
-                    "    name: \"Yupiik OSS\",\n" +
-                    "    root: true,\n" +
-                    "    children: [\n" +
+                    "<div class=\"bg-dark section\">\n" +
+                    "    <div class=\"section-content pt-3 text-white\">\n" +
+                    "    <h2 class=\"text-white\">Project</h2>\n" +
+                    "    <p class=\"lead\">We have the expertise of the people who actually do the open source products that you trust.</p>" +
+                    "    </div>\n" +
+                    "</div>" +
+                    "<div class=\"project pt-5\">\n" +
+                    "<div class=\"row row-cols-3\">\n" +
                     ossRepos.stream()
                             .sorted(comparing(GithubRepo::getFullName))
                             .map(repo -> "" +
-                                    "      {\n" +
-                                    "        name: \"" + dropYupiikPrefix.matcher(repo.getFullName()).replaceFirst("") + "\",\n" +
-                                    "        value: " + repo.getSize() + ",\n" +
-                                    "        data: " + jsonb.toJson(repo) + ",\n" +
-                                    "        root: false\n" +
-                                    "      }")
-                            .collect(joining(",\n", "", "\n")) +
-                    "    ]\n" +
-                    "  }\n" +
-                    "];\n" +
-                    "\n" +
-                    "networkSeries.dataFields.name = \"name\";\n" +
-                    "networkSeries.dataFields.value = \"value\";\n" +
-                    "networkSeries.dataFields.children = \"children\";\n" +
-                    "networkSeries.nodes.template.tooltipText = \"{name}\";\n" +
-                    "networkSeries.nodes.template.fillOpacity = 1;\n" +
-                    "networkSeries.nodes.template.label.text = \"{name}\"\n" +
-                    "networkSeries.fontSize = 10;\n" +
-                    "networkSeries.links.template.strokeWidth = 1;\n" +
-                    "\n" +
-                    "var hoverState = networkSeries.links.template.states.create(\"hover\");\n" +
-                    "hoverState.properties.strokeWidth = 3;\n" +
-                    "hoverState.properties.strokeOpacity = 1;\n" +
-                    "\n" +
-                    "networkSeries.nodes.template.events.on(\"over\", function(event) {\n" +
-                    "  event.target.dataItem.childLinks.each(function(link) {\n" +
-                    "    link.isHover = true;\n" +
-                    "  })\n" +
-                    "  if (event.target.dataItem.parentLink) {\n" +
-                    "    event.target.dataItem.parentLink.isHover = true;\n" +
-                    "  }\n" +
-                    "\n" +
-                    "})\n" +
-                    "networkSeries.nodes.template.events.on(\"out\", function(event) {\n" +
-                    "  event.target.dataItem.childLinks.each(function(link) {\n" +
-                    "    link.isHover = false;\n" +
-                    "  })\n" +
-                    "  if (event.target.dataItem.parentLink) {\n" +
-                    "    event.target.dataItem.parentLink.isHover = false;\n" +
-                    "  }\n" +
-                    "})\n" +
-                    "networkSeries.nodes.template.events.on(\"hit\", function(event) {\n" +
-                    "  var filtered = chart.data[0].children.filter(function (item) {\n" +
-                    "    return item.name == event.target.dataItem.name;\n" +
-                    "  });\n" +
-                    "  var data = filtered && filtered.length == 1 ? filtered[0].data : undefined;\n" +
-                    "  if (!data) { return; }\n" +
-                    "  var name = data.full_name.replace('yupiik/', '');\n" +
-                    "  document.querySelector('#project-details-title').innerHTML = name;\n" +
-                    "  document.querySelector('#project-details-link').innerHTML = '<a href=\"' + data.html_url + '\">' + name + '</a>';\n" +
-                    "  document.querySelector('#project-details-description').innerHTML = data.description;\n" +
-                    "});\n" +
-                    "})();\n" +
-                    "</script>\n" +
+                                    "<div class=\"col\">\n" +
+                                    "<div class=\"card\" style=\"width: 18rem;\">\n" +
+                                    "  <img class=\"card-img-top\" src=\"" + repo.getYupiikSiteMetadata().getLogo() + "\"/>\n" +
+                                    "  <div class=\"card-body\">\n" +
+                                    "    <h5 class=\"card-title\">" + repo.getYupiikSiteMetadata().getName() + "</h5>\n" +
+                                    "    <p class=\"card-text\" style=\"height: 8rem;\">" + repo.getYupiikSiteMetadata().getDescription() + "</p>\n" +
+                                    "    <a href=\"" + repo.getYupiikSiteMetadata().getWebsite() + "\" class=\"btn btn-primary\">View project</a>\n" +
+                                    "  </div>\n" +
+                                    "</div>\n" +
+                                    "</div>\n")
+                            .collect(joining()) +
+                    "</div>\n" +
+                    "</div>\n" +
                     "++++\n";
         } catch (final Exception e) {
             throw new IllegalStateException(e);
@@ -254,12 +186,14 @@ public class GenerateProjectsPage implements Runnable {
 
     private CompletionStage<YupiikSiteMetadata> loadOssMetadata(final HttpClient client, final String githubApiBase, final String basic,
                                                                 final Jsonb jsonb, final GithubRepo repo) {
+        final var dropYupiikPrefix = Pattern.compile("^yupiik/");
+
         return client.sendAsync(
                 HttpRequest.newBuilder()
                         .GET()
-                        .uri(URI.create(githubApiBase + "/repos/" + repo.getFullName() + "/contents/yupiik.io.json"))
+                        .uri(URI.create("https://raw.githubusercontent.com/yupiik/" + dropYupiikPrefix.matcher(repo.getFullName()).replaceFirst("") + "/master/oss.json"))
                         .header("Accept", "application/json")
-                        .header("Authorization", basic)
+                        //.header("Authorization", basic)
                         .build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                 .thenApply(response -> {
@@ -274,18 +208,16 @@ public class GenerateProjectsPage implements Runnable {
     }
 
     private CompletionStage<Boolean> isOpenSourceRepo(final HttpClient client, final String githubApiBase, final String basic,
-                                                      final SAXParserFactory saxParserFactory, final Jsonb jsonb,
                                                       final GithubRepo repo) {
         return client.sendAsync(
                 HttpRequest.newBuilder()
                         .GET()
-                        .uri(URI.create(githubApiBase + "/repos/" + repo.getFullName() + "/contents/pom.xml"))
+                        .uri(URI.create(githubApiBase + "/repos/" + repo.getFullName() + "/contents/oss.json"))
                         .header("Accept", "application/json")
                         .header("Authorization", basic)
                         .build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
-                .thenApply(response -> response.statusCode() == 200 /* has a root pom.xml */ &&
-                        isIoYupiik(saxParserFactory, jsonb, response.body()));
+                .thenApply(response -> response.statusCode() == 200) /* has a oss.json file */;
     }
 
     private boolean isIoYupiik(final SAXParserFactory saxParserFactory, final Jsonb jsonb, final String pomXml) {
@@ -390,6 +322,10 @@ public class GenerateProjectsPage implements Runnable {
     @Data // enables to host custom meta for the generation
     public static class YupiikSiteMetadata {
         private boolean skip; // enables to skip a repo matching OSS filtering
+        private String name;
+        private String description;
         private List<String> categories = List.of();
+        private String logo; // url of the logo to use
+        private String website;
     }
 }

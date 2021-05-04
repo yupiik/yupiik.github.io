@@ -49,6 +49,9 @@ h6:hover>a.anchor,
 h6>a.anchor:hover {
   visibility: hidden;
 }
+.page-navigation-right {
+  display: none;
+}
 
 .banner-home {
   min-height: 30rem;

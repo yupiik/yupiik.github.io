@@ -104,7 +104,6 @@
           <templateAddLeftMenu>false</templateAddLeftMenu>
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://yupiik.github.io</siteBase>
-          <templateSuffixes>footer-end.html</templateSuffixes>
           <!-- drop the right menu removing footer-top.html -->
           <customHead>
             &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
@@ -118,13 +117,11 @@
             &lt;/script&gt;
             &lt;meta name="google-site-verification" content="oSMuDCwO2aQLjpEHxlMGjfbAeYoTPv9qNGLCHPObvmY" /&gt;
           </customHead>
-          <customMenu>
-            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/projects.html"&gt;Projects&lt;/a&gt;&lt;/li&gt;
-            &lt;li class="list-inline-item"&gt;&lt;a class="btn btn-link" href="/community.html"&gt;Community&lt;/a&gt;&lt;/li&gt;
-          </customMenu>
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
+              &lt;li class="list-inline-item"&gt;&lt;a href="/projects.html"&gt;&lt;i class="fas fa-project-diagram fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a href="/community.html"&gt;&lt;i class="fas fa-users fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.linkedin.com/company/yupiik/"&gt;&lt;i class="fab fa-linkedin fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="https://www.github.com/yupiik"&gt;&lt;i class="fab fa-github fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a target="_blank" href="/sitemap.xml"&gt;&lt;i class="fas fa-rss-square fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;

@@ -3,8 +3,22 @@
   border: none;
   padding: 0;
 }
-.container, .page-content-body {
+#index-html-container.container,
+#community-html-container.container,
+#projects-html-container.container {
   max-width: none !important;
+}
+@media (min-width: 1px) {
+  #index-html-container .page-content-body,
+  #community-html-container > .page-content-body,
+  #projects-html-container > .page-content-body {
+    max-width: none !important;
+  }
+}
+#index-html-container > div.page-header,
+#projects-html-container > div.page-header,
+#community-html-container > div.page-header {
+  display: none;
 }
 
 .banner-home {
@@ -48,4 +62,23 @@ svg[role="group"] > g > g > g:nth-child(2) {
 .card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   background: none !important;
+}
+.yupiik-logo {
+  max-height: 30px;
+  margin-top: -0.25rem;
+}
+.sect1+.sect1 {
+  border-top: none;
+}
+.icon-important:before {
+    color: #fa131b !important;
+}
+.icon-note:before {
+    color: #1845AA !important;
+}
+.icon-tip:before {
+    color: #01c1fc !important;
+}
+.icon-warning:before {
+    color: #ffc300 !important;
 }

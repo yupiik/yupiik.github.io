@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Yupiik Open Source</title>
+    <title>Yupiik OSS</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,8 +14,17 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
-    <link id="theme-style" rel="stylesheet" href="https://yupiik.github.io/css/theme.css?v=1.0.0-SNAPSHOT">
-    <link rel="stylesheet" href="https://yupiik.github.io/css/yupiik.github.io.css?v=1.0.0-SNAPSHOT">
+    <link id="theme-style" rel="stylesheet" href="/css/theme.css?v=1.0.0-SNAPSHOT">
+    <link rel="stylesheet" href="/css/yupiik.github.io.css?v=1.0.0-SNAPSHOT">
+
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128075922-1"></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'UA-128075922-1');
+            </script>
+            <meta name="google-site-verification" content="oSMuDCwO2aQLjpEHxlMGjfbAeYoTPv9qNGLCHPObvmY" />
 </head>
 
 <body>
@@ -23,14 +32,13 @@
         <div class="branding docs-branding">
             <div class="container-fluid position-relative py-2">
                 <div class="docs-logo-wrapper">
-	                <div class="site-logo"><a class="navbar-brand" href="https://yupiik.github.io/index.html">
+	                <div class="site-logo"><a class="navbar-brand" href="/index.html">
 	                <img class="logo-icon mr-2" src="//www.yupiik.com/img/favicon.png" alt="logo">
 	                <span class="logo-text">Yupiik Open Source</span></a></div>
                 </div>
 	            <div class="docs-top-utilities d-flex justify-content-end align-items-center">
-					<li class="list-inline-item"><a class="btn btn-link" href="/generated/projects.html">Projects</a></li>
+					<li class="list-inline-item"><a class="btn btn-link" href="/projects.html">Projects</a></li>
             <li class="list-inline-item"><a class="btn btn-link" href="/community.html">Community</a></li>
-            <li class="list-inline-item"><a class="btn btn-link" href="/blog.html">Blog</a></li>
 					<li class="list-inline-item"><a id="search-button" href="#" data-toggle="modal" data-target="#searchModal"><i data-toggle="tooltip" data-placement="top" title="Search" class="fas fa-search"></i></a></li>
 
 					<ul class="social-list list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex">
@@ -43,7 +51,10 @@
         </div>
     </header>
 	<div class="page">
-        <div class="container page-content">
+        <div id="index-html-container" class="container page-content index-html">
+            <div class="page-header">
+                <h1>Yupiik OSS</h1>
+            </div>
             <div class="page-content-body">
 <div class="bg-dark text-white text-center banner-home">
     <p class="lead pt-5">We have the expertise of the people who actually do the open source products that you trust.</p>
@@ -65,7 +76,7 @@
 			    <li class="list-inline-item"><a href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
                 <li class="list-inline-item"><a href="https://www.github.com/yupiik/"><i class="fab fa-github fa-fw"></i></a></li>
 	        </ul>
-            <small class="copyright">© 2009-2021, Yupiik, All Rights Reserved</small> | <a href="https://www.yupiik.com/terms-of-service/">Terms of service</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
+            <small class="copyright">Yupiik &copy;</small> | <a href="https://www.yupiik.com/terms-of-service/">Terms of service</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
 	    </div>
     </footer>
 
@@ -103,7 +114,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/json.min.js" integrity="sha512-37sW1XqaJmseHAGNg4N4Y01u6g2do6LZL8tsziiL5CMXGy04Th65OXROw2jeDeXLo5+4Fsx7pmhEJJw77htBFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/dockerfile.min.js" integrity="sha512-eRNl3ty7GOJPBN53nxLgtSSj2rkYj5/W0Vg0MFQBw8xAoILeT6byOogENHHCRRvHil4pKQ/HbgeJ5DOwQK3SJA==" crossorigin="anonymous"></script>
     <script>if (!(window.minisite || {}).skipHighlightJs) { hljs.highlightAll(); }</script>
-    <script src="https://yupiik.github.io/js/minisite.js?v=1.0.0-SNAPSHOT"></script>
+    <script src="/js/minisite.js?v=1.0.0-SNAPSHOT"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>

@@ -134,6 +134,11 @@
           </templateExtensionPoints>
           <blogPageSize>5</blogPageSize>
           <blogCategoriesCustomizations>
+            <Technology>
+              <order>2</order>
+              <icon>fas fa-microchip</icon>
+              <description>Technology/technical investigations and presentations.</description>
+            </Technology>
             <Infrastructure>
               <order>3</order>
               <icon>fas fa-network-wired</icon>

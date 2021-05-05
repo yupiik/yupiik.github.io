@@ -122,3 +122,7 @@ div.content > img {
     display:block;
     margin:auto;
 }
+
+.category-infrastructure {
+    color:#3069DE !important;
+}

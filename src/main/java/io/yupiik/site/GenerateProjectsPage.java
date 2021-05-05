@@ -52,6 +52,10 @@ public class GenerateProjectsPage implements Runnable {
 
     @Override
     public void run() {
+        if (!Boolean.parseBoolean(configuration.get("active"))) {
+            log.info("Skipping projects generation");
+            return;
+        }
         final var projectPage = sourceBase.resolve("content/_partials/generated/projects.adoc");
         final var settingsXml = ofNullable(configuration.get("settingsXml"))
                 .orElseGet(() -> System.getenv("YUPIIK_SETTINGS_XML"));

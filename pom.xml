@@ -17,6 +17,7 @@
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
     <yupiik-tools.version>1.0.16-SNAPSHOT</yupiik-tools.version>
+    <yupiik.projects.generate>true</yupiik.projects.generate>
   </properties>
 
   <dependencies>
@@ -150,6 +151,7 @@
               <configuration>
                 <serverId>${githubServerId}</serverId>
                 <settingsXml>${yupiik.settings.xml}</settingsXml>
+                <active>${yupiik.projects.generate}</active>
               </configuration>
             </action>
           </preActions>

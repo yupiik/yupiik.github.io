@@ -2,7 +2,7 @@
 :minisite-blog-published-date: 2021-06-14
 :minisite-blog-categories: Technology
 :minisite-blog-authors: Romain Manni-Bucau
-:minisite-blog-summary: JSON-RPC protocol enables to unify its development, let's dif into it.
+:minisite-blog-summary: JSON-RPC protocol enables to unify its development, let's dig into it.
 
 [abstract]
 link:https://www.jsonrpc.org/specification[JSON-RPC] defines a protocol.

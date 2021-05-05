@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -52,11 +53,25 @@ public class GenerateProjectsPage implements Runnable {
 
     @Override
     public void run() {
-        if (!Boolean.parseBoolean(configuration.get("active"))) {
-            log.info("Skipping projects generation");
+        final var activeMode = ofNullable(configuration.get("active")).orElse("true");
+        switch (activeMode.toLowerCase(Locale.ROOT)) {
+            case "no":
+            case "false":
+                log.info("Skipping projects generation");
+                return;
+            case "prefer-cache": // useful in dev to ensure there is a page even not up to date (create if not exists pattern)
+                doGenerate(true);
+                return;
+            default:
+                doGenerate(false);
+        }
+    }
+
+    private void doGenerate(final boolean preferCache) {
+        final var projectPage = sourceBase.resolve("content/_partials/generated/projects.adoc");
+        if (preferCache && Files.exists(projectPage)) {
             return;
         }
-        final var projectPage = sourceBase.resolve("content/_partials/generated/projects.adoc");
         final var settingsXml = ofNullable(configuration.get("settingsXml"))
                 .orElseGet(() -> System.getenv("YUPIIK_SETTINGS_XML"));
         log.info("Configured settings.xml: " + settingsXml);

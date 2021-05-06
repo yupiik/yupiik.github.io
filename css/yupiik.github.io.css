@@ -122,3 +122,10 @@ div.content > img {
     display:block;
     margin:auto;
 }
+
+.category-infrastructure {
+    color:#3069DE !important;
+}
+.category-technology {
+    color:#08bd68 !important;
+}

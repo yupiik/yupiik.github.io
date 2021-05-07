@@ -1,0 +1,18 @@
+<div id="{{{pageClass}}}-container" class="container page-content {{{isBlogClass}}} {{{pageClass}}}">
+    {{{title}}}
+    <div class="page-content-body">
+        {{{body}}}
+
+        {{{authorsList?emptyIfMissing=true}}}
+        
+        {{{categoriesList?emptyIfMissing=true}}}
+        
+        <div class="blog-links {{{isBlogClass}}}">
+            <ul>
+                <li class="blog-link-previous {{{hasPreviousLinkClass?ignoreErrors=true}}}"><a title="Previous" href="{{{previousLinkHref?ignoreErrors=true}}}">Previous</a></li>
+                <li class="blog-link-all"><a title="Blog" href="{{{blogHomeLinkHref?ignoreErrors=true}}}">All posts</a></li>
+                <li class="blog-link-next {{{hasNextLinkClass?ignoreErrors=true}}}"><a title="Next" href="{{{nextLinkHref?ignoreErrors=true}}}">Next</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

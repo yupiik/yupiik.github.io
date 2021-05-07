@@ -162,3 +162,42 @@ div.content > img {
   height: 75px;
   border-radius: 50%;
 }
+
+.blog-list-item+.blog-list-item {
+  border-top: 1px solid #979797;
+  margin-bottom: 0;
+  margin-top: 40px;
+  padding-top: 40px;
+}
+.blog-list-item .author {
+  color: #3d3d3d;
+  font-size: 24px;
+  font-weight: 500;
+}
+.blog-list-item .blog-meta {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.blog-list-item .blog-meta > div {
+  width: 50%;
+}
+.blog-list-item .blog-meta > time {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 24px;
+  order: 2;
+  text-align: right;
+  width: 50%;
+}
+.blog-list-item h4 {
+  margin-top: 20px;
+  font-size: 30px;
+}
+.blog-list-item h4 > a {
+  border-bottom: 1px solid transparent;
+  text-decoration: none;
+  color: #3d3d3d;
+  transition: border 0.4s, color 0.4s;
+}

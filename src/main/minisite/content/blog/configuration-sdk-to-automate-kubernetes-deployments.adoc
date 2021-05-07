@@ -2,7 +2,8 @@
 :minisite-blog-published-date: 2021-06-15
 :minisite-blog-categories: Infrastructure
 :minisite-blog-authors: Romain Manni-Bucau
-:minisite-blog-summary: CI/CD and modern environments enable to deploy faster, let see how a configuration SDK can make it even smoother.
+:minisite-blog-summary: CI/CD and modern environments enable to deploy faster but also imply a lot more automotion to work smoothly. \
+Let see how a configuration SDK can enable you to harness your deployment and make it even smoother as well as enabling you to reduce infrastructure cost by reducing your ops work.
 
 [abstract]
 A configuration SDK is basically a SDK enabling to work with a tool configuration.

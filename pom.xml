@@ -103,6 +103,9 @@
               <partialsdir>content/_partials</partialsdir>
               <icons>font</icons>
           </attributes>
+          <gravatar>
+            <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>
+          </gravatar>
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>

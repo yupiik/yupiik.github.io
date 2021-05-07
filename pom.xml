@@ -106,6 +106,7 @@
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>
+          <templateDirs>templates</templateDirs>
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://yupiik.github.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
@@ -124,8 +125,6 @@
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
-              &lt;li class="list-inline-item"&gt;&lt;a title="Projects" href="/projects.html"&gt;&lt;i class="fas fa-project-diagram fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
-              &lt;li class="list-inline-item"&gt;&lt;a title="Community" href="/community.html"&gt;&lt;i class="fas fa-users fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"&gt;&lt;i class="fab fa-linkedin fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a title="Github" target="_blank" href="https://www.github.com/yupiik"&gt;&lt;i class="fab fa-github fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
               &lt;li class="list-inline-item"&gt;&lt;a title="Sitemap" target="_blank" href="/sitemap.xml"&gt;&lt;i class="fas fa-rss-square fa-fw"&gt;&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;

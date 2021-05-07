@@ -4,16 +4,16 @@
 //include::{partialsdir}/generated/projects.adoc[]
 
 ++++
-<div class="bg-dark banner-home">
-    <div class="container text-white text-left">
-        <h1 class="pt-5 text-white">Yupiik Open Source</h1>
-        <p class="lead pt-5">We have the expertise of the people who actually do the open source products that you trust.</p>
+<div class="bg-dark banner home" style="background-image: url('/images/home.jpg');">
+    <div class="container text-white pt-5">
+        <h2 class="pt-5 text-white">Yupiik Open Source</h2>
+        <p class="lead pt-3">We have the expertise of the people who actually do the open source products that you trust.</p>
     </div>
 </div>
 <div class="bg-light section">
-    <div class="section-content pt-3">
+    <div class="section-content pt-5">
     <h2>Open Source Software</h2>
-    We have the expertise of the people who actually do the open source products that you trust.
+    <p class="lead">We have the expertise of the people who actually do the open source products that you trust.</p>
     </div>
 </div>
 ++++

@@ -140,12 +140,6 @@ public class GenerateProjectsPage implements Runnable {
 
             return "" +
                     "++++\n" +
-                    "<div class=\"bg-dark section\">\n" +
-                    "    <div class=\"section-content pt-3 text-white\">\n" +
-                    "    <h2 class=\"text-white\">Project</h2>\n" +
-                    "    <p class=\"lead\">We have the expertise of the people who actually do the open source products that you trust.</p>" +
-                    "    </div>\n" +
-                    "</div>" +
                     "<div class=\"project pt-5\">\n" +
                     "<div class=\"row row-cols-3\">\n" +
                     ossRepos.stream()

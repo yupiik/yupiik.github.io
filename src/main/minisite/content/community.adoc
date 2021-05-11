@@ -10,7 +10,7 @@
 
 <div class="section">
     <div class="section-content pt-5">
-        <h3><span><img src="/images/asf-feather.svg" height="61" width="61"></span>Apache Software Foundation</h3>
+        <h3><span class="pr-3"><img src="/images/asf-feather.svg" height="61" width="61"></span>Apache Software Foundation</h3>
         <p class="lead">Apache committed contributor and member</p>
         <blockquote class="blockquote">
           <p class="mb-0 font-italic">The ASF develops, shepherds, and incubates hundreds of freely-available, enterprise-grade projects that serve as the backbone for some of
@@ -21,6 +21,16 @@
           <footer class="blockquote-footer">What is the ASF from https://www.apache.org</footer>
         </blockquote>
         <p><a href="https://www.apache.org/" target="_blank" title="ASF">Visit</a></p>
+    </div>
+    <div class="section-content pt-5">
+        <h3><span class="pr-3"><img src="/images/eclipse-logo.svg" height="61" width="61"></span>Eclipse Foundation</h3>
+        <p class="lead">Eclipse committed contributor</p>
+        <blockquote class="blockquote">
+          <p class="mb-0 font-italic">The Eclipse Foundation provides our global community of individuals and organizations with a mature, scalable,
+            and business-friendly environment for open source software collaboration and innovation.</p>
+          <footer class="blockquote-footer">What is the Eclipse Foundation from https://www.eclipse.org</footer>
+        </blockquote>
+        <p><a href="https://www.eclipse.org/" target="_blank" title="Eclipse Foundation">Visit</a></p>
     </div>
 </div>
 ++++

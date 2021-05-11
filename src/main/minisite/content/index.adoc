@@ -10,10 +10,34 @@
         <p class="lead pt-3">We have the expertise of the people who actually do the open source products that you trust.</p>
     </div>
 </div>
-<div class="bg-light section">
-    <div class="section-content pt-5">
-    <h2>Open Source Software</h2>
-    <p class="lead">We have the expertise of the people who actually do the open source products that you trust.</p>
+<div class="section">
+    <div class="section-content pt-5 pb-3">
+        <h3>Open Source Software</h3>
+        <p class="lead">In Open Source we trust.</p>
+        <p>
+            We love Open Source Software and we are happy to share some of our work.<br><br>
+            <a href="/projects.html">Learn more</a>
+        </p>
+    </div>
+</div>
+<div class="section bg-light">
+    <div class="section-content pt-5 pb-3">
+        <h3>Community</h3>
+        <p class="lead">Committed contributor and member</p>
+        <p>
+            Part of our team are the developers and contributors of many well known Open Source projects from world wide organizations.<br><br>
+            <a href="/community.html">Learn more</a>
+        </p>
+    </div>
+</div>
+<div class="section">
+    <div class="section-content pt-5 pb-3">
+        <h3>Blog</h3>
+        <p class="lead">Latest news</p>
+        <p>
+            The latest news and tutorials about technology.<br><br>
+            <a href="/blog/">Learn more</a>
+        </p>
     </div>
 </div>
 ++++

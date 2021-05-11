@@ -7,4 +7,20 @@
         <p class="pt-3">We are involved in the Open Source community.</p>
     </div>
 </div>
+
+<div class="section">
+    <div class="section-content pt-5">
+        <h3><span><img src="/images/asf-feather.svg" height="61" width="61"></span>Apache Software Foundation</h3>
+        <p class="lead">Apache committed contributor and member</p>
+        <blockquote class="blockquote">
+          <p class="mb-0 font-italic">The ASF develops, shepherds, and incubates hundreds of freely-available, enterprise-grade projects that serve as the backbone for some of
+            the most visible and widely used applications in computing today. Through the ASF's merit-based process known as "The Apache Way,"
+            more than 800 individual volunteer Members and 7,800+ code Committers across six continents successfully collaborate on innovations
+            in Artificial Intelligence and Deep Learning, Big Data, Build Management, Cloud Computing, Content Management, DevOps, IoT and Edge Computing,
+            Mobile, Servers, and Web Frameworks, among other categories.</p>
+          <footer class="blockquote-footer">What is the ASF from https://www.apache.org</footer>
+        </blockquote>
+        <p><a href="https://www.apache.org/" target="_blank" title="ASF">Visit</a></p>
+    </div>
+</div>
 ++++

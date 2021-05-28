@@ -296,6 +296,110 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@logging -Psynchronize-github-releases -->
+                <id>logging</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/yupiik-logging</githubRepository>
+                  <tagPattern>yupiik-logging-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.logging</groupId>
+                      <artifactId>yupiik-logging-jul</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@batch -Psynchronize-github-releases -->
+                <id>batch</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/yupiik-batch</githubRepository>
+                  <tagPattern>yupiik-batch-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.batch</groupId>
+                      <artifactId>yupiik-batch-runtime</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
             </executions>
             <configuration>
               <!-- for synchronize-github -->

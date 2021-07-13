@@ -1,3 +1,9 @@
+[link=https://github.com/yupiik/yupiik.github.io/actions/workflows/maven.yml] 
+image::https://github.com/yupiik/yupiik.github.io/actions/workflows/maven.yml/badge.svg[Main Build]
+
+[link=https://github.com/yupiik/yupiik.github.io/actions/workflows/synchronize-github-releases.yml]
+image::https://github.com/yupiik/yupiik.github.io/actions/workflows/synchronize-github-releases.yml/badge.svg[Synchronize Github Releases]
+
 = Yupiik IO aggregator site
 
 == Mecanism

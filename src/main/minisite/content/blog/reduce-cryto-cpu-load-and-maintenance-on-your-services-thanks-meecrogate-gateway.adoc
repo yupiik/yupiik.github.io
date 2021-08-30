@@ -1,11 +1,11 @@
 = Reduce CPU crypto load and deployment maintenance thanks to Meecrogate Gateway
-:minisite-blog-published-date: 2021-06-20
-:minisite-blog-categories: Infrastructure
-:minisite-blog-authors: Romain Manni-Bucau
-:minisite-blog-summary: Cloud security has a high CPU impact. \
-It is mainly due to the cryptographic need but also to the global architecture and used deployment. \
-Thanks to some trivial tips, it can be made more efficient and less expensive in the cloud. \
-Let see how to reduce CPU resource usage thanks to a well configured gateway.
+//:minisite-blog-published-date: 2021-06-20
+//:minisite-blog-categories: Infrastructure
+//:minisite-blog-authors: Romain Manni-Bucau
+//:minisite-blog-summary: Cloud security has a high CPU impact. \
+//It is mainly due to the cryptographic need but also to the global architecture and used deployment. \
+//Thanks to some trivial tips, it can be made more efficient and less expensive in the cloud. \
+//Let see how to reduce CPU resource usage thanks to a well configured gateway.
 
 [abstract]
 Security is a key aspect in cloud and microservices deployments.

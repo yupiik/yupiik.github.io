@@ -15,4 +15,4 @@ image::https://github.com/yupiik/yupiik.github.io/actions/workflows/synchronize-
 
 `mvn package` or `mvn clean package -Pgh-pages` to deploy it.
 
-IMPORTANT: requires a `github.com` server in your `$HOME/.m2/settings.xml` (password=your github token).
+IMPORTANT: requires a `github.com` server in your `$HOME/.m2/settings.xml` (password=your github token and username=github-account).

@@ -1,0 +1,52 @@
+const fs = require('fs');
+const path = require('path');
+
+function doCopyFile(replacements, from, to, log) {
+    if (!replacements) {
+        fs.copyFileSync(from, to);
+        if (log) {
+            console.log(`Copied ${from} -> ${to}`);
+        }
+    } else {
+        let content = fs.readFileSync(from).toString('utf8');
+        replacements.forEach(({ from, to }) => content = content.replace(new RegExp(from, 'g'), to));
+        fs.writeFileSync(to, content);
+        if (log) {
+            console.log(`Wrote ${from} -> ${to} with ${replacements.length} replacements`);
+        }
+    }
+}
+
+module.exports = (options = { assets: [] }) => {
+    options.assets.forEach(({ from, to, replacements, extensions }) => {
+        if (!fs.existsSync(from)) {
+            throw new Error(`No such file '${from}'`);
+        }
+
+        if (extensions) { // it is a dir and we want to copy from this dir to "to" dir
+            if (!fs.existsSync(to)) {
+                fs.mkdirSync(to, { recursive: true });
+            }
+            const files = fs.readdirSync(from)
+                .filter(fn => extensions.some(ext => fn.endsWith(ext)))
+                .map(file => {
+                    doCopyFile(replacements, path.join(from, file), path.join(to, file), false);
+                    return 1;
+                })
+                .reduce((a, i) => a + i, 0);
+            console.log(`Copied #${files} files from '${from}' to '${to}'`);
+            return;
+        }
+
+        if (extensions) {
+            throw new Error(`'extensions' option ignored for files: '${from}'`);
+        }
+
+        const base = path.dirname(to);
+        if (!fs.existsSync(base)) {
+            fs.mkdirSync(base, { recursive: true });
+        }
+        doCopyFile(replacements, from, to, true);
+    })
+};
+

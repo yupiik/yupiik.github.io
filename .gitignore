@@ -14,3 +14,8 @@ generated
 .asciidoctor
 generated_*.svg
 generated_*.png
+
+# node
+.node
+node_modules
+

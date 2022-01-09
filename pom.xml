@@ -18,13 +18,18 @@
     <yupiik.settings.xml />
     <yupiik-tools.version>1.0.20</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
+
+    <node.environment>production</node.environment>
+
+    <!-- for tests -->
+    <java17.home>${env.JAVA_HOME_17}</java17.home>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
+      <version>1.18.22</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -40,7 +45,20 @@
     <dependency>
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
-      <version>1.2.11</version>
+      <version>1.2.15</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.yupiik</groupId>
+      <artifactId>bundlebee-core</artifactId>
+      <version>1.0.13</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -56,6 +74,65 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <trimStackTrace>false</trimStackTrace>
+          <systemPropertyVariables>
+            <maven.home>${maven.home}</maven.home>
+            <java17.home>${java17.home}</java17.home> <!-- TBD -->
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.12.0</version>
+        <executions>
+          <execution>
+            <id>install-node-npm</id>
+            <phase>generate-resources</phase>
+            <inherited>false</inherited>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <installDirectory>${project.basedir}/.node</installDirectory>
+              <nodeVersion>v17.3.0</nodeVersion>
+              <npmVersion>8.3.0</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-install</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm-build</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+              <environmentVariables>
+                <OUTPUT>${project.build.directory}/${project.build.finalName}/</OUTPUT>
+                <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
+                <NODE_ENV>${node.environment}</NODE_ENV>
+              </environmentVariables>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <installDirectory>${project.basedir}/.node</installDirectory>
+          <workingDirectory>${project.basedir}/src/main/frontend</workingDirectory>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>

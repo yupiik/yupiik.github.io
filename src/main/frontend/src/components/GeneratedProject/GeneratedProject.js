@@ -68,7 +68,7 @@ const findFileIcon = (name, fallback) => {
         return 'far fa-file-code';
     }
     if (name.endsWith('.js')) {
-        return 'far fa-js';
+        return 'fab fa-js';
     }
     if (name.endsWith('.adoc')) {
         return 'fa fa-book';

@@ -1613,6 +1613,94 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
     }
 };
 
+const injectGithub = (files, idGenerator, hasFeature, readmePaths) => {
+    const documentation = hasFeature('documentation');
+
+    readmePaths.push('Github workflow enables you to automatically execute command for your project for commits/pr.');
+    readmePaths.push('');
+    readmePaths.push('The `github` feature generated a basic Github workflow in `.github/workflows/maven.yaml` which builds the project automatically on commit.');
+    if (documentation) {
+        readmePaths.push('');
+        readmePaths.push('IMPORTANT: since you enabled documentation feature the project set up a deployment skeleton (commented by default in `maven.yaml`).');
+        readmePaths.push('If you want to enable continuous documentation deployment, ensure to create a `gh-pages` branch and to enable Github Pages for it.');
+        readmePaths.push('See `DOC: ` comments in the yaml.');
+    }
+    readmePaths.push('');
+
+    const github = getOrCreateFolder(files, '.github', idGenerator);
+    github.push({
+        id: idGenerator(),
+        name: 'settings.xml',
+        content: [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<settings>',
+            '  <servers>',
+            '    <id>github.com</id>',
+            '    <!-- DOC: you can also setup a custom token in your secrets and wire it there and env: of the maven.yaml -->',
+            '    <password>${env.GITHUB_TOKEN}</password>',
+            '  </servers>',
+            '</settings>',
+            '',
+        ].join('\n'),
+    });
+
+    const runsOn = 'ubuntu-20.04';
+    const sharedStepsBefore = [
+        '      - name: Clone',
+        '        id: clone',
+        '        uses: actions/checkout@v2',
+        '      - name: Set up JDK 17',
+        '        id: java17',
+        '        uses: actions/setup-java@v2',
+        '        with:',
+        '          distribution: \'zulu\'',
+        '          java-version: \'17\'',
+        '          cache: \'maven\'',
+    ];
+    const sharedStepsAfter = [
+        '      - name: Remove Snapshots Before Caching',
+        '        run: find ~/.m2/repository -name \'*SNAPSHOT\' | xargs rm -Rf',
+    ];
+    getOrCreateFolder(github, 'workflows', idGenerator).push({
+        id: idGenerator(),
+        name: 'maven.yaml',
+        content: [
+            'name: Github CI',
+            '',
+            'on: [ push, pull_request ]',
+            '',
+            'env:',
+            '  MAVEN_OPTS: -Dmaven.artifact.threads=256 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn',
+            ...(documentation ? [
+                '  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}',
+            ] : []),
+            '',
+            'jobs:',
+            '  build:',
+            '    name: Main Build',
+            `    runs-on: ${runsOn}`,
+            '    steps:',
+            ...sharedStepsBefore,
+            '      - name: Build',
+            `        run: mvn package -e`,
+            ...sharedStepsAfter,
+            ...(documentation ? [
+                '  DOC: ensure to set the needed secrets (see README.adoc)',
+                '  deploy-doc:',
+                '    if: github.ref == \'refs/heads/main\'',
+                '    name: Documentation',
+                `    runs-on: ${runsOn}`,
+                '    steps:',
+                ...sharedStepsBefore,
+                '      - name: Deploy-Documentation',
+                '        run: mvn package -Pgh-pages -e',
+                ...sharedStepsAfter,
+            ].map(it => it.replace('  ', '  # ')) : []),
+            '',
+        ].join('\n'),
+    });
+};
+
 const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasFeature, readmePaths) => {
     switch (feature.key) {
         case 'jsonRpc': {
@@ -1666,6 +1754,11 @@ const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasF
             readmePaths.push('== Documentation');
             readmePaths.push('');
             injectDocumentation(files, groupId, artifactId, idGenerator, hasFeature, readmePaths);
+            break;
+        case 'github':
+            readmePaths.push('== Github Workflow');
+            readmePaths.push('');
+            injectGithub(files, idGenerator, hasFeature, readmePaths);
             break;
         default:
             throw new Error(`Unknown feature: ${feature.key}.`);

@@ -69,6 +69,15 @@ export const defaultState = {
             tooltip: 'Setup a documentation module for the project',
             icon: 'fa fa-book',
         },
+        github: {
+            label: 'Github',
+            order: 8,
+            enabled: false,
+            supportSubModule: false,
+            useParent: false,
+            tooltip: 'Generate a basic Github Workflow',
+            icon: 'fab fa-github',
+        },
         // todo: add httpclient (not k8s one), add persistence (so tomcat-jdbc+persistence with h2 and pg) etc...
     },
 };

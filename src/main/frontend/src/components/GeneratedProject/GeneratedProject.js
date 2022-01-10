@@ -64,7 +64,7 @@ const findFileIcon = (name, fallback) => {
     if (name == 'java' || name.startsWith('java/')) {
         return 'fas fa-code';
     }
-    if (name.endsWith('.java') || name.endsWith('.json') || name.endsWith('.xml')) {
+    if (name.endsWith('.java') || name.endsWith('.json') || name.endsWith('.xml') || name.endsWith('.yaml')) {
         return 'far fa-file-code';
     }
     if (name.endsWith('.js')) {
@@ -99,6 +99,9 @@ const findHighlightClass = file => {
     }
     if (file.name.endsWith('.json')) {
         return 'language-json';
+    }
+    if (file.name.endsWith('.yaml')) {
+        return 'language-yaml';
     }
     if (file.name.endsWith('.js')) {
         return 'language-javascript';

@@ -4,12 +4,16 @@ import io.yupiik.bundlebee.core.lang.Tuple2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.junit.jupiter.api.io.TempDir;
+import org.xml.sax.SAXException;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -40,6 +44,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -65,6 +70,9 @@ class GeneratorTest {
         final var mvnProject = temp.resolve("application");
         dumpProject(files, mvnProject);
 
+        // ensure github descriptors are there
+        assertGithubWorkflow(mvnProject);
+
         // ensure it builds (jsonrpc+frontend+batch+tests)
         assertBuild(mvnProject, temp, windows, java17Home);
 
@@ -73,6 +81,20 @@ class GeneratorTest {
 
         // docker image
         assertDocker(mvnProject, temp, java17Home, windows);
+    }
+
+    private void assertGithubWorkflow(final Path project) throws IOException, ParserConfigurationException, SAXException {
+        final var yaml = project.resolve(".github/workflows/maven.yaml");
+        final var settings = project.resolve(".github/settings.xml");
+        Stream.of(yaml, settings).forEach(it -> assertTrue(Files.exists(it), it::toString));
+
+        // ensure yaml is well formatted
+        new Yaml().load(Files.readString(yaml, UTF_8));
+
+        // ensure xml is well formatted
+        final var builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setFeature(FEATURE_SECURE_PROCESSING, true);
+        builderFactory.newDocumentBuilder().parse(settings.toFile());
     }
 
     private void assertDocker(final Path project, final Path temp, final String java17Home, final boolean win) throws Throwable {
@@ -402,7 +424,7 @@ class GeneratorTest {
                 "    \"version\": \"1.0.0-SNAPSHOT\"\n" +
                 "  },\n" +
                 "  \"features\": {\n" +
-                Stream.of("jsonRpc", "frontend", "batch", "kubernetesClient", "jib", "bundlebee", "documentation")
+                Stream.of("jsonRpc", "frontend", "batch", "kubernetesClient", "jib", "bundlebee", "documentation", "github")
                         .map(it -> "" +
                                 "    \"" + it + "\": {\n" +
                                 "      \"enabled\": true,\n" +
@@ -460,7 +482,13 @@ class GeneratorTest {
                         originalPath(environment, pathName));
         final var process = processBuilder.start();
         assertTrue(process.waitFor(1, MINUTES));
-        assertEquals(0, process.exitValue());
+        assertEquals(0, process.exitValue(), () -> {
+            try {
+                return Files.readString(stderr, UTF_8);
+            } catch (final IOException e) {
+                return "error executing the runner";
+            }
+        });
 
         assertEmpty(stderr);
         final var stdoutValue = Files.readString(stdout, UTF_8);

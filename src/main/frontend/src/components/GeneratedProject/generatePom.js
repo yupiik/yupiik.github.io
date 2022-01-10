@@ -185,8 +185,40 @@ const junit5Dependencies = [
     '      <scope>test</scope>',
     '    </dependency>',
 ];
+const githubDocProfileProfile = `
+<profile> <!--  mvn clean package -Pgh-pages  -->
+<id>gh-pages</id>
+<properties>
+  <minisite.serverId>github.com</minisite.serverId>
+</properties>
+<build>
+  <plugins>
+    <plugin>
+      <groupId>io.yupiik.maven</groupId>
+      <artifactId>yupiik-tools-maven-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>gh-pages</id>
+          <phase>prepare-package</phase>
+          <goals>
+            <goal>minisite</goal>
+          </goals>
+          <configuration>
+            <git>
+              <ignore>false</ignore>
+              <noJekyll>true</noJekyll>
+              <serverId>\${minisite.serverId}</serverId>
+              <branch>refs/heads/gh-pages</branch>
+              <url>\${project.scm.url}</url>
+            </git>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+</profile>`.trim().split('\n');
 const jibPiProfile = [
-    '  <profiles>',
     '    <profile>',
     '      <!-- Represents a different docker registry environment (here a Raspberry PI) -->',
     '      <id>pi</id>',
@@ -218,8 +250,6 @@ const jibPiProfile = [
     '        </plugins>',
     '      </build>',
     '    </profile>',
-    '  </profiles>',
-    '',
 ];
 const gitPlugin = [
     '      <!-- ENABLE WHEN PUSHED ON GIT',
@@ -510,6 +540,7 @@ export const generatePom = data => {
     const enabledFeatures = filterEnabled(data.features);
     const singleModule = isSingleModule(enabledFeatures);
     const frontend = enabledFeatures.filter(it => it.key == 'frontend').length == 1;
+    const needsProfiles = data.features.jib.enabled || (data.features.github.enabled && data.features.documentation.enabled);
 
     const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -559,7 +590,10 @@ export const generatePom = data => {
             '  </modules>',
             '',
         ]),
+        ...(needsProfiles ? ['  <profiles>' ] : []),
+        ...(!data.features.documentation.enabled || !data.features.github.enabled ? [] : githubDocProfileProfile),
         ...(!data.features.jib.enabled ? [] : jibPiProfile),
+        ...(needsProfiles ? ['  </profiles>' ] : []),
         ...(singleModule ? [] : [
             '  <dependencyManagement>',
             '    <dependencies>',

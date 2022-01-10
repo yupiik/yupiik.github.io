@@ -3,11 +3,11 @@ import { h } from 'preact';
 const Input = ({ name, dispatch, data }) => {
     const label = `${name.substring(0, 1).toUpperCase()}${name.substring(1)}`;
     return (
-        <div className="form-group row" style={{ marginBottom: '0.3rem' }}>
-            <label for={name} className="col-sm-2">
+        <div className="form-group" style={{ marginBottom: '0.3rem', marginRight: '1rem', flex: '1' }}>
+            <label for={name}>
                 <b>{label}</b>
             </label>
-            <div className="col-sm-10">
+            <div>
                 <input
                     id={name}
                     value={data[name]}
@@ -26,16 +26,16 @@ const Input = ({ name, dispatch, data }) => {
 export const Nav = ({ data, dispatch }) => {
     return (
         <div>
-            <div className="row">
+            <div>
                 <h3>Metadata</h3>
             </div>
             <div>
-                <form>
-                    <div className="form-group row">
-                        <div className="col-sm-6">
+                <form style={{ display: 'flex' }}>
+                    <div className="form-group" style={{ flex: '1' }}>
+                        <div>
                             <b>Java Version</b>
                         </div>
-                        <div className="col-sm-6">
+                        <div>
                             <div className="form-check">
                                 <input
                                     type="radio"

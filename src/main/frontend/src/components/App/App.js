@@ -32,15 +32,15 @@ export const App = () => {
     const [state, dispatch] = useReducer((state, action) => mergeState(state, action), defaultState);
     return (
         <div className="project-starter container">
-            <div className="row">
-                <div className="col-sm-5">
+            <div style={{ marginRight: '0', marginLeft: '0' }}>
+                <div>
                     <Nav data={state.nav} dispatch={dispatch} />
                 </div>
-                <div className="col-sm-7">
+                <div>
                     <Features data={state.features} dispatch={dispatch} />
                 </div>
             </div>
-            <div className="row">
+            <div style={{ width: '100%' }}>
                 <GeneratedProject dispatch={dispatch} data={state} />
             </div>
         </div>

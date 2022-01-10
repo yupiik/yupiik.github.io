@@ -30,10 +30,10 @@ const Tooltip = ({ children, tooltip }) => {
 
 const Feature = ({ label, id, dispatch, data }) => {
     const enabled = is(data[id].enabled);
-    const useParent = is(data[id].useParent);
+    // const useParent = is(data[id].useParent);
     return (
-        <div className="col-sm-4">
-            <div className="form-check-inline row">
+        <div style={{ flex: 1, minWidth: '130px' }}>
+            <div className="form-check-inline">
                 <input
                     type="checkbox"
                     className="form-check-input"
@@ -57,7 +57,7 @@ const Feature = ({ label, id, dispatch, data }) => {
             {/* for now the generator does not support that so keep a single module generation
             enabled && data[id].supportSubModule && <>
                 <div className="ml-3">
-                    <div className="form-check-inline row">
+                    <div className="form-check-inline">
                         <input
                             type="checkbox"
                             className="form-check-input"
@@ -86,10 +86,10 @@ const Feature = ({ label, id, dispatch, data }) => {
 export const Features = ({ dispatch, data }) => {
     return (
         <div>
-            <div className="row">
+            <div>
                 <h3>Features</h3>
             </div>
-            <div className="row">
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {Object.keys(data)
                     .sort((a, b) => a.order - b.order)
                     .map(key => <Feature label={data[key].label} id={key} dispatch={dispatch} data={data} />)}

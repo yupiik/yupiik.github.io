@@ -158,7 +158,7 @@ export const GeneratedProject = ({ dispatch, data }) => {
     return (
         <>
             <h3 className="mt-3">Skeleton Project Files</h3>
-            <div className="col-sm-12 row">
+            <div className="row">
                 <div className="col-sm-4" style={{ overflowX: 'auto' }}>
                     <div>
                         <button type="button" className="btn btn-outline-primary" onClick={() => downloadZip(data, files)}>

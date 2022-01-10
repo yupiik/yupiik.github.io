@@ -119,7 +119,7 @@ Let see how to integrate with modern CI/CD and why using such a solution instead
 <p>The previous JSON generally looks like:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "com.yupiik.demo": {
         "workDir": "/opt/app/work",
         "database:": {
@@ -145,7 +145,7 @@ Let see how to integrate with modern CI/CD and why using such a solution instead
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">export interface DemoDatabase {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export interface DemoDatabase {
     url: string;
     username: string;
     password: string;
@@ -162,7 +162,7 @@ export interface DemoConfiguration {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">import { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { <i class="conum" data-value="1"></i><b>(1)</b>
     DemoDatabase,
     DemoConfiguration
 } from '@yupiik/demo-configuration';
@@ -229,7 +229,7 @@ Since now we are in code land, we can replace some static parts by code with log
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">export function newDatabase(env: string): DemoDatabase { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export function newDatabase(env: string): DemoDatabase { <i class="conum" data-value="1"></i><b>(1)</b>
     switch (env.toLocaleLowerCase()) { <i class="conum" data-value="2"></i><b>(2)</b>
         case "preprod":
             return {
@@ -304,7 +304,7 @@ it is important to have an infrastructure storage which enables auditing (who di
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">const configuration: DemoConfiguration = newDemoConfiguration() <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configuration: DemoConfiguration = newDemoConfiguration() <i class="conum" data-value="1"></i><b>(1)</b>
     .withDatabase(process.env.TARGET_ENV || 'preprod'); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
@@ -341,7 +341,7 @@ It supports the main ops languages except ruby which tends to be less popular th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">import { Construct } from 'constructs';
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { Construct } from 'constructs';
 import { App, Chart } from 'cdk8s'; <i class="conum" data-value="1"></i><b>(1)</b>
 import { KubeConfigMap, KubeDeployment } from './imports/k8s'; <i class="conum" data-value="2"></i><b>(2)</b>
 import generateDemoConfiguration from './configuration.generator'; <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
@@ -368,7 +368,7 @@ import generateDemoConfiguration from './configuration.generator'; <i class="con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">export class DemoKube extends Chart {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export class DemoKube extends Chart {
     constructor(scope: Construct, id: string) {
         super(scope, id);
 
@@ -401,7 +401,7 @@ import generateDemoConfiguration from './configuration.generator'; <i class="con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">new KubeConfigMap(this, 'configmap', { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">new KubeConfigMap(this, 'configmap', { <i class="conum" data-value="1"></i><b>(1)</b>
     metadata: { <i class="conum" data-value="2"></i><b>(2)</b>
         name: configMapName,
         labels: labels,
@@ -433,7 +433,7 @@ import generateDemoConfiguration from './configuration.generator'; <i class="con
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">const configMapVolume: Volume = { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configMapVolume: Volume = { <i class="conum" data-value="1"></i><b>(1)</b>
     name: 'demo-config-volume',
     configMap: {
         name: configMapName, <i class="conum" data-value="2"></i><b>(2)</b>
@@ -507,7 +507,7 @@ new KubeDeployment(this, 'deployment', { <i class="conum" data-value="5"></i><b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">const app = new App();
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const app = new App();
 new DemoKube(app, 'demo'); <i class="conum" data-value="1"></i><b>(1)</b>
 app.synth(); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
@@ -529,7 +529,7 @@ app.synth(); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">apiVersion: v1
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
 kind: ConfigMap <i class="conum" data-value="1"></i><b>(1)</b>
 metadata:
   labels:
@@ -631,7 +631,7 @@ metadata:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">name: Build and Deploy
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: Build and Deploy
 
 on: <i class="conum" data-value="1"></i><b>(1)</b>
   push:

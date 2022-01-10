@@ -125,7 +125,7 @@ The Oauth2 server offers few flow options:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">  startLogin(returnTo: string) {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">  startLogin(returnTo: string) {
         // create and store a code challenge/verifier
         const codeVerifier = [...Array(30)].map(() =&gt; Math.random().toString(36)[2]).join('');
         localStorage.setItem('meecrogate_code_verifier', codeVerifier);
@@ -157,7 +157,7 @@ The user is then sent to the login page with all those information.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">    onCode(code: string) {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">    onCode(code: string) {
         // create code verifier
         const codeVerifier = localStorage.getItem('meecrogate_code_verifier');
 
@@ -190,7 +190,7 @@ The user is then sent to the login page with all those information.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
   "access_token": "eyJhb...",
   "token_type": "Bearer",
   "expires_in": 3600,
@@ -203,7 +203,7 @@ The user is then sent to the login page with all those information.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">    onToken(token: Token) {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">    onToken(token: Token) {
         // store the token at service level
         this.token = token;
         this.userMetadata = this.token.token_type == 'Meecrogate-No-Security' ?
@@ -237,7 +237,7 @@ The user is then sent to the login page with all those information.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">@Injectable()
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">@Injectable()
 export class HttpTokenInterceptor implements HttpInterceptor {
   constructor(private router: Router, private loginService: LoginService) {
   }
@@ -264,7 +264,7 @@ export class HttpTokenInterceptor implements HttpInterceptor {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="typescript" class="language-typescript hljs">    customizeheaders(req: HttpRequest&lt;any&gt;): Observable&lt;HttpRequest&lt;any&gt;&gt; {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">    customizeheaders(req: HttpRequest&lt;any&gt;): Observable&lt;HttpRequest&lt;any&gt;&gt; {
         // if we have an available token
         const request = this.hasSecurity() ?
             this.enrichRequest(req) :

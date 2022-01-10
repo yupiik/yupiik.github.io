@@ -78,7 +78,7 @@ const findFileIcon = (name, fallback) => {
 
 const File = ({ file, setSelectedFile }) => (
     <SimpleLi key={file.id} onClick={() => setSelectedFile(file)}>
-        <i className={`mr-1 far ${findFileIcon(file.name, () => 'far fa-file-alt')}`}></i>
+        <i className={`mr-1 ${findFileIcon(file.name, () => 'far fa-file-alt')}`}></i>
         {file.name}
     </SimpleLi>
 );

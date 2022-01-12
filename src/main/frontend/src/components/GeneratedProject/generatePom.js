@@ -477,7 +477,7 @@ const jarPlugin = [
     '      <plugin>',
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-jar-plugin</artifactId>',
-    '        <version>3.2.0</version>',
+    '        <version>3.2.2</version>',
     '        <configuration>',
     '          <excludes>',
     '            <exclude>**/.keepit</exclude>',

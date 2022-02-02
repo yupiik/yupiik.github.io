@@ -48,6 +48,8 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
           cache: 'maven'
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v1
       - name: Build
         run: mvn clean package -Pgh-pages -s .github/settings.xml -Dyupiik.settings.xml=.github/settings.xml -e
         env:

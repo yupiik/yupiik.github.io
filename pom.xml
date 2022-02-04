@@ -183,6 +183,7 @@
           <gravatar>
             <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>
           </gravatar>
+          <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Softwares and Libraries.</description>
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>

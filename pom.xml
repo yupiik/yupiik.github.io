@@ -194,14 +194,13 @@
           <customHead>
             &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
 
-            &lt;script async src="https://www.googletagmanager.com/gtag/js?id=UA-128075922-1"&gt;&lt;/script&gt;
+            &lt;script async src="https://www.googletagmanager.com/gtag/js?id=UA-219607576-1"&gt;&lt;/script&gt;
             &lt;script&gt;
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'UA-128075922-1');
+              gtag('config', 'UA-219607576-1');
             &lt;/script&gt;
-            &lt;meta name="google-site-verification" content="oSMuDCwO2aQLjpEHxlMGjfbAeYoTPv9qNGLCHPObvmY" /&gt;
           </customHead>
           <siteBase>/</siteBase>
           <templateExtensionPoints>

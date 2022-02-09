@@ -118,12 +118,19 @@ svg[role="group"] > g > g > g:nth-child(2) {
 
 .card {
   border-radius: 0rem !important;
+  min-height: 25rem;
 }
 
 .card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   background: none !important;
 }
+
+.card-footer {
+  border: none;
+  background: inherit;
+}
+
 .yupiik-logo {
   max-height: 30px;
   margin-top: -0.25rem;

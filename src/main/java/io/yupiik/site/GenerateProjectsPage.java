@@ -141,18 +141,20 @@ public class GenerateProjectsPage implements Runnable {
             return "" +
                     "++++\n" +
                     "<div class=\"project pt-5\">\n" +
-                    "<div class=\"row row-cols-3\">\n" +
+                    "<div class=\"row row-cols-3 justify-content-center\">\n" +
                     ossRepos.stream()
                             .sorted(comparing(GithubRepo::getFullName))
                             .map(repo -> "" +
-                                    "<div class=\"col\">\n" +
-                                    "<div class=\"card\" style=\"width: 18rem;\">\n" +
+                                    "<div class=\"col my-3\">\n" +
+                                    "<div class=\"card p-3\">\n" +
                                     "  <img class=\"card-img-top\" src=\"" + repo.getYupiikSiteMetadata().getLogo() + "\"/>\n" +
                                     "  <div class=\"card-body\">\n" +
                                     "    <h5 class=\"card-title\">" + repo.getYupiikSiteMetadata().getName() + "</h5>\n" +
-                                    "    <p class=\"card-text\" style=\"height: 8rem;\">" + repo.getYupiikSiteMetadata().getDescription() + "</p>\n" +
-                                    "    <a href=\"" + repo.getYupiikSiteMetadata().getWebsite() + "\" class=\"btn btn-primary\">View project</a>\n" +
+                                    "    <p class=\"card-text\">" + repo.getYupiikSiteMetadata().getDescription() + "</p>\n" +
                                     "  </div>\n" +
+                                    "  <div class=\"card-footer align-self-center\">" +
+                                    "    <a href=\"" + repo.getYupiikSiteMetadata().getWebsite() + "\" class=\"btn btn-primary\">View project</a>\n" +
+                                    "  </div>" +
                                     "</div>\n" +
                                     "</div>\n")
                             .collect(joining()) +

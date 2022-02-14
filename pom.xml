@@ -193,14 +193,6 @@
           <!-- drop the right menu removing footer-top.html -->
           <customHead>
             &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
-
-            &lt;script async src="https://www.googletagmanager.com/gtag/js?id=UA-219607576-1"&gt;&lt;/script&gt;
-            &lt;script&gt;
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'UA-219607576-1');
-            &lt;/script&gt;
           </customHead>
           <siteBase>/</siteBase>
           <templateExtensionPoints>

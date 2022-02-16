@@ -89,7 +89,6 @@ h6>a.anchor:hover {
 }
 
 .section-content {
-  max-width: 1140px;
   margin: auto;
 }
 
@@ -113,12 +112,14 @@ svg[role="group"] > g > g > g:nth-child(2) {
 
 .project {
   margin: auto;
-  width: 960px;
+  max-width: 90rem;
 }
 
 .card {
   border-radius: 0rem !important;
   min-height: 25rem;
+  max-width: 20rem;
+  margin: auto;
 }
 
 .card:hover {

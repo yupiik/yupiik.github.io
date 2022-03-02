@@ -209,3 +209,17 @@ div.content > img {
   color: #3d3d3d;
   transition: border 0.4s, color 0.4s;
 }
+
+.community-logo {
+  min-width: 70px;
+  max-width: 70px;
+}
+
+@media (max-width: 400px) {
+  h3 {
+    font-size: 1.4rem;
+  }
+  .list-inline-item .btn-link {
+    padding: 0.200rem;
+  }
+}

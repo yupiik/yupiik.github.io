@@ -4,13 +4,13 @@
 //include::{partialsdir}/generated/projects.adoc[]
 
 ++++
-<div class="bg-dark banner home" style="background-image: url('/images/home.jpg');">
-    <div class="container text-white pt-5">
+<div class="bg-dark banner home px-5" style="background-image: url('/images/home.jpg');">
+    <div class="text-white pt-5">
         <h2 class="pt-5 text-white">Yupiik Open Source</h2>
         <p class="lead pt-3">We have the expertise of the people who actually do the open source products that you trust.</p>
     </div>
 </div>
-<div class="section">
+<div class="section px-5">
     <div class="section-content pt-5 pb-3">
         <h3>Open Source Software</h3>
         <p class="lead">In Open Source we trust.</p>
@@ -20,7 +20,7 @@
         </p>
     </div>
 </div>
-<div class="section bg-light">
+<div class="section bg-light px-5">
     <div class="section-content pt-5 pb-3">
         <h3>Community</h3>
         <p class="lead">Committed contributor and member</p>
@@ -30,7 +30,7 @@
         </p>
     </div>
 </div>
-<div class="section">
+<div class="section px-5">
     <div class="section-content pt-5 pb-3">
         <h3>Blog</h3>
         <p class="lead">Latest news</p>

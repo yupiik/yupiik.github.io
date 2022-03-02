@@ -1,14 +1,14 @@
 = Community
 
 ++++
-<div class="bg-dark banner" style="background-image: url('/images/community.jpg');">
-    <div class="container text-white text-left">
+<div class="bg-dark banner px-5" style="background-image: url('/images/community.jpg');">
+    <div class="text-white text-left">
         <h2 class="pt-5 text-white">Community</h2>
         <p class="pt-3">We are involved in the Open Source community.</p>
     </div>
 </div>
 
-<div class="section">
+<div class="section px-5">
     <div class="section-content pt-5">
         <h3><span class="pr-3"><img src="/images/asf-feather.svg" height="61" width="61"></span>Apache Software Foundation</h3>
         <p class="lead">Apache committed contributor and member</p>

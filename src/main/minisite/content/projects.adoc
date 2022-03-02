@@ -2,8 +2,8 @@
 
 // include to keep the generation in an excluded folder (git)
 ++++
-<div class="bg-dark banner" style="background-image: url('/images/projects.jpg');">
-    <div class="container text-white text-left">
+<div class="bg-dark banner px-5" style="background-image: url('/images/projects.jpg');">
+    <div class="text-white text-left">
         <h2 class="pt-5 text-white">Projects</h2>
         <p class="pt-3">Our Open Source projects.</p>
     </div>

@@ -213,6 +213,7 @@ div.content > img {
 .community-logo {
   min-width: 70px;
   max-width: 70px;
+  margin-bottom: 0.5rem;
 }
 
 @media (max-width: 400px) {

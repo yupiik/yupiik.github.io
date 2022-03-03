@@ -140,7 +140,7 @@ public class GenerateProjectsPage implements Runnable {
 
             return "" +
                     "++++\n" +
-                    "<div class=\"px-5 pt-5\">\n" +
+                    "<div class=\"px-3 px-md-5 pt-5\">\n" +
                     "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-4\">\n" +
                     ossRepos.stream()
                             .sorted(comparing(GithubRepo::getFullName))

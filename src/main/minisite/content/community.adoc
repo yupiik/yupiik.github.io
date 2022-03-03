@@ -1,16 +1,23 @@
 = Community
 
 ++++
-<div class="bg-dark banner px-5" style="background-image: url('/images/community.jpg');">
+<div class="bg-dark banner px-3 px-md-5" style="background-image: url('/images/community.jpg');">
     <div class="text-white text-left">
         <h2 class="pt-5 text-white">Community</h2>
         <p class="pt-3">We are involved in the Open Source community.</p>
     </div>
 </div>
 
-<div class="section px-5">
+<div class="section px-3 px-md-5">
     <div class="section-content pt-5">
-        <h3><span class="pr-3"><img src="/images/asf-feather.svg" height="61" width="61"></span>Apache Software Foundation</h3>
+        <div class="row">
+            <div class="align-self-center col community-logo">
+                <img src="/images/asf-feather.svg">
+            </div>
+            <div class="align-self-center col">
+                <h3>Apache Software Foundation</h3>
+            </div>
+        </div>
         <p class="lead">Apache committed contributor and member</p>
         <blockquote class="blockquote">
           <p class="mb-0 font-italic">The ASF develops, shepherds, and incubates hundreds of freely-available, enterprise-grade projects that serve as the backbone for some of
@@ -23,7 +30,14 @@
         <p><a href="https://www.apache.org/" target="_blank" title="ASF">Visit</a></p>
     </div>
     <div class="section-content pt-5">
-        <h3><span class="pr-3"><img src="/images/eclipse-logo.svg" height="61" width="61"></span>Eclipse Foundation</h3>
+        <div class="row">
+            <div class="align-self-center col community-logo">
+                <img src="/images/eclipse-logo.svg">
+            </div>
+            <div class="align-self-center col">
+                <h3>Eclipse Foundation</h3>
+            </div>
+        </div>
         <p class="lead">Eclipse committed contributor</p>
         <blockquote class="blockquote">
           <p class="mb-0 font-italic">The Eclipse Foundation provides our global community of individuals and organizations with a mature, scalable,

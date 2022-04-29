@@ -1,0 +1,31 @@
+= Docker/Java - How to debug on a container
+:minisite-blog-published-date: 2022-04-29
+:minisite-blog-categories: Docker
+:minisite-blog-authors: Gorhan HudeDocker/JAVA - How to debug on a containbine
+:minisite-blog-summary: How to debug on a container.
+
+
+[abstract]
+link:https://www.docker.com/[Docker] let you run applications or webapps under containers.
+
+When working with automating deployment like link:https://kubernetes.io/[Kubernetes], some bug or undesired behaviour can happen on an application inside a container, but not reproducible outside the container.
+
+== Debug a container in IDE
+
+It is quite easy to pass on debug mode when launching a container, by adding to the "docker run" command :
+[source,shell script]
+----
+docker run -e \ <1>
+"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <2>
+-p 5005:5005 \ <3>
+image-name:image-version <4>
+----
+<.> Launches a container, using environment variable (`-e)
+<.> Permits remote java debugging, on port 5005 inside the created container, and waits for listener on this port before starting.
+<.> Binds port 5005 inside the container on port 5005 on the host.
+<.> Container will use the image `image-name`, and version `image-version`.
+
+After executing the command, the container will be running, waiting for a listener on port 5005 to start.
+Take your favourite IDE and listen or attach process on port 5005, that's it, you're on debug inside of your container.
+
+

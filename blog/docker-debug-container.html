@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <title>Blog categories</title>
+    <title>Docker/Java - How to debug on a container</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Yupiik Open Source Portal. Discover all Yupiik Open Source Softwares and Libraries.">
-    <meta name="author" content="Yupiik Minisite Generator">
+    <meta name="author" content="Gorhan HudeDocker/JAVA - How to debug on a containbine">
     <meta name="generator" content="Yupiik Minisite Generator">
     
     <link rel="shortcut icon" href="//www.yupiik.com/img/favicon.png">
@@ -59,28 +59,98 @@
     </div>
 </header>
 <div class="page">
-<div id="blog-category-index-html-container" class="container-fluid page-content  blog-category-index-html">
+<div id="blog-docker-debug-container-html-container" class="container-fluid page-content is-blog blog-docker-debug-container-html">
                 <div class="page-header">
-                <h1>Blog categories</h1>
+                <h1>Docker/Java - How to debug on a container</h1>
             </div>
     <div class="page-content-body">
-        <div class="ulist">
-<ul>
-<li>
-<p><a href="infrastructure/page-1.html">Infrastructure</a></p>
-</li>
-</ul>
+        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="metadata-authors"><a href="/blog/author/gorhan-hude-docker-j-a-v-a&#8212;&#8203;how-to-debug-on-a-containbine/page-1.html">Gorhan Hude Docker/JAVA - How to debug on a containbine</a></span>, <span class="metadata-published">2022-04-29</span>, <span class="metadata-readingtime">57 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+<a href="https://www.docker.com/">Docker</a> let you run applications or webapps under containers.
+</blockquote>
+</div>
+<div class="paragraph">
+<p>When working with automating deployment like <a href="https://kubernetes.io/">Kubernetes</a>, some bug or undesired behaviour can happen on an application inside a container, but not reproducible outside the container.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_debug_a_container_in_ide">Debug a container in IDE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is quite easy to pass on debug mode when launching a container, by adding to the "docker run" command :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e \ <i class="conum" data-value="1"></i><b>(1)</b>
+"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <i class="conum" data-value="2"></i><b>(2)</b>
+-p 5005:5005 \ <i class="conum" data-value="3"></i><b>(3)</b>
+image-name:image-version <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Launches a container, using environment variable (`-e)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Permits remote java debugging, on port 5005 inside the created container, and waits for listener on this port before starting.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Binds port 5005 inside the container on port 5005 on the host.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Container will use the image <code>image-name</code>, and version <code>image-version</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After executing the command, the container will be running, waiting for a listener on port 5005 to start.
+Take your favourite IDE and listen or attach process on port 5005, that&#8217;s it, you&#8217;re on debug inside of your container.</p>
+</div>
+</div>
 </div>
 
         
+
+<div class="paragraph blog-categories">
+<p>From the same author:<p>
+</div>
+<div class="ulist blog-links blog-categories">
+<ul>
+<li><p><a href="/blog/author/gorhan-hude-docker-j-a-v-a--how-to-debug-on-a-containbine/page-1.html">Gorhan Hude Docker/JAVA - How to debug on a containbine</a></p></li></ul>
+</div>
+
+
+
         
         
+
+<div class="paragraph blog-categories">
+<p>In the same category:</p>
+</div>
+<div class="ulist blog-links blog-categories">
+<ul>
+<li><p><a href="/blog/category/docker/page-1.html">Docker</a></p></li></ul>
+</div>
+
+
+
         
-        <div class="blog-links ">
+        <div class="blog-links is-blog">
             <ul>
-                <li class="blog-link-previous "><a title="Previous" href="">Previous</a></li>
-                <li class="blog-link-all"><a title="Blog" href="">All posts</a></li>
-                <li class="blog-link-next "><a title="Next" href="">Next</a></li>
+                <li class="blog-link-previous has-previous-link-false"><a title="Previous" href="">Previous</a></li>
+                <li class="blog-link-all"><a title="Blog" href="/blog/index.html">All posts</a></li>
+                <li class="blog-link-next has-next-link-true"><a title="Next" href="/blog/configuration-sdk-to-automate-kubernetes-deployments.html">Next</a></li>
             </ul>
         </div>
     </div>

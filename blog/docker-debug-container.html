@@ -67,7 +67,7 @@
         <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph metadata">
-<p><span class="metadata-authors"><a href="/blog/author/gorhan-hude-docker-j-a-v-a&#8212;&#8203;how-to-debug-on-a-container/page-1.html">Gorhan Hude Docker/JAVA - How to debug on a container</a></span>, <span class="metadata-published">2022-04-29</span>, <span class="metadata-readingtime">58 sec read</span></p>
+<p><span class="metadata-authors"><a href="/blog/author/gorhan-hude-docker-j-a-v-a&#8212;&#8203;how-to-debug-on-a-container/page-1.html">Gorhan Hude Docker/JAVA - How to debug on a container</a></span>, <span class="metadata-published">2022-04-29</span>, <span class="metadata-readingtime">1 min and 44 sec read</span></p>
 </div>
 <div class="quoteblock abstract">
 <blockquote>
@@ -88,7 +88,7 @@
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e \ <i class="conum" data-value="1"></i><b>(1)</b>
-"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <i class="conum" data-value="2"></i><b>(2)</b>
+"_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <i class="conum" data-value="2"></i><b>(2)</b>
 -p 5005:5005 \ <i class="conum" data-value="3"></i><b>(3)</b>
 image-name:image-version <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
@@ -115,8 +115,69 @@ image-name:image-version <i class="conum" data-value="4"></i><b>(4)</b></code></
 </div>
 <div class="paragraph">
 <p>After executing the command, the container will be running, waiting for a listener on port 5005 to start.
-Take your favourite IDE and listen or attach process on port 5005.
-And that&#8217;s it, you&#8217;re on debug inside of your container.</p>
+Take your favourite IDE and listen or attach process on port 5005, you&#8217;re on debug inside of your container.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_example">Basic Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a TestDebugMain.java in package "test", and put a breakpoint on the "System.out.println()" line :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package test;
+
+public class TestDebugMain {
+
+    public static void main(String[] args) {
+        System.out.println("HelloWorld from Java Application running in Docker.");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a folder "debug-test", put the TestDebugMain.java under "debug-test/test/".
+Create a Dockerfile under "debug-test" :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">FROM java:8
+COPY test/TestDebugMain.java /test/TestDebugMain.java
+RUN javac test/TestDebugMain.java
+CMD ["java", "test/TestDebugMain"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the final tree :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">test-debug
+├── Dockerfile
+└── test
+    └── TestDebugMain.java</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Build the docker image "test-debug" :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker build -t test-debug .</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>finally, let&#8217;s launch a container with that image, and the debug mode, as explained at the begin of this topic (don&#8217;t forget to add the breakpoint in your IDE) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" -p 5005:5005 test-debug:latest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Go to your IDE, and attach to process at port 5005, and that&#8217;s it !</p>
 </div>
 </div>
 </div>

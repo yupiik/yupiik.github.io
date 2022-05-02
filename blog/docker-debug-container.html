@@ -173,7 +173,9 @@ CMD ["java", "test/TestDebugMain"]</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" -p 5005:5005 test-debug:latest</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run \
+-e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \
+-p 5005:5005 test-debug:latest</code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -1,8 +1,8 @@
 = Docker/Java - How to debug a container using Java application
 :minisite-blog-published-date: 2022-04-29
 :minisite-blog-categories: Docker
-:minisite-blog-authors: Gorhan HudeDocker/JAVA - How to debug on a container
-:minisite-blog-summary: How to debug on a container.
+:minisite-blog-authors: Gorhan Hudebine
+:minisite-blog-summary: Docker/Java How to debug on a container.
 
 
 [abstract]

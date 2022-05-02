@@ -62,7 +62,7 @@ test-debug
     └── TestDebugMain.java
 ----
 
-Build the docker image "test-debug" :
+With the terminal, go under "test-debug" folder, and build the docker image "test-debug", :
 [source,shell script]
 ----
 docker build -t test-debug .

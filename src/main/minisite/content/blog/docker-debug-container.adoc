@@ -72,7 +72,9 @@ finally, let's launch a container with that image, and the debug mode, as explai
 
 [source,shell script]
 ----
-docker run -e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" -p 5005:5005 test-debug:latest
+docker run \
+-e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \
+-p 5005:5005 test-debug:latest
 ----
 
 Go to your IDE, and attach to process at port 5005, and that's it !

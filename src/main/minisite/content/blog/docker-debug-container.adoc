@@ -16,7 +16,7 @@ It is quite easy to pass on debug mode when launching a container, by adding to 
 [source,shell script]
 ----
 docker run -e \ <1>
-"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <2>
+"_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <2>
 -p 5005:5005 \ <3>
 image-name:image-version <4>
 ----
@@ -26,7 +26,53 @@ image-name:image-version <4>
 <.> Container will use the image `image-name`, and version `image-version`.
 
 After executing the command, the container will be running, waiting for a listener on port 5005 to start.
-Take your favourite IDE and listen or attach process on port 5005.
-And that's it, you're on debug inside of your container.
+Take your favourite IDE and listen or attach process on port 5005, you're on debug inside of your container.
 
+== Basic Example
 
+Create a TestDebugMain.java in package "test", and put a breakpoint on the "System.out.println()" line :
+[source,java]
+----
+package test;
+
+public class TestDebugMain {
+
+    public static void main(String[] args) {
+        System.out.println("HelloWorld from Java Application running in Docker.");
+    }
+}
+----
+
+Create a folder "debug-test", put the TestDebugMain.java under "debug-test/test/".
+Create a Dockerfile under "debug-test" :
+[source,shell script]
+----
+FROM java:8
+COPY test/TestDebugMain.java /test/TestDebugMain.java
+RUN javac test/TestDebugMain.java
+CMD ["java", "test/TestDebugMain"]
+----
+
+Here is the final tree :
+[source,shell script]
+----
+test-debug
+├── Dockerfile
+└── test
+    └── TestDebugMain.java
+----
+
+Build the docker image "test-debug" :
+[source,shell script]
+----
+docker build -t test-debug .
+----
+
+finally, let's launch a container with that image, and the debug mode, as explained at the begin of this topic (don't forget to add the breakpoint in your IDE) :
+
+[source,shell script]
+----
+docker run -e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" -p 5005:5005 test-debug:latest
+----
+
+Go to your IDE, and attach to process at port 5005, and that's it !

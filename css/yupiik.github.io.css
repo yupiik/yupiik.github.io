@@ -166,8 +166,8 @@ div.content > img {
 
 .blog-avatar {
   vertical-align: middle;
-  width: 75px;
-  height: 75px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
 }
 
@@ -179,7 +179,7 @@ div.content > img {
 }
 .blog-list-item .author {
   color: #3d3d3d;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 500;
 }
 .blog-list-item .blog-meta {
@@ -192,7 +192,7 @@ div.content > img {
   width: 50%;
 }
 .blog-list-item .blog-meta > time {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 24px;
   order: 2;

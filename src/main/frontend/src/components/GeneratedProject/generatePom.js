@@ -8,8 +8,8 @@ const testProperties = [
     '    <junit5.version>5.8.2</junit5.version>',
 ];
 const yupiikConstantProperties = [
-    '    <yupiik-batch.version>0.0.24</yupiik-batch.version>',
-    '    <yupiik-logging.version>1.0.2</yupiik-logging.version>',
+    '    <yupiik-batch.version>0.0.25</yupiik-batch.version>',
+    '    <yupiik-logging.version>1.0.3</yupiik-logging.version>',
 ];
 const frontendProperties = [
     '',
@@ -45,10 +45,10 @@ const batchDependencies = [
     '      </dependency>',
 ];
 const jsonRpcTransitiveProperties = [
-    '    <owb.version>2.0.25</owb.version>',
-    '    <johnzon.version>1.2.15</johnzon.version>',
-    '    <tomcat.version>10.0.14</tomcat.version>',
-    '    <xbean.version>4.20</xbean.version>',
+    '    <owb.version>2.0.26</owb.version>',
+    '    <johnzon.version>1.2.18</johnzon.version>',
+    '    <tomcat.version>10.0.20</tomcat.version>',
+    '    <xbean.version>4.21</xbean.version>',
 ];
 const jsonrpcDocumentationDependency = [
     '      <dependency> <!-- for the doc -->',

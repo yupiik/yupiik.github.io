@@ -1314,16 +1314,15 @@ const injectFrontend = (files, groupId, artifactId, idGenerator, hasFeature, sin
                 "watch": "NODE_ENV=dev npm run build"
             },
             "devDependencies": {
-                "postcss": "^8.3.6",
-                "postcss-modules": "^4.2.2",
-                "preact": "^10.6.4",
+                "postcss": "^8.4.12",
+                "postcss-modules": "^4.3.1",
+                "preact": "^10.7.1",
                 "esbuild": "^0.14.9",
                 "fs-extra": "^10.0.0",
                 "tmp": "^0.2.1",
                 "file-saver": "^2.0.5",
                 "jszip": "^3.7.1"
-            },
-            "dependencies": {}
+            }
         }`.trim().replace(/^        /gm, ''),
     });
     const esbuild = getOrCreateFolder(root, 'esbuild', idGenerator);

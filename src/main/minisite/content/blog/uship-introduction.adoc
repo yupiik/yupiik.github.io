@@ -1,5 +1,5 @@
 = Yupiik UShip Introduction
-:minisite-blog-published-date: 2022-11-15
+:minisite-blog-published-date: 2022-05-11
 :minisite-blog-categories: Technology
 :minisite-blog-authors: Romain Manni-Bucau
 :minisite-blog-summary: We multiply microservices more and more but did we think about how to combine them? how to ensure they are maintainable? how to make them decoupled from the current technology choices? how to ensure they can evolve with your requirements? In other words, are you future proof?

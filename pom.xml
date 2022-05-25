@@ -380,6 +380,58 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@jaas-login-modules -Psynchronize-github-releases -->
+                <id>jaas-login-modules</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/jaas-login-modules</githubRepository>
+                  <tagPattern>jaas-login-modules-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.jaas</groupId>
+                      <artifactId>jaas-login-modules</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>sources</classifier>
+                        </artifact>
+                        <artifact>
+                          <type>jar.asc</type>
+                          <classifier>javadoc</classifier>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@logging -Psynchronize-github-releases -->
                 <id>logging</id>
                 <phase>initialize</phase>

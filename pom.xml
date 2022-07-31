@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.0.25</yupiik-tools.version>
+    <yupiik-tools.version>1.0.26</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
 
     <node.environment>production</node.environment>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.22</version>
+      <version>1.18.24</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.18</version>
     </dependency>
 
     <dependency>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>io.yupiik</groupId>
       <artifactId>bundlebee-core</artifactId>
-      <version>1.0.13</version>
+      <version>1.0.15</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -126,7 +126,7 @@ const kubernetesClientDependencies = [
     '      </dependency>',
 ];
 const documentationProperties = [
-    '    <yupiik-tools.version>1.0.24</yupiik-tools.version>',
+    '    <yupiik-tools.version>1.1.0</yupiik-tools.version>',
 ];
 const bundlebeeProperties = [
     '    <yupiik-bundlebee.version>1.0.13</yupiik-bundlebee.version>',

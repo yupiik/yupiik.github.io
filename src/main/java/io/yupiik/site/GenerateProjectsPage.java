@@ -204,34 +204,50 @@ public class GenerateProjectsPage implements Runnable {
         final var dropYupiikPrefix = Pattern.compile("^yupiik/");
 
         return client.sendAsync(
-                HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create("https://raw.githubusercontent.com/yupiik/" + dropYupiikPrefix.matcher(repo.getFullName()).replaceFirst("") + "/master/oss.json"))
-                        .header("Accept", "application/json")
-                        //.header("Authorization", basic)
-                        .build(),
-                HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+                        HttpRequest.newBuilder()
+                                .GET()
+                                .uri(URI.create("https://raw.githubusercontent.com/yupiik/" + dropYupiikPrefix.matcher(repo.getFullName()).replaceFirst("") + "/master/oss.json"))
+                                .header("Accept", "application/json")
+                                //.header("Authorization", basic)
+                                .build(),
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                 .thenApply(response -> {
                     if (response.statusCode() == 404) {
                         return new YupiikSiteMetadata();
                     } else if (response.statusCode() == 200) {
-                        return jsonb.fromJson(response.body(), YupiikSiteMetadata.class);
+                        return overrides(jsonb.fromJson(response.body(), YupiikSiteMetadata.class));
                     } else {
                         throw new IllegalArgumentException("Invalid response: " + response + " (for repo: " + repo + ")");
                     }
                 });
     }
 
+    private YupiikSiteMetadata overrides(final YupiikSiteMetadata metadata) {
+        if (metadata.getLogo() == null || "https://www.yupiik.com/img/logo.png".equals(metadata.getLogo())) {
+            var website = metadata.getWebsite();
+            if (website.endsWith("/")) {
+                website = website.substring(0, website.length() - 1);
+            }
+            final var artifact = website.substring(website.lastIndexOf('/') + 1);
+            final var relative = "images/projects/" + artifact + ".svg";
+            final var override = sourceBase.resolve("assets").resolve(relative);
+            if (Files.exists(override)) {
+                metadata.setLogo('/' + relative);
+            }
+        }
+        return metadata;
+    }
+
     private CompletionStage<Boolean> isOpenSourceRepo(final HttpClient client, final String githubApiBase, final String basic,
                                                       final GithubRepo repo) {
         return client.sendAsync(
-                HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create(githubApiBase + "/repos/" + repo.getFullName() + "/contents/oss.json"))
-                        .header("Accept", "application/json")
-                        .header("Authorization", basic)
-                        .build(),
-                HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+                        HttpRequest.newBuilder()
+                                .GET()
+                                .uri(URI.create(githubApiBase + "/repos/" + repo.getFullName() + "/contents/oss.json"))
+                                .header("Accept", "application/json")
+                                .header("Authorization", basic)
+                                .build(),
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                 .thenApply(response -> response.statusCode() == 200) /* has a oss.json file */;
     }
 

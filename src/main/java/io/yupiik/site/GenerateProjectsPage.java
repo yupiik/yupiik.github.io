@@ -119,6 +119,7 @@ public class GenerateProjectsPage implements Runnable {
                         .orElse(null);
             }
 
+            final var showSkipped = Boolean.parseBoolean(configuration.get("showSkipped"));
             allOf(repositories.stream()
                     .map(repo -> isOpenSourceRepo(httpClient, githubApiBase, basic, repo)
                             .thenCompose(isOss -> {
@@ -126,7 +127,7 @@ public class GenerateProjectsPage implements Runnable {
                                     return loadOssMetadata(httpClient, githubApiBase, basic, jsonb, repo)
                                             .thenAccept(repo::setYupiikSiteMetadata)
                                             .thenAccept(done -> {
-                                                if (!repo.getYupiikSiteMetadata().isSkip()) {
+                                                if (!repo.getYupiikSiteMetadata().isSkip() || showSkipped) {
                                                     ossRepos.add(repo);
                                                 }
                                             })

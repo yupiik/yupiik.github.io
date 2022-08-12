@@ -18,6 +18,7 @@
     <yupiik.settings.xml />
     <yupiik-tools.version>1.1.0</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
+    <yupiik.projects.generate.showSkipped>false</yupiik.projects.generate.showSkipped>
 
     <node.environment>production</node.environment>
 
@@ -158,7 +159,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.2.0</version>
       </plugin>
-      <plugin><!-- mvn [compile] yupiik-tools:serve-minisite -e -->
+      <plugin><!-- mvn [compile] yupiik-tools:serve-minisite -e [-Dyupiik.projects.generate.showSkipped=true] -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
         <executions> <!-- write/human mode: $ mvn compile yupiik-tools:serve-minisite -e -->
@@ -243,6 +244,7 @@
                 <serverId>${githubServerId}</serverId>
                 <settingsXml>${yupiik.settings.xml}</settingsXml>
                 <active>${yupiik.projects.generate}</active>
+                <showSkipped>${yupiik.projects.generate.showSkipped}</showSkipped>
               </configuration>
             </action>
           </preActions>

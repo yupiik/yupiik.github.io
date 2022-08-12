@@ -229,7 +229,7 @@ public class GenerateProjectsPage implements Runnable {
                 website = website.substring(0, website.length() - 1);
             }
             final var artifact = website.substring(website.lastIndexOf('/') + 1);
-            final var relative = "images/projects/" + artifact + ".svg";
+            final var relative = "images/projects/" + artifact + "_no-fir.svg";
             final var override = sourceBase.resolve("assets").resolve(relative);
             if (Files.exists(override)) {
                 metadata.setLogo('/' + relative);

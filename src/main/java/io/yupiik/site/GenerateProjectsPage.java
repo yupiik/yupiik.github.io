@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.allOf;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -139,27 +140,34 @@ public class GenerateProjectsPage implements Runnable {
                     .toArray(CompletableFuture<?>[]::new))
                     .toCompletableFuture().get();
 
+            final var byGroups = ossRepos.stream()
+                    .collect(groupingBy(i -> ofNullable(i.getYupiikSiteMetadata().getGroup()).orElse("Others")));
+            final var skipGroupTitle = byGroups.size() == 1;
             return "" +
                     "++++\n" +
                     "<div class=\"px-3 px-md-5 pt-5\">\n" +
-                    "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-4\">\n" +
-                    ossRepos.stream()
-                            .sorted(comparing(GithubRepo::getFullName))
-                            .map(repo -> "" +
-                                    "<div class=\"col my-3\">\n" +
-                                    "<div class=\"card p-3\">\n" +
-                                    "  <img class=\"card-img-top\" src=\"" + repo.getYupiikSiteMetadata().getLogo() + "\"/>\n" +
-                                    "  <div class=\"card-body\">\n" +
-                                    "    <h5 class=\"card-title\">" + repo.getYupiikSiteMetadata().getName() + "</h5>\n" +
-                                    "    <p class=\"card-text\">" + repo.getYupiikSiteMetadata().getDescription() + "</p>\n" +
-                                    "  </div>\n" +
-                                    "  <div class=\"card-footer align-self-center\">" +
-                                    "    <a href=\"" + repo.getYupiikSiteMetadata().getWebsite() + "\" class=\"btn btn-primary\">View project</a>\n" +
-                                    "  </div>" +
-                                    "</div>\n" +
+                    byGroups.entrySet().stream()
+                            .map(entry -> "" +
+                                    (skipGroupTitle ? "" : "<h3>" + entry.getKey() + "</h3>\n") +
+                                    "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-4\">\n" +
+                                    entry.getValue().stream()
+                                            .sorted(comparing(GithubRepo::getFullName))
+                                            .map(repo -> "" +
+                                                    "<div class=\"col my-3\">\n" +
+                                                    "<div class=\"card p-3\">\n" +
+                                                    "  <img class=\"card-img-top\" src=\"" + repo.getYupiikSiteMetadata().getLogo() + "\"/>\n" +
+                                                    "  <div class=\"card-body\">\n" +
+                                                    "    <h5 class=\"card-title\">" + repo.getYupiikSiteMetadata().getName() + "</h5>\n" +
+                                                    "    <p class=\"card-text\">" + repo.getYupiikSiteMetadata().getDescription() + "</p>\n" +
+                                                    "  </div>\n" +
+                                                    "  <div class=\"card-footer align-self-center\">" +
+                                                    "    <a href=\"" + repo.getYupiikSiteMetadata().getWebsite() + "\" class=\"btn btn-primary\">View project</a>\n" +
+                                                    "  </div>" +
+                                                    "</div>\n" +
+                                                    "</div>\n")
+                                            .collect(joining()) +
                                     "</div>\n")
                             .collect(joining()) +
-                    "</div>\n" +
                     "</div>\n" +
                     "++++\n";
         } catch (final Exception e) {
@@ -359,5 +367,6 @@ public class GenerateProjectsPage implements Runnable {
         private List<String> categories = List.of();
         private String logo; // url of the logo to use
         private String website;
+        private String group;
     }
 }

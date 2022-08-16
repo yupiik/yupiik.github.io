@@ -224,26 +224,45 @@ public class GenerateProjectsPage implements Runnable {
                     if (response.statusCode() == 404) {
                         return new YupiikSiteMetadata();
                     } else if (response.statusCode() == 200) {
-                        return overrides(jsonb.fromJson(response.body(), YupiikSiteMetadata.class));
+                        return overrides(jsonb, jsonb.fromJson(response.body(), YupiikSiteMetadata.class));
                     } else {
                         throw new IllegalArgumentException("Invalid response: " + response + " (for repo: " + repo + ")");
                     }
                 });
     }
 
-    private YupiikSiteMetadata overrides(final YupiikSiteMetadata metadata) {
+    private YupiikSiteMetadata overrides(final Jsonb jsonb, final YupiikSiteMetadata metadata) {
+        var website = metadata.getWebsite();
+        if (website.endsWith("/")) {
+            website = website.substring(0, website.length() - 1);
+        }
+        final var artifact = website.substring(website.lastIndexOf('/') + 1);
+
         if (metadata.getLogo() == null || "https://www.yupiik.com/img/logo.png".equals(metadata.getLogo())) {
-            var website = metadata.getWebsite();
-            if (website.endsWith("/")) {
-                website = website.substring(0, website.length() - 1);
-            }
-            final var artifact = website.substring(website.lastIndexOf('/') + 1);
             final var relative = "images/projects/" + artifact + "_no-fir.svg";
             final var override = sourceBase.resolve("assets").resolve(relative);
             if (Files.exists(override)) {
                 metadata.setLogo('/' + relative);
             }
         }
+
+        // for quick fixes
+        final var overrides = Path.of(configuration.getOrDefault("overridesLocations", "overrides"))
+                .resolve(artifact + ".json");
+        if (Files.exists(overrides)) {
+            try {
+                final var value = jsonb.fromJson(Files.readString(overrides), YupiikSiteMetadata.class);
+                ofNullable(value.getGroup()).ifPresent(metadata::setGroup);
+                ofNullable(value.getCategories()).ifPresent(metadata::setCategories);
+                ofNullable(value.getLogo()).ifPresent(metadata::setLogo);
+                ofNullable(value.getWebsite()).ifPresent(metadata::setWebsite);
+                ofNullable(value.getDescription()).ifPresent(metadata::setDescription);
+                ofNullable(value.getName()).ifPresent(metadata::setName);
+            } catch (final IOException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
         return metadata;
     }
 

@@ -245,6 +245,7 @@
                 <settingsXml>${yupiik.settings.xml}</settingsXml>
                 <active>${yupiik.projects.generate}</active>
                 <showSkipped>${yupiik.projects.generate.showSkipped}</showSkipped>
+                <overridesLocations>${project.basedir}/src/main/minisite/oss/metadata/overrides</overridesLocations>
               </configuration>
             </action>
           </preActions>

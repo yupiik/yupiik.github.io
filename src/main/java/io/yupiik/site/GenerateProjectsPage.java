@@ -40,6 +40,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import static java.util.Comparator.comparing;
+import static java.util.Locale.ROOT;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.stream.Collectors.groupingBy;
@@ -147,6 +148,20 @@ public class GenerateProjectsPage implements Runnable {
                     "++++\n" +
                     "<div class=\"px-3 px-md-5 pt-5\">\n" +
                     byGroups.entrySet().stream()
+                            .sorted((e1, e2) -> {
+                                final var n1 = e1.getKey().strip().toLowerCase(ROOT);
+                                final var n2 = e2.getKey().strip().toLowerCase(ROOT);
+                                if (n1.startsWith("yupiik") && n2.startsWith("yupiik")) {
+                                    return n1.compareTo(n2);
+                                }
+                                if (n1.startsWith("yupiik")) {
+                                    return -1;
+                                }
+                                if (n2.startsWith("yupiik")) {
+                                    return 1;
+                                }
+                                return n1.compareTo(n2);
+                            })
                             .map(entry -> "" +
                                     (skipGroupTitle ? "" : "<h3>" + entry.getKey() + "</h3>\n") +
                                     "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-4\">\n" +

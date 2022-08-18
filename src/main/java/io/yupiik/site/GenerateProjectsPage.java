@@ -164,7 +164,7 @@ public class GenerateProjectsPage implements Runnable {
                             })
                             .map(entry -> "" +
                                     (skipGroupTitle ? "" : "<h3>" + entry.getKey() + "</h3>\n") +
-                                    "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-4\">\n" +
+                                    "<div class=\"project justify-content-center row row-cols-1 row-cols-md-3 row-cols-sm-2 row-cols-xl-3\">\n" +
                                     entry.getValue().stream()
                                             .sorted(comparing(GithubRepo::getFullName))
                                             .map(repo -> "" +

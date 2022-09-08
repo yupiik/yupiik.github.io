@@ -9,7 +9,7 @@ const testProperties = [
 ];
 const yupiikConstantProperties = [
     '    <yupiik-batch.version>1.0.0</yupiik-batch.version>',
-    '    <yupiik-logging.version>1.0.5</yupiik-logging.version>',
+    '    <yupiik-logging.version>1.0.6</yupiik-logging.version>',
 ];
 const frontendProperties = [
     '',

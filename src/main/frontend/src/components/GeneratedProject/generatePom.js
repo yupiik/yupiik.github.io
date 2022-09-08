@@ -5,11 +5,11 @@ const desindent = (lines, len) => lines.map(it => it.substring(len));
 
 const testProperties = [
     '    <!-- Main Dependencies -->',
-    '    <junit5.version>5.8.2</junit5.version>',
+    '    <junit5.version>5.9.0</junit5.version>',
 ];
 const yupiikConstantProperties = [
-    '    <yupiik-batch.version>0.0.25</yupiik-batch.version>',
-    '    <yupiik-logging.version>1.0.3</yupiik-logging.version>',
+    '    <yupiik-batch.version>1.0.0</yupiik-batch.version>',
+    '    <yupiik-logging.version>1.0.5</yupiik-logging.version>',
 ];
 const frontendProperties = [
     '',
@@ -129,10 +129,10 @@ const documentationProperties = [
     '    <yupiik-tools.version>1.1.0</yupiik-tools.version>',
 ];
 const bundlebeeProperties = [
-    '    <yupiik-bundlebee.version>1.0.13</yupiik-bundlebee.version>',
+    '    <yupiik-bundlebee.version>1.0.15</yupiik-bundlebee.version>',
 ];
 const ushipProperties = [
-    '    <yupiik-uship.version>1.0.7</yupiik-uship.version>',
+    '    <yupiik-uship.version>1.0.9</yupiik-uship.version>',
 ];
 const jibProperties = [
     '',

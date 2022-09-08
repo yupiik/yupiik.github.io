@@ -180,6 +180,7 @@
           <attributes>
               <partialsdir>content/_partials</partialsdir>
               <icons>font</icons>
+              <project-starter-version>2</project-starter-version>
           </attributes>
           <gravatar>
             <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>

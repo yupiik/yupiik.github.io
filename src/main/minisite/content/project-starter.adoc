@@ -1,8 +1,9 @@
 = Project starter
 
+[subs=attributes]
 ++++
 <div id="starter-app"></div>
 <script>window.minisite = { skipHighlightJs: true };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/asciidoc.min.js" integrity="sha512-P4UsjTljakRYt0AOxKKjqveT09WiYzoKI2kfI5NCswg6x1V6SemIMtIhFSKqJf8zjShgU4+tsMD7JlQvoNSL8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script defer src="/js/starter.js"></script>
+<script defer src="/js/starter.js?v={project-starter-version}"></script>
 ++++

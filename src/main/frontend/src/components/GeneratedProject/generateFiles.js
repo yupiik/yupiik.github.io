@@ -1079,7 +1079,7 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
         id: idGenerator(),
         name: 'ApplicationSupport.java',
         content: [
-            `package ${pck}.jsonrpc.test;`,
+            `package ${pck}.test;`,
             '',
             'import org.apache.openwebbeans.junit5.Cdi;',
             'import org.junit.jupiter.api.extension.ExtendWith;',
@@ -1106,7 +1106,7 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
         id: idGenerator(),
         name: 'SetEnvironment.java',
         content: [
-            `package ${pck}.jsonrpc.test;`,
+            `package ${pck}.test;`,
             '',
             'import org.junit.jupiter.api.extension.Extension;',
             '',
@@ -1128,7 +1128,7 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
             `package ${pck}.jsonrpc;`,
             '',
             `import io.yupiik.uship.webserver.tomcat.TomcatWebServerConfiguration;`,
-            `import ${pck}.jsonrpc.test.ApplicationSupport;`,
+            `import ${pck}.test.ApplicationSupport;`,
             'import jakarta.inject.Inject;',
             'import jakarta.json.JsonBuilderFactory;',
             'import org.junit.jupiter.api.Test;',

@@ -232,8 +232,13 @@
               <icon>fas fa-network-wired</icon>
               <description>Kubernetes and deployment related posts.</description>
             </Infrastructure>
-            <Other>
+            <Release>
               <order>4</order>
+              <icon>fas fa-gift</icon>
+              <description>Project release announces.</description>
+            </Release>
+            <Other>
+              <order>5</order>
               <icon>fa fa-random</icon>
               <description>All other posts.</description>
             </Other>

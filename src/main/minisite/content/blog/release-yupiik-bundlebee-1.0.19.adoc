@@ -1,0 +1,34 @@
+= Yupiik Bundlebee 1.0.19 Released
+:minisite-blog-published-date: 2022-12-27
+:minisite-blog-categories: Release
+:minisite-blog-authors: Francois Papon
+:minisite-blog-summary: The Yupiik Bundlebee 1.0.19 has been released!
+
+[abstract]
+On behalf the Yupiik OSS team and other contributors, I'm happy to announce that Yupiik Bundlebee 1.0.19 has been released.
+The artifacts are available on Maven Central and on the GitHub project page.
+
+== What's new?
+This release include fixes and improvements, more details are available here:
+
+https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.19
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/bundlebee/
+
+== How to start?
+
+You can start be reading the link:https://www.yupiik.io/bundlebee/getting-started.html[Getting Started page].
+
+On Linux amd64 computers, you can install the CLI by executing this command in your shell:
+
+[source,bash]
+----
+curl -L https://yupiik.github.io/bundlebee/install/install.sh | bash
+----
+
+== Feedback are welcome
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/bundlebee/issues[GitHub issue page]
+
+Enjoy!

@@ -5,7 +5,7 @@
         <p class="pt-3">The latest news about open source and technology.</p>
     </div>
 </div>
-<section class="section px-3 px-md-5">
+<section class="container section px-3 px-md-5">
 ++++
 {{{items}}}
 ++++

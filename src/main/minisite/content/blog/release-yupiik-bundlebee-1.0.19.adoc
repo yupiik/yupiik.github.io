@@ -9,6 +9,8 @@ On behalf the Yupiik OSS team and other contributors, I'm happy to announce that
 The artifacts are available on Maven Central and on the GitHub project page.
 
 == What's new?
+This releases focuses on making it easier to customize placeholders handling and extraction (doc).
+
 This release include fixes and improvements, more details are available here:
 
 https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.19

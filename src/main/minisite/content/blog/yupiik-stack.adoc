@@ -5,7 +5,7 @@
 :minisite-blog-summary: Yupiik stack provides you the basic elements to build any application fast and properly.
 
 [abstract]
-Yupiik open-sourced a set of tools targetting application development and deployment.
+Yupiik open-sourced a set of tools targeting application development and deployment.
 It aims at simplifying the all the aspect of development focusing on productivity and efficiency.
 Let's have a look at the bricks it is composed of.
 
@@ -27,7 +27,7 @@ To solve these challenges, it is important to simplify the development stack to 
 
 == The stack
 
-To answer modern needs, Yupiik developped these bricks:
+To answer modern needs, Yupiik developed these bricks:
 
 // TBD: links
 * link:https://yupiik.io/yupiik-logging[Yupiik Logging^]: a simple but efficient and flexible Java Util Logging binding, it is cloud oriented (docker/Kubernetes) but works well in standalone application,
@@ -35,7 +35,7 @@ To answer modern needs, Yupiik developped these bricks:
 * link:https://www.yupiik.io/yupiik-batch/write-your-first-batch.html#_define_your_batch_configuration[Yupiik Simple Configuration^]: a simple POJO based configuration binding
 ** Keeps the configuration light and documentation friendly
 * link:https://www.yupiik.io/uship/development-stack.html#_create_json_rpc_endpoints[Yupiik UShip^]: a light backend stack based on Apache Tomcat and providing a JSON-RPC programming model,
-** JSON-RPC enables to develop "commands" and optionally to bulk them, this stack allows to optimize bulk requests very easily with any custom pushdown logic (execution plan)
+** JSON-RPC enables to develop "commands" and optionally to bulk them, this stack allows to optimize bulk requests very easily with any custom push-down logic (execution plan)
 ** Since it is command oriented, it is compatible with CLI application (reuse, reuse, reuse) and messaging (JMS, Kafka) applications.
 * link:https://www.yupiik.io/bundlebee/getting-started.html#_create_your_first_alveolus[Yupiik BundleBee^]: a light deployment manager for Kubernetes
 ** It allows to test locally very easily with minikube, microk8s, ... but also to deploy to production directly with the same recipe!
@@ -109,10 +109,10 @@ Test -d-> Package
 
 The application flow is as follow:
 
-. The application is developped with Apache Maven and Java using Yupiik Stack
+. The application is developed with Apache Maven and Java using Yupiik Stack
 . The CI takes any incoming changes and validate them (with tests for the application code but also the deployment)
 . Once validated, the changes are snapshoted in a binary (artifact + OCI/docker image) pushed on CI repositories
-. Finally the changes are deployed on the related environments (depending the building branch)
+. Finally, the changes are deployed on the related environments (depending on the building branch)
 .. It can be dev environment + Github Pages (doc) or directly production
 
 == Rational of the stack
@@ -120,16 +120,16 @@ The application flow is as follow:
 Being JSON-RPC focused enables to have to focus on the "commands" which literally means your own business and not any technical concerns.
 Concretely it means that if you need to add a feature you just do by adding a command.
 It also encourages atomic commands and the caller/consumer to orchestrate the commands thanks to default or an advanced bulk endpoint.
-This is a big difference with REST: you do not need to do any custom hack to have a "N application requests over 1 HTTP request", it is built in and works with any language: C, Java, Javascript, Go....
+This is a big difference with REST: you do not need to do any custom hack to have an "N application requests over 1 HTTP request", it is built in and works with any language: C, Java, Javascript, Go...
 
 TIP: it does not prevent you to optimise some bulk pattern when needed by replacing the multiple atomic calls by a single one if relevant later.
 
-Being based on HTTP and JSON it is quite easy to integrate with any technology and it is quite optimised as of today.
+Being based on HTTP and JSON it is quite easy to integrate with any technology, and it is quite optimised as of today.
 
-Using living documentation, you always have an up to date view of your deployment, configuration (environment variables for example), etc..
-No more "but in the documentation is was not this name".
+Using living documentation, you always have an up-to-date view of your deployment, configuration (environment variables for example), etc...
+No more "but in the documentation is not this name".
 
-Finally, everything is testable, even the deployment, avoiding most of surprises you can get at any stage of the pipeline.
+Finally, everything is testable, even the deployment, avoiding most of the surprises you can get at any stage of the pipeline.
 
 == Get started
 

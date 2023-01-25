@@ -2,11 +2,17 @@
 
 // include to keep the generation in an excluded folder (git)
 ++++
-<div class="bg-dark banner px-3 px-md-5" style="background-image: url('/images/projects.jpg');">
-    <div class="text-white text-left">
+<div class="banner px-3 px-md-5">
+    <div class="container text-white text-left">
         <h2 class="pt-5 text-white">Projects</h2>
-        <p class="pt-3">Our Open Source projects.</p>
+        <p class="pt-3">Yupiik open-sourced a set of tools targeting application development and deployment.
+        It aims at simplifying the all the aspect of development focusing on productivity and efficiency.</p>
     </div>
 </div>
+<div class="container">
 ++++
 include::{partialsdir}/generated/projects.adoc[]
+
+++++
+</div>
+++++

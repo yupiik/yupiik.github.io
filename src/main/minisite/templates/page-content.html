@@ -3,10 +3,12 @@
     <div class="page-content-body">
         {{{body}}}
 
-        {{{authorsList?emptyIfMissing=true}}}
-        
-        {{{categoriesList?emptyIfMissing=true}}}
-        
+        <div class="m-5">
+            {{{authorsList?emptyIfMissing=true}}}
+
+            {{{categoriesList?emptyIfMissing=true}}}
+        </div>
+
         <div class="blog-links {{{isBlogClass}}}">
             <ul>
                 <li class="blog-link-previous {{{hasPreviousLinkClass?ignoreErrors=true}}}"><a title="Previous" href="{{{previousLinkHref?ignoreErrors=true}}}">Previous</a></li>

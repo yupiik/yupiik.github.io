@@ -4,41 +4,42 @@
 //include::{partialsdir}/generated/projects.adoc[]
 
 ++++
-<div class="bg-dark banner home px-3 px-md-5" style="background-image: url('/images/home.jpg');">
-    <div class="text-white pt-5">
-        <h2 class="pt-5 text-white">Yupiik Open Source</h2>
-        <p class="lead pt-3">We have the expertise of the people who actually do the open source products that you trust.</p>
+<div class="banner home px-3 px-md-5">
+    <div class="container text-white pt-5">
+        <h2 class="pt-5 text-white">Yupiik Open Source Stack</h2>
+        <p class="lead pt-3">From microservices to cloud deployment, we provide a full stack to simplify all the aspect
+of development focusing on productivity and efficiency.</p>
+        <a class="btn btn-white" href="/blog/yupiik-stack.html">Learn more</a>
     </div>
 </div>
-<div class="section px-3 px-md-5">
+<div class="container section px-3 px-md-5 border-bottom">
     <div class="section-content pt-5 pb-3">
-        <h3>Open Source Software</h3>
-        <p class="lead">In Open Source we trust.</p>
+        <h3>Projects</h3>
+        <p class="lead">List of the Yupiik stack projects.</p>
         <p>
-            We love Open Source Software and we are happy to share some of our work.<br><br>
-            <a href="/projects.html">Learn more</a>
+            We love Open Source Software, and we are happy to share some of our work.<br><br>
+            <a class="btn btn-primary" href="/projects.html">Learn more</a>
         </p>
     </div>
 </div>
-<div class="section bg-light px-3 px-md-5">
-    <div class="section-content pt-5 pb-3">
-        <h3>Community</h3>
-        <p class="lead">Committed contributor and member</p>
-        <p>
-            Part of our team are the developers and contributors of many well known Open Source projects from world wide organizations.<br><br>
-            <a href="/community.html">Learn more</a>
-        </p>
-    </div>
-</div>
-<div class="section px-3 px-md-5">
+<div class="container section px-3 px-md-5 border-bottom">
     <div class="section-content pt-5 pb-3">
         <h3>Blog</h3>
         <p class="lead">Latest news</p>
         <p>
             The latest news and tutorials about technology.<br><br>
-            <a href="/blog/">Learn more</a>
+            <a class="btn btn-primary" href="/blog/">Learn more</a>
+        </p>
+    </div>
+</div>
+<div class="container section px-3 px-md-5">
+    <div class="section-content pt-5 pb-3">
+        <h3>Community</h3>
+        <p class="lead">Committed contributor and member</p>
+        <p>
+            Part of our team are the developers and contributors of many well known Open Source projects from world wide organizations.<br><br>
+            <a class="btn btn-primary" href="/community.html">Learn more</a>
         </p>
     </div>
 </div>
 ++++
-

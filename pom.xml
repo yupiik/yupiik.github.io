@@ -172,8 +172,8 @@
           </execution>
         </executions>
         <configuration>
-          <title>Yupiik Open Source</title>
-          <logoText>Yupiik Open Source</logoText>
+          <title>Yupiik Open Source Software</title>
+          <logoText></logoText>
           <requires>
               <require>asciidoctor-diagram</require>
           </requires>
@@ -185,7 +185,7 @@
           <gravatar>
             <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>
           </gravatar>
-          <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Softwares and Libraries.</description>
+          <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.</description>
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>

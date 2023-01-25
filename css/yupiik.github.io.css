@@ -60,22 +60,36 @@ h6>a.anchor:hover {
   display: none;
 }
 
+a {
+  color: #1b449b;
+}
+
+.btn-link {
+  color: #1b449b;
+}
+
+.docs-logo-wrapper {
+  position: absolute;
+  left: 15px;
+  top: 5px;
+}
+
 .banner {
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: rgba(255, 255, 255, 0.486);
+  background-color: #1b449b;
   background-blend-mode: overlay;
   min-height: 15rem;
   font-size: 24px;
 }
 
-.home {
-  min-height: 30rem;
-}
-
 .banner .lead {
   font-weight: 500;
   font-size: 22px;
+}
+
+.home {
+  min-height: 25rem;
 }
 
 .section {
@@ -94,6 +108,26 @@ h6>a.anchor:hover {
 
 .btn {
   border-radius: 0;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b449b;
+  border-color: #1b449b;
+}
+
+.btn-white {
+  color: #fff;
+  background-color: transparent;
+  border-color: #ffffff;
+  border-size: 2px;
+}
+
+.btn-white:hover {
+  color: #1b449b;
+  background-color: #ffffff;
+  border-color: #ffffff;
+  border-size: 2px;
 }
 
 svg[role="group"] > g > g > g:nth-child(2) {

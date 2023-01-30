@@ -186,6 +186,7 @@
             <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>
           </gravatar>
           <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.</description>
+          <copyright>© 2023 &lt;strong&gt;Yupiik&lt;/strong&gt;. All Rights Reserved</copyright>
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
           <templateAddLeftMenu>false</templateAddLeftMenu>
@@ -193,6 +194,9 @@
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://yupiik.github.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
+          <customScripts>
+            &lt;script&gt;$('.is-blog').addClass('container');&lt;/script&gt;
+          </customScripts>
           <customHead>
             &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
             &lt;!-- Matomo --&gt;
@@ -208,7 +212,7 @@
               var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
               g.async=true; g.src='//cdn.matomo.cloud/yupiik.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
               })();
-            &lt;/script>
+            &lt;/script&gt;
             &lt;!-- End Matomo Code --&gt;
           </customHead>
           <siteBase>/</siteBase>

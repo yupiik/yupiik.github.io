@@ -9,23 +9,28 @@ p {
 
 #index-html-container.container,
 #community-html-container.container,
-#projects-html-container.container,
-#blog-page-1-html-container.container {
+#projects-html-container.container {
   max-width: none !important;
 }
 @media (min-width: 1px) {
   #index-html-container .page-content-body,
   #community-html-container > .page-content-body,
-  #projects-html-container > .page-content-body,
-  #blog-page-1-html-container > .page-content-body {
+  #projects-html-container > .page-content-body {
     max-width: none !important;
   }
 }
 #index-html-container > div.page-header,
 #projects-html-container > div.page-header,
-#community-html-container > div.page-header,
-#blog-page-1-html-container > div.page-header {
+#community-html-container > div.page-header {
   display: none;
+}
+
+div.page-header {
+    display: none;
+}
+
+.is-blog > div.page-header {
+    display: inherit !important;
 }
 
 #content h1>a.anchor:before,
@@ -275,6 +280,11 @@ div.content > img {
   align-items: center;
   justify-content: center;
   margin-bottom: 0;
+}
+
+.page {
+  /*display: grid;*/
+  justify-content: center;
 }
 
 .page-content-body{

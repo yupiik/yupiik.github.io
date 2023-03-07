@@ -10,7 +10,7 @@ The artifacts are available on Maven Central and on the GitHub project page.
 
 == What's new?
 * No more need of JSON-P dependency for json logging
-* `customEntriesMapper` helper in json formatter
+* Enables to pass a function taking the log record and converting it to a map of data to append to the json object
 
 This release include fixes and improvements, more details are available here:
 

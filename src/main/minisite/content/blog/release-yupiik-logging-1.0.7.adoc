@@ -22,7 +22,7 @@ https://www.yupiik.io/yupiik-logging/
 
 == How to start?
 
-You can start be reading the link:https://www.yupiik.io/yupiik-logging/overview.htmll[Overview page].
+You can start be reading the link:https://www.yupiik.io/yupiik-logging/overview.html[Overview page].
 
 == Feedback are welcome
 You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/yupiik-logging/issues[GitHub issue page]

@@ -310,34 +310,34 @@
             <groupId>io.yupiik.maven</groupId>
             <artifactId>yupiik-tools-maven-plugin</artifactId>
             <executions>
-              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@fusion -Psynchronize-github-releases -->
-                <id>fusion</id>
-                <phase>initialize</phase>
-                <goals>
-                  <goal>synchronize-github-releases</goal>
-                </goals>
-                <configuration>
-                  <!-- required configuration -->
-                  <githubRepository>yupiik/fusion</githubRepository>
-                  <tagPattern>{artifactId}-{version}</tagPattern>
-                  <artifacts>
-                    <artifact>
-                      <groupId>io.yupiik.fusion</groupId>
-                      <artifactId>fusion</artifactId>
-                      <artifacts>
-                        <artifact>
-                          <type>pom</type>
-                          <classifier/>
-                        </artifact>
-                        <artifact>
-                          <type>pom.asc</type>
-                          <classifier/>
-                        </artifact>
-                      </artifacts>
-                    </artifact>
-                  </artifacts>
-                </configuration>
-              </execution>
+<!--              <execution> &lt;!&ndash; mvn yupiik-tools:synchronize-github-releases@fusion -Psynchronize-github-releases &ndash;&gt;-->
+<!--                <id>fusion</id>-->
+<!--                <phase>initialize</phase>-->
+<!--                <goals>-->
+<!--                  <goal>synchronize-github-releases</goal>-->
+<!--                </goals>-->
+<!--                <configuration>-->
+<!--                  &lt;!&ndash; required configuration &ndash;&gt;-->
+<!--                  <githubRepository>yupiik/fusion</githubRepository>-->
+<!--                  <tagPattern>{artifactId}-{version}</tagPattern>-->
+<!--                  <artifacts>-->
+<!--                    <artifact>-->
+<!--                      <groupId>io.yupiik.fusion</groupId>-->
+<!--                      <artifactId>fusion</artifactId>-->
+<!--                      <artifacts>-->
+<!--                        <artifact>-->
+<!--                          <type>pom</type>-->
+<!--                          <classifier/>-->
+<!--                        </artifact>-->
+<!--                        <artifact>-->
+<!--                          <type>pom.asc</type>-->
+<!--                          <classifier/>-->
+<!--                        </artifact>-->
+<!--                      </artifacts>-->
+<!--                    </artifact>-->
+<!--                  </artifacts>-->
+<!--                </configuration>-->
+<!--              </execution>-->
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@kubernetes-java-descriptors -Psynchronize-github-releases -->
                 <id>kubernetes-java-descriptors</id>
                 <phase>initialize</phase>

@@ -17,6 +17,7 @@
 name: Synchronize Github Releases
 
 on:
+  workflow_dispatch: {}
   schedule:
     # daily
     - cron:  '0 12 * * *'

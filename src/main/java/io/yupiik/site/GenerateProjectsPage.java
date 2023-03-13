@@ -254,7 +254,7 @@ public class GenerateProjectsPage implements Runnable {
         final var artifact = website.substring(website.lastIndexOf('/') + 1);
 
         if (metadata.getLogo() == null || "https://www.yupiik.com/img/logo.png".equals(metadata.getLogo())) {
-            final var relative = "images/projects/" + artifact + "_no-fir.svg";
+            final var relative = "images/projects/ng-" + artifact + ".svg";
             final var override = sourceBase.resolve("assets").resolve(relative);
             if (Files.exists(override)) {
                 metadata.setLogo('/' + relative);

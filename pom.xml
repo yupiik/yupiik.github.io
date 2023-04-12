@@ -290,6 +290,7 @@
                     <githubRepository>yupiik/yupiik-batch</githubRepository>
                     <githubRepository>yupiik/yupiik-logging</githubRepository>
                     <githubRepository>yupiik/fusion</githubRepository>
+                    <githubRepository>yupiik/yuc</githubRepository>
                   </githubRepositories>
                   <tagPattern>{artifactId}-{version}</tagPattern>
                 </configuration>
@@ -310,6 +311,34 @@
             <groupId>io.yupiik.maven</groupId>
             <artifactId>yupiik-tools-maven-plugin</artifactId>
             <executions>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@yuc -Psynchronize-github-releases -->
+                <id>yuc</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/yuc</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.yuc</groupId>
+                      <artifactId>yuc</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@fusion -Psynchronize-github-releases -->
                 <id>fusion</id>
                 <phase>initialize</phase>

@@ -2,78 +2,134 @@
 :minisite-blog-published-date: 2023-04-05
 :minisite-blog-categories: Technology
 :minisite-blog-authors: Francois Papon
-:minisite-blog-summary:
+:minisite-blog-summary: New project! Yupiik Fusion is a very light weight and powerful framework to build cloud native microservices.
 
 [abstract]
-You get a new need, you do a new REST API...but does it scale? Is it maintainable?
-link:https://yupiik.github.io/uship/[UShip] intends to make it future ready and more customizable.
+Since about 2021 all JavaEE specifications moved from javax to jakarta packages which broke basically the full Java ecosystem. In the mean time, the industry became more cloud and Kubernetes focus which triggers new challenges like being native/GraalVM friendly.
+From the two strong statements, being vendor agnostic and light, Yupiik created link:https://yupiik.github.io/fusion/[Fusion]!
+
+== Why Yupiik Fusion?
+
+At Yupiik, we created an api platform and decided to open source the kernel of our product and share it with the community because we are heavily involved
+in open source projects.
 
 == What is Yupiik Fusion?
 
-Yupiik Fusion is
-What does it mean? It means that it will enable you to expose a _feature_ over HTTP - by default at least.
+Yupiik Fusion is a very light weight and powerful framework to build cloud native microservices.
+It means that you have all your need to build the most common use cases in an efficient way by using your favorite programming language (Java).
 
-Concretely the stack is pretty common and straight forward:
+For cloud applications, being the most reactive possible is a key criteria so Fusion chose to:
 
-* A web server - Servlet and even a Tomcat by default,
-* An IoC - CDI and OpenWebBeans for the implementation,
-* A (de)serialization format - JSON with JSON-P/JSON-B for the API and Johnzon for the implementation,
-* A command API - JSON-RPC.
+* **Be build time oriented**: only delegate to runtime the bean resolution (to enable dynamic module aggregation) and not the bean and model discovery nor proxy generation,
+* **Stay flexible**: even if the model is generated at build time you can generally still customize it by removing a bean and adding your own one,
+* **Be native friendly**: some applications need to be native to start very fast and bypass the classloading and a bunch of JVM init, for that purpose we ensure the framework is GraalVM friendly - using Apache Geronimo Arthur or not.
 
-That is it.
+The framework come with the most common features and extension such as:
 
-The highlights on these choices are:
-
-* The stack relies on standards and are portables - i.e. you can switch Tomcat for Jetty if you want, OpenWebBeans for Weld and Johnzon for Yasson for example. So no vendor lock-in there and future proof choices.
-* The business is develop as JSON-RPC commands.
-
-The last point hides a lot of goodness, and without rewriting xref:/blog/jsonrpc-protocol-presentation.adoc[JSON RPC] post, it enables to:
-
-* Think about commands and not HTTP requests,
-* Enrich easily the protocol with custom features since it is JSON based and not with a custom grammar like GraphQL (like enabling to propagate some response to the next request in a bulk, see xref:/blog/jsonrpc-protocol-presentation.adoc#_going_further[JSON RPC] for an example),
-* Drop HTTP in favor of another transport like Kafka messages without changing your business code/JSON-RPC methods,
-* Integrate with any other service in any language (JSON is well supported in all languages with a lot of libraries),
-* Well document your API with no investment (UShip provides a `AsciidoctorJsonRpcDocumentationGenerator` which can generate an asciidoc documentation for your endpoint which can be rendered as HTML/PDF and even integrated with link:https://github.com/yupiik/tools-maven-plugin#minisite[Yupiik Minisite]) or in a very fancy and customized fashion,
-* Well share your specification thanks to OpenRPC format (equivalent to OpenAPI for JSON-RPC).
-
-UShip also covers all the layers of the development since:
-
-* It is compatible with `openwebbeans-junit5` for the testing (more on the link:https://yupiik.github.io/uship/testing.html[testing] documentation),
-* It runs as a plain standalone Java application (`java -cp ... CDILauncher`) so is compatible with an assembly packaging and JIB to create docker images (more on the link:https://yupiik.github.io/uship/packaging.html[packaging] documentation). Indeed you can also do a fat jar but as for any application it is not really recommended - but for unrelated reasons to UShip.
+* Reflection less IoC processor,
+* link:https://www.yupiik.io/fusion//fusion/examples.html#_listen_to_an_event[Event] bus to help beans to communicate between them,
+* link:https://www.yupiik.io/fusion//fusion/http-server.html[HTTP server] which is an abstraction of the Apache Tomcat web server,
+* link:https://www.yupiik.io/fusion//fusion/http-client.html[HTTP client] based on the `java.net.httpClient` with an extended configuration,
+* link:https://www.yupiik.io/fusion//fusion/examples.html#_define_a_json_rpc_endpoint[JsonRPC] endpoint server,
+* link:https://www.yupiik.io/fusion//fusion/json.html[Json] support mapper for serialization/deserialization,
+* link:https://www.yupiik.io/fusion//fusion/cli.html[CLI] helper to easily build command line application,
+* link:https://www.yupiik.io/fusion//fusion/examples.html#configuration_model[Configuration model] with environment variables abstraction mapping designed for the cloud,
+* Full Java Record integration,
+* Simple link:https://www.yupiik.io/fusion//fusion/persistence.html[Persistence] layer based on common jdbc prepare statement and Record binding,
+* link:https://www.yupiik.io/fusion//fusion/observability.html[Observability] module to publish logs, metrics, healthchecks and tracing,
+* link:https://www.yupiik.io/fusion//fusion/handlebars.html[Handlebar] templating helper,
+* link:https://www.yupiik.io/fusion//fusion/examples.html#_test_with_junit_5[JUnit5] support for writing tests,
+* link:https://www.yupiik.io/fusion//fusion/graalvm.html[GraalVM] friendly and easy build
 
 == Get started
 
-TIP: this part is a very light overview of link:https://yupiik.github.io/uship/development-stack.html[getting started] page.
+The magic of Fusion is on the processor part that has the responsibility to build the runtime, so you just need to depend on the `fusion-api` in compile
+scope (which is the default with Apache Maven) to be included to the application.
 
-The first step to start writing a UShip service is to import `jsonrpc-core` module:
+TIP: you can learn more on the link:https://www.yupiik.io/fusion//fusion/setup.html[Setup] page.
 
 [source,xml]
 ----
 <dependency>
-  <groupId>io.yupiik.uship</groupId>
-  <artifactId>jsonrpc-core</artifactId>
-  <version>${uship.version}</version>
+    <groupId>io.yupiik.fusion</groupId>
+    <artifactId>fusion-api</artifactId>
+    <version>${fusion.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>io.yupiik.fusion</groupId>
+    <artifactId>fusion-build-api</artifactId>
+    <version>${fusion.version}</version>
+    <scope>provided</scope>
+</dependency>
+<dependency>
+    <groupId>io.yupiik.fusion</groupId>
+    <artifactId>fusion-processor</artifactId>
+    <version>${fusion.version}</version>
+    <scope>provided</scope>
 </dependency>
 ----
 
-Then you can create a `META-INF/beans.xml` file in your resources (can be empty or `<trim/>` depending what you prefer for your CDI scanning) to enable CDI and write a JSON-RPC endpoint:
+Note the provided scope which enables to bring automatically the build time generator without having to deliver it at runtime so your deliverable stays light!
+
+That's all!
+
+== Example with JsonRPC endpoint
+
+To implement a simple JsonRPC endpoint, you just need to add these dependencies into your pom.xml:
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.yupiik.fusion</groupId>
+    <artifactId>fusion-jsonrpc</artifactId>
+    <version>${fusion.version}</version>
+</dependency>
+
+----
+
+TIP: the `fusion-jsonrpc` module depend on the `fusion-http-server` and the `fusion-json`, so you can configure and use them without adding them to the dependencies
 
 [source,java]
 ----
-@JsonRpc
-@ApplicationScoped
-public class MyCommands {
-    @JsonRpcMethod(name = "my-command", documentation = "Creates a foo from a name")
-    public Foo myCommand(
-        @JsonRpcParam(documentation = "The name") final String in) {
+public class CustomerEndpoint {
+    @JsonRpc(value = "createCustomer", documentation = "Creates a new customer")
+    public Customer createCustomer(final Request request) {
+        // ...
+    }
+
+    @JsonRpc(value = "retrieveCustomer", documentation = "Retrieve an existing customer")
+    public Customer retrieveCustomer(final Request request) {
         // ...
     }
 }
 ----
 
-To start the application, you can write your own main using CDI SE API or use the default one of `openwebbeans-se`: `org.apache.openwebbeans.se.CDILauncher`.
-By default the container will start and stop but to await tomcat you can specify this arg: `--openwebbeans.main uShipTomcatAwait`.
-So overall you command will look like: `java -cp .... org.apache.openwebbeans.se.CDILauncher --openwebbeans.main uShipTomcatAwait`.
+Build the application:
+
+[source,bash]
+----
+mvn clean install
+----
+
+Then add the Apache Maven exec plugin to test the execution:
+
+[source,xml]
+----
+<build>
+    <plugins>
+        <plugin><!-- mvn exec:java -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+                <mainClass>io.yupiik.fusion.framework.api.main.Launcher</mainClass>
+            </configuration>
+        </plugin>
+...
+----
+
+TIP: we are using the ready to use Fusion launcher but user can create a custom main method
+to link:https://www.yupiik.io/fusion//fusion/examples.html#_start_the_container[start the application container].
 
 Once executed, you can call your endpoint:
 
@@ -81,28 +137,63 @@ Once executed, you can call your endpoint:
 ----
 curl \
   http://localhost:8080/jsonrpc \
-  -d '{"jsonrpc":"2.0","method":"my-command","params":{"in":"me"}}'
+  -d '{"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"John", "lastname":"Doe"}}'
 ----
 
-If you have multiple commands and want to call multiple ones at the same time, you can use the bulk option of JSON-RPC:
+Thanks to JSON-RPC, if you have multiple customer to create in one time, you can use the bulk option:
 
 [source,bash]
 ----
 curl \
   http://localhost:8080/jsonrpc \
   -d '[ \
-    {"id":1,"jsonrpc":"2.0","method":"my-command","params":{"in":"me"}}, \
-    {"id":2,"jsonrpc":"2.0","method":"my-command","params":{"in":"too"}} \
+    {"id":1,"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"John", "lastname":"Doe"}}, \
+    {"id":2,"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"James", "lastname":"Bond"}} \
   ]'
 ----
 
+== GraalVM friendly
+
+Thanks to Apache Geronimo Arthur project, it's very easy to build your application in native just by adding the maven plugin dependency:
+
+[source,xml]
+----
+
+<build>
+    <plugins>
+        <plugin>
+            <!--
+                mvn arthur:native-image for binaries
+                mvn arthur:native-image arthur:docker for build docker image with binaries
+            -->
+            <groupId>org.apache.geronimo.arthur</groupId>
+            <artifactId>arthur-maven-plugin</artifactId>
+            <version>${arthur.version}</version>
+            <configuration>
+                <graalVersion>22.3.0.r17</graalVersion>
+                <main>io.yupiik.fusion.framework.api.main.Launcher</main>
+            </configuration>
+        </plugin>
+...
+----
+
+Then you can build the binary of your application:
+
+[source,bash]
+----
+mvn arthur:native-image for binaries
+----
+
+Or build a docker image with the binary include:
+
+[source,bash]
+----
+mvn arthur:native-image arthur:docker
+----
+
+Sorry to disappoint you if you are thinking that it will be hard to build a native app!
+
 == Conclusion
 
-This post just covers the basic steps to use UShip but the benefits are quite high (don't hesitate to read the previous links to understand them if you didn't already do).
-
-Customizing the JSON-RPC bulk behavior is really worth it, it enables to control the size of the payload (making the network transfer faster), to compose commands in a flexible ways (giving clients more control about what they fetch and "bulk") and avoid to code a lot of new REST endpoints each time a new consumer/front has a new need making your API more atomic and focused.
-
-By default it is still HTTP/Servlet based so you can still reuse all the goodness you are used to like HTTP headers for security, JWT validation etc...
-Being command based does not mean you throw away all the rest, just that your business code is command oriented and in case of migration to another transport you will keep your command and likely just replace the injected beans representing your security context thanks to CDI if you need such a bean in your business code (for a fine resource based security for example).
-
-The last note is that link:https://yupiik.github.io/yupiik-logging/jul-integration.html[Yupiik Logging] is a nice companion for UShip making it even more cloud and Kubernetes friendly so don't hesitate to use both at the same time.
+This post is the announcement of the new Yupiik Fusion project with a short startup presentation, and we will add new blog posts
+about another examples to show how to use the full power Fusion, stay tune!

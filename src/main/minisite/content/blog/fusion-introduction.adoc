@@ -196,4 +196,8 @@ Sorry to disappoint you if you are thinking that it will be hard to build a nati
 == Conclusion
 
 This post is the announcement of the new Yupiik Fusion project with a short startup presentation, and we will add new blog posts
-about another examples to show how to use the full power Fusion, stay tune!
+about another examples to show how to use the full power Fusion.
+
+To learn more, you can check the link:https://www.yupiik.io/fusion/[online documentation] and the link:https://github.com/yupiik/fusion[source code repository].
+
+Enjoy!

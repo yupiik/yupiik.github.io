@@ -1,7 +1,7 @@
 = Yupiik Fusion Introduction
 :minisite-blog-published-date: 2023-04-20
 :minisite-blog-categories: Technology
-:minisite-blog-authors: Francois Papon
+:minisite-blog-authors: Romain Manni-Bucau
 :minisite-blog-summary: Yupiik Fusion is a light IoC, let's see how it compares to Spring or CDI.
 
 [abstract]

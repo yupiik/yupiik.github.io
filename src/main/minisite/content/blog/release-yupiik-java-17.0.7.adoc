@@ -1,0 +1,33 @@
+= Yupiik Java 17.0.7 Docker Image Released
+:minisite-blog-published-date: 2023-05-09
+:minisite-blog-categories: Release
+:minisite-blog-authors: Francois Papon
+:minisite-blog-summary: The Yupiik Java 17.0.7 Docker Image has been released!
+
+[abstract]
+On behalf the Yupiik OSS team and other contributors, I'm happy to announce that Yupiik Java 17.0.7 Docker Image has been released.
+The artifacts are available on Docker Hub.
+
+== What's new?
+The docker image is based on link:https://www.azul.com/downloads/?package=jdk[Zulu Java 17.0.7 JDK]
+
+== How to use?
+
+You can install the image in your local docker registry:
+
+[source,bash]
+----
+docker pull ossyupiik/java:latest
+----
+
+or use it as dependency to build docker image:
+
+[source,properties]
+----
+FROM ossyupiik/java:17.0.7@sha256:1a08a09ea4374243f28a48ec5331061d53abcdac70e51c1812b32ac4055a7deb
+----
+
+== Feedback are welcome
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/dockerhub-java/issues[GitHub issue page]
+
+Enjoy!

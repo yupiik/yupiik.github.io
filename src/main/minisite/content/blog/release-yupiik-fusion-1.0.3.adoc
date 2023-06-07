@@ -1,0 +1,32 @@
+= Yupiik Fusion 1.0.3 Released
+:minisite-blog-published-date: 2023
+:minisite-blog-categories: Release
+:minisite-blog-authors: Francois Papon
+:minisite-blog-summary: The Yupiik Fusion 1.0.3 has been released!
+
+[abstract]
+On behalf the Yupiik OSS team and other contributors, I'm happy to announce that Yupiik Fusion 1.0.3 has been released.
+The artifacts are available on Maven Central and on the GitHub project page.
+
+== What's new?
+
+* Support injection parameters on @OnEvent methods
+* Smoother k8s client
+* Better OpenTelemetry/Zipkin integration
+
+This release include fixes and improvements, more details are available here:
+
+https://github.com/yupiik/fusion/releases/tag/fusion-1.0.3
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/fusion/
+
+== How to start?
+
+You can start be reading the link:https://www.yupiik.io/fusion/fusion/index.html[Getting Started page].
+
+== Feedback are welcome
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/fusion/issues[GitHub issue page]
+
+Enjoy!

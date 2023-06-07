@@ -1,5 +1,5 @@
 = Yupiik Fusion 1.0.3 Released
-:minisite-blog-published-date: 2023
+:minisite-blog-published-date: 2023-07-06
 :minisite-blog-categories: Release
 :minisite-blog-authors: Francois Papon
 :minisite-blog-summary: The Yupiik Fusion 1.0.3 has been released!

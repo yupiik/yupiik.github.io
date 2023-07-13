@@ -1,0 +1,146 @@
+= Yupiik Fusion and ThreadLocal-less database
+:minisite-blog-published-date: 2023-07-30
+:minisite-blog-categories: Technology
+:minisite-blog-authors: Romain Manni-Bucau
+:minisite-blog-summary: Virtual threads are coming to Java and ThreadLocal will be challenge, let see that you don't need it in most cases using Fusion database mapper as an example!
+
+[abstract]
+Java is welcoming link:https://openjdk.org/jeps/444[virtual threads] - coroutines in most languages - but due to technical limitations, `ThreadLocal` will be too costly for them even if they work.
+To solve that, Java is creating link:https://openjdk.org/jeps/428[structured concurrency] but is it always the best solution?
+
+== Reminder
+
+=== Virtual Threads
+
+`ThreadLocal` are a way to store a data in the context of the thread and get it back in a nested call even if the value was not passed as a parameter.
+A common example is to get the request:
+
+[source,java]
+----
+public void myMethod() {
+    final var httpRequest = MY_THREAD_LOCAL.get();
+}
+----
+
+As you can see, the HTTP request is not a parameter but the value is read from the method.
+Technically it is often set from a servlet `Filter` or equivalent.
+
+The issue with virtual threads is that you can get way more threads than with common threads - indeed since they are not threads but tasks in a shared executor service, it is literally like using yourself an executor service with tasks which can be suspended/restored so memory is the limit instead of the OS number of threads.
+
+`ThreadLocal` being a bit costly so java created `ScopedValue`. The underlying idea is close but the API is different:
+
+[source,java]
+----
+ScopedValue.where(REQUEST, httpRequest) <1>
+ .call(() -> {
+   try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    final var result = scope.fork(() -> myMethod());
+    scope.join();
+    scope.throwIfFailed();
+    return result;
+   }
+ });
+----
+<.> Binds the request in the scope `REQUEST` - created with `ScopedValue.newInstance()` and can be a static instance,
+<.> In sub tasks, including `fork`ed ones, `REQUEST` will be readable.
+
+In this example, `myMethod` can call `REQUEST.get()`, similarly to `ThreadLocal` code.
+
+NOTE: we can envision a future JDK where `ThreadLocal` are backed with limitations to `ScopedValues` a bit like `java.io` got reimplemented with `java.nio` recently to make virtual threads more widely usable and efficient as in other languages.
+
+== JDBC and ThreadLocal
+
+Strictly speaking there is no `ThreadLocal` in JDBC but they are used in most applications due to transaction management.
+A good example is the Spring link:https://github.com/spring-projects/spring-framework/blob/main/spring-jdbc/src/main/java/org/springframework/jdbc/datasource/DataSourceTransactionManager.java[`DataSourceTransactionManager`] - or any other JTA/JakartaEE based manager.
+It uses a `ConnectionHolder` which is bound in a `TransactionSynchronizationManager` resource which ends in a link:https://github.com/spring-projects/spring-framework/blob/main/spring-test/src/main/java/org/springframework/test/context/transaction/TransactionContextHolder.java#L30[`TransactionContextHolder`] which is just a wrapper for a `ThreadLocal`.
+
+High level, the need is to be able to wrap multiple calls and use the same transactions, however deep the calls are.
+
+== Java 8 was a game changer
+
+Java always supported message passing pattern but Java 8 with lambdas, and a lighter syntax, enables to make it a first citizen of our code.
+
+Concretely, it is very common now to replace interceptors with a method wrapper taking a lambda.
+
+For example to make a method transactional, we went from:
+
+[source,java]
+----
+@TransactionRequired
+public void myMethodWithTx() {
+    // ...
+}
+----
+
+to
+
+
+[source,java]
+----
+public void myMethodWithTx() {
+    withTransaction(() -> {
+        // ...
+    });
+}
+----
+
+== Fusion ThreadLocal-less Database
+
+As a quick reminder, link:https://www.yupiik.io/fusion/fusion/persistence.html[Fusion persistence] module is a light mapper on top of JDBC.
+You can see it as a light JPA without any relationship support, just bind `ResultSet` to Java `records` or the `records` to statements.
+This feature is encapsulated in a class called `Database`.
+
+The first implementation inherited from our dozens of years of experience in JDBC support and reused the `ThreadLocal` API but since it was lambda based we were very easily able to modify the pattern to add to most methods the JDBC `Connection`.
+
+So concretely we went from:
+
+[source,java]
+----
+database.xxxx(...);
+----
+
+to
+
+[source,java]
+----
+database.xxxx(jdbcConnection, ...);
+----
+
+As it was evangelized something like 8 years ago when Akka or reactive programming popped up,
+message passing - fact to use method parameters - enables to always have the context to use in the call.
+
+Thanks to lambdas, it becomes easier to do since you can orchestrate calls more easily.
+
+The impact is to add the context to methods, or said otherwise, ensure they have all their dependencies as parameters.
+
+Using these patterns we now have in Fusion persistence method wrapping `DataSource.getConnection` and `Connection.close` in read/write mode.
+We wrapped it in a `TransactionManager` but this one does ont use any `ThreadLocal`, just plain lambdas:
+
+[source,java]
+----
+transactionManager.read((Connection c) -> { /* ... */});
+----
+
+Now it becomes quite easy to pass the connection to the JDBC wrapping methods:
+
+[source,java]
+----
+transactionManager.read(connection ->
+  database.query(
+    connection, // the current connection
+    MyModel.class, // bound record/model
+    "select .....", // SQL query
+    b -> b.bind("xxxx"))); // bound parameters (? valuesin the statement)
+----
+
+With that, if your JDBC driver does not pin threads (does not use `synchronized` for example), it will be virtual thread friendly and optimize the throughput of your application.
+
+== Conclusion
+
+This post shows that, even if technically you can always implement complex solutions, getting back to the basics and the generic patterns adapted to your coding style enables to keep things simple and efficient.
+
+As a generic mindset, it is always preferrable to use message passing when possible and really when not desired wrap it with `ScopedValue` if you know you will run in virtual threads or in `ThreadLocal` if in generic threads - see how things become more complex if you write a generic lib ;).
+
+To learn more, you can check the link:https://www.yupiik.io/fusion/[online documentation] and the link:https://github.com/yupiik/fusion[source code repository].
+
+Enjoy!

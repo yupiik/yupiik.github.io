@@ -1,0 +1,35 @@
+= Yupiik Fusion 1.0.6 Released
+:minisite-blog-published-date: 2023-08-22
+:minisite-blog-categories: Release
+:minisite-blog-authors: Francois Papon
+:minisite-blog-summary: The Yupiik Fusion 1.0.6 has been released!
+
+[abstract]
+On behalf the Yupiik OSS team and other contributors, I'm happy to announce that Yupiik Fusion 1.0.6 has been released.
+The artifacts are available on Maven Central and on the GitHub project page.
+
+== What's new?
+
+* [persistence] tolerate nested table as embeddable for cases with more than 255 columns.
+* [jsonrpc] adding PartialResponse support to customize headers on jsonrpc responses.
+* [jsonrpc] Tolerate OffsetDateTime, ZoneOffset and LocalDate as root parameter on a JSON-RPC endpoint.
+* [http-server] Enable parameter access from body - to avoid to parse it.
+* [processor] Improve incremental compilation.
+* [dependencies] Upgrade Tomcat to v10.1.12.
+
+This release include fixes and improvements, more details are available here:
+
+https://github.com/yupiik/fusion/releases/tag/fusion-1.0.6
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/fusion/
+
+== How to start?
+
+You can start be reading the link:https://www.yupiik.io/fusion/fusion/index.html[Getting Started page].
+
+== Feedback are welcome
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/fusion/issues[GitHub issue page]
+
+Enjoy!

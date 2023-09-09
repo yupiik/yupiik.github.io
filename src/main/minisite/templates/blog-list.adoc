@@ -10,5 +10,9 @@
 {{{items}}}
 ++++
 </section>
+<div class="is-blog">
 ++++
 {{{links}}}
+++++
+</div>
+++++

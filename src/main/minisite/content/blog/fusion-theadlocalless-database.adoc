@@ -34,7 +34,7 @@ The issue with virtual threads is that you can get way more threads than with co
 ScopedValue.where(REQUEST, httpRequest) <1>
  .call(() -> {
    try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-    final var result = scope.fork(() -> myMethod());
+    final var result = scope.fork(() -> myMethod()); <2>
     scope.join();
     scope.throwIfFailed();
     return result;

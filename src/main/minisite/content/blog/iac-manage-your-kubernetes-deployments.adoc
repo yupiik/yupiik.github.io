@@ -1,0 +1,132 @@
+= IaC Manage your Kubernetes deployments
+:minisite-blog-published-date: 2025-01-01
+:minisite-blog-categories: Infrastructure
+:minisite-blog-authors: Romain Manni-Bucau
+:minisite-blog-summary: Kubernetes infrastructure as code has a few challenge, let's share our tips about it.
+
+
+[abstract]
+Deploying to Kubernetes requires some understanding of the underlying concepts but is not by itself difficult but setting up the right tools to do it can be fastidious.
+Let see what we tend to recommend at Yupiik and why we preferred it over some well advertised tools.
+
+== The operator or chicken-egg issue
+
+The first myth to understand and kill is that Kubernetes operators are not intended to help with the deployment.
+They are great tools to enable a specific DSL and abstract some details in some cases, they are awesome for insanely complicated and dynamic deployments but they are by design not very welcomed in most of the case because they are required to keep watching or querying Kubernetes API plus being up in the cluster.
+
+What does it mean? Assume you have a cluster of two nodes of 4 CPU and 4Gi of RAM - let's ignore the OS/kubelet daemon resources for the exercise, then your operator will need some resource since it "runs".
+Reviewing some common operators it is often something like `[requests=200m;limits=500m]` for the CPU and `[requests=250Mi;limits=500Mi]` for the RAM - when using a single instance.
+A common example is that ArgoCD "default" configuration will consume `[requests=1.250m+1.(50m+10m)+1.10m+1.100m+1.100m;limits=1.500m+5.(100m+50m)+5.50m+1.100m+1.100m]` (controller+server with ui option+repo+applicationSet+notifications) which makes `[requests=520m;limits=1700m]`.
+Now keep in mind you need at least the most consuming instance to be able to rollout a pod (if you have 4 CPU and that 3.1 are taken you can't deploy a new instance needing 1 CPU), then it means you need at least `250m` of margin to rollout ArgoCD so overall ArgoCD will require 2CPU in your cluster.
+
+TIP: as always setting the requests a limits value for resources is not always good in Kubernetes, in particular, the CPU limits should rarely be set because it preallocate it and prevents it to be used even when idle, this will make your server requiring way more CPU - but it is often the recommended configuration for operators even if default tends to not set resources (which is worse cause you can end up with your operator just not running and keep failing to boot).
+
+NOTE: you can do the same kind of reasoning for the memory but we'll not in this post for brievity.
+
+To rephrase it in a trivial way: from a cluster of 8 available CPU (two nodes with 4 CPU) you now just have a cluster of 6 CPU for your applications.
+What is important to keep in mind is that any resource is paid in a cluster.
+It is quite obvious in the cloud but on premise, even if you abstract it with a virtual machines solution like VMWare, it is still resources you have to pre-allocate and not allocate to business applications.
+
+So yes operators make it looks like it is easy but:
+
+* It abstracts even more what you do and can make you loose control on what you deploy,
+* It needs to be installed before you can rely on it - only assumption which is fair is "Kubernetes is running" - if you use ArgoCD you can't deploy before having deployed it for example,
+* It consumes resources by design you can prefer to reallocate to applications,
+* It is something more to manage in time (security issues, version rollouts, ...) so more work for your ops team in terms of testing and deployment work.
+
+From that statement, we tend to prefer client only deployment solution at Yupiik, it has the big advantage to not add any resource pression on the cluster which is not intended in terms of resources allocation - CPU, memory but also image garbage collection or storage.
+
+== Infrastructure as code (IaC)
+
+Since day-0 we thought that infrastructure as code is a key part of any project.
+
+The statement:
+
+> It worked on my machine!
+
+is not something acceptable and therefore being able to bundle the application *AND* its deployment is a key part to ensure the developers and ops can work *together* toward a better application for end user with smoother deployments for everybody.
+
+We ear a lot about GitOps but without entering inside a solution first it is important to understand the key aspects behind it.
+
+Seeing the infrastructure as code aims at enabling to use code tools which are advanced and automated on the ops side of our work.
+
+In other words, IaC means you can:
+
+* (optionally) generate your deployment,
+* (optionally) test your deployment,
+* put your deployment in a CI/CD pipeline,
+* execute your deployment automatically based on triggers/conditions (from a manual trigger - a human being clicks on a button, to a rule like _production branch was updated_),
+* (optionally) audit your deployment (CVE for example).
+
+== BundleBee: the enterprise Kubernetes deployer!
+
+Yupiik link:https://yupiik.io/bundlebee/[BundleBee] was designed with these principles in mind.
+
+It is a way to:
+
+* package a Kubernetes deployment recipe (called _alveolus_ in BundleBee semantic),
+* to make the deployment dynamic using _placeholders_ - and here no need to learn _Go_ language like with Helm charts,
+* to validate the deployment with Junit5 - or any other solution,
+* to compare the state of your cluster with the recipe - to identify the differences made manually if any ("quick fixes") and ensure both converge to the same state.
+
+TIP: BundleBee is way more than just these points but it is what makes the most sens in regard of this post topic.
+
+We often combine BundleBee with our generic Maven Plugin (a.k.a. `yupiik-tools-maven-plugin`) which contains two little gems:
+
+* a properties (de)ciphering solution we use to store the placeholder values in our sources (often a `git` repository) in a secured manner,
+* a static site generator (a.k.a. _minisite_) we use to integrate the documentation of our alveoli (recipes), ie the available placeholders but also the diff with the cluster per environment.
+
+NOTE: this post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.
+
+Here is a diagram showing this kind of pipeline:
+
+[plantuml,generated_manage-your-kubernetes-deployments-pipeline-deploy,svg,width=400px] 
+.Deployment pipeline
+....
+start
+:Clone the repository;
+:Retrieve the recipe;
+:Decipher the placeholders;
+:Deploy to kubernetes cluster;
+stop
+....
+
+In parallel two other pipelines are generally used.
+The first one is in the build of the alveolus/recipe itself:
+
+[plantuml,generated_manage-your-kubernetes-deployments-pipeline-project,svg,width=400px] 
+.Build pipeline
+....
+start
+:Clone the repository;
+:Run deployment tests;
+:Generate project documentation;
+:Deploy project minisite;
+stop
+....
+
+And finally another one in the deployment project (we tend to use another project where permissions are reduced for security reasons):
+
+
+[plantuml,generated_manage-your-kubernetes-deployments-pipeline-deploy-cron,svg,width=500px] 
+.Deployment cron each hour pipeline
+....
+start
+:Clone the repository;
+:Compare cluster state and last deployed recipe;
+:Deploy deployment minisite;
+stop
+....
+
+== Conclusion
+
+There are a lot of trend and tutorials, good will and examples about how to deploy today.
+However, a lot is either full marketing content or more about promoting a technical aspect.
+As usual, the best is to step back and see what is really needed for you and pick your own trade-off.
+
+In this post, we saw that there is no free lunch and that a well thought CI/CD pipeline can be worth any operator or runtime.
+As we saw people moving away from wordpress to embrace static website generation 10 years ago, the same will hopefully slow happen on infrastructure as code for the good.
+
+BundleBee is a really worth it solution on that aspect which can help your to use the same recipe from dev to production with a high quality validation pipeline (linting, testing, reporting).
+
+Stay tuned for more information on how to make it happening in the coming blog posts!

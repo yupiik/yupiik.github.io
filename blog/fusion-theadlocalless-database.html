@@ -69,7 +69,7 @@
         <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph metadata">
-<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2023-07-30</span>, <span class="metadata-readingtime">4 min and 23 sec read</span></p>
+<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2023-07-30</span>, <span class="metadata-readingtime">4 min and 24 sec read</span></p>
 </div>
 <div class="quoteblock abstract">
 <blockquote>
@@ -110,7 +110,7 @@ Technically it is often set from a servlet <code>Filter</code> or equivalent.</p
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ScopedValue.where(REQUEST, httpRequest) <i class="conum" data-value="1"></i><b>(1)</b>
  .call(() -&gt; {
    try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-    final var result = scope.fork(() -&gt; myMethod());
+    final var result = scope.fork(() -&gt; myMethod()); <i class="conum" data-value="2"></i><b>(2)</b>
     scope.join();
     scope.throwIfFailed();
     return result;

@@ -4,6 +4,8 @@ import resourcesTemplate from './esbuild/plugins/resources.txt';
 import cssTemplate from './esbuild/plugins/css.txt';
 import indexTemplate from './esbuild/assets/index.txt';
 
+const isUsingFusion = spec => (spec.switchValues.filter(it => it.enabled).map(it => it.name)[0] || 'useFusion') === 'useFusion';
+
 const getOrCreateFolder = (files, name, idGenerator) => {
     const segments = name.split('/');
     let current = files;
@@ -749,14 +751,19 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
     readmePaths.push('');
 };
 
-const injectHealthCheck = (files, groupId, artifactId, idGenerator, readmePaths) => {
+const injectHealthCheck = (files, groupId, artifactId, idGenerator, readmePaths, spec) => {
     const { main /*, test */ } = ensureBasePackage(files, idGenerator, groupId, artifactId);
     const pck = toPackage(groupId, artifactId);
     const mainProbe = getOrCreateFolder(main, 'probe', idGenerator);
+    const useFusion = isUsingFusion(spec);
 
     readmePaths.push('Health checks are used by orchestrators (kubernetes typically) to check if an application is started, ready, live, ...');
     readmePaths.push('');
-    readmePaths.push('The `HealthCheckServlet` provides a base implementation for ready and live checks.');
+    if (useFusion) {
+        readmePaths.push('The `HealthCheckEndpoints` provides a base implementation for ready and live checks.');
+    } else {
+        readmePaths.push('The `HealthCheckServlet` provides a base implementation for ready and live checks.');
+    }
     readmePaths.push('First one (generally) must check if the application has the required dependencies and last one if the application is well behaving at runtime.');
     readmePaths.push('');
     readmePaths.push('To customize it at need in your application you should fill the `specific checks` parts.');
@@ -775,94 +782,155 @@ const injectHealthCheck = (files, groupId, artifactId, idGenerator, readmePaths)
     readmePaths.push('These probes are then wired to Kubernetes (or any orchestrator) to report the application status.');
     readmePaths.push('');
 
-    mainProbe.push({
-        id: idGenerator(),
-        name: 'HealthCheckServlet.java',
-        content: [
-            `package ${pck}.probe;`,
-            '',
-            `import ${pck}.configuration.ApplicationConfiguration;`,
-            'import jakarta.enterprise.context.Dependent;',
-            'import jakarta.inject.Inject;',
-            'import jakarta.servlet.http.HttpServlet;',
-            'import jakarta.servlet.http.HttpServletRequest;',
-            'import jakarta.servlet.http.HttpServletResponse;',
-            'import java.io.IOException;',
-            'import java.util.Objects;',
-            '',
-            'import static java.util.Locale.ROOT;',
-            'import static java.util.Optional.ofNullable;',
-            '',
-            '@Dependent',
-            'public class HealthCheckServlet extends HttpServlet {',
-            '    @Inject',
-            '    private ApplicationConfiguration configuration;',
-            '',
-            '    @Override',
-            '    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {',
-            '        // heck the caller is allowed to access the probe (~security)',
-            '        if (!Objects.equals(req.getHeader("Health-Key"), configuration.getHealthKey())) {',
-            '            resp.sendError(HttpServletResponse.SC_NOT_FOUND);',
-            '            return;',
-            '        }',
-            '',
-            '        // no need of another server nor to pollute access log with this probe',
-            '        req.setAttribute("skip-access-log", true);',
-            '',
-            '        // extract the kind of health probe',
-            '        final var healthCheckType = ofNullable(req.getQueryString())',
-            '                .map(it -> it.toLowerCase(ROOT))',
-            '                .map(q -> q.contains("ready") ? "ready" : "live")',
-            '                .orElse("live");',
-            '',
-            '        // do the needed checks, do fail (exception) if there is an issue',
-            '        switch (healthCheckType) {',
-            '           case "ready":',
-            '               // do "readiness" specific checks',
-            '               break;',
-            '           case "live":',
-            '           default:',
-            '               // do "liveness" specific checks',
-            '        }',
-            '',
-            '        // optional, returns something in success case',
-            '        try (final var writer = resp.getWriter()) {',
-            '            writer.write("{\\"status\\":\\"OK\\"}");',
-            '        }',
-            '    }',
-            '}',
-            '',
-        ].join('\n'),
-    });
-    mainProbe.push({
-        id: idGenerator(),
-        name: 'HealthCheckServletRegistrar.java',
-        content: [
-            `package ${pck}.probe;`,
-            '',
-            'import jakarta.enterprise.context.Dependent;',
-            'import jakarta.inject.Inject;',
-            'import jakarta.servlet.ServletContainerInitializer;',
-            'import jakarta.servlet.ServletContext;',
-            'import java.util.Set;',
-            '',
-            '// thanks uship tomcat-webserver, we can register the health servlet this way',
-            '@Dependent',
-            'public class HealthCheckServletRegistrar implements ServletContainerInitializer {',
-            '    @Inject',
-            '    private HealthCheckServlet healthServlet;',
-            '',
-            '    @Override',
-            '    public void onStartup(final Set<Class<?>> c, final ServletContext ctx) {',
-            '        final var health = ctx.addServlet("health", healthServlet);',
-            '        health.setLoadOnStartup(1);',
-            '        health.addMapping("/health");',
-            '        ctx.log("Registered health check");',
-            '    }',
-            '}',
-            '',
-        ].join('\n'),
-    });
+    if (useFusion) {
+        mainProbe.push({
+            id: idGenerator(),
+            name: 'HealthCheckEndpoints.java',
+            content: [
+                `package ${pck}.probe;`,
+                '',
+                `import ${pck}.configuration.ApplicationConfiguration;`,
+                'import io.yupiik.fusion.framework.api.scope.ApplicationScoped;',
+                'import io.yupiik.fusion.framework.build.api.http.HttpMatcher;',
+                'import io.yupiik.fusion.framework.build.api.http.HttpMatcher.PathMatching;',
+                'import io.yupiik.fusion.http.server.api.Request;',
+                'import io.yupiik.fusion.http.server.api.Response;',
+                'import java.util.Objects;',
+                '',
+                'import static java.util.Locale.ROOT;',
+                'import static java.util.Optional.ofNullable;',
+                '',
+                '@ApplicationScoped',
+                'public class HealthCheckEndpoints {',
+                '    private final ApplicationConfiguration configuration;',
+                '',
+                '    public HealthCheckEndpoints(final ApplicationConfiguration configuration) {',
+                '        this.configuration = configuration;',
+                '    }',
+                '',
+                '    @HttpMatcher(methods = "GET", path = "/health", pathMatching = PathMatching.EXACT)',
+                '    protected Response health(final Request req) {',
+                '        // heck the caller is allowed to access the probe (~security)',
+                '        if (!Objects.equals(req.header("Health-Key"), configuration.getHealthKey())) {',
+                '            return Response.of().status(404).build();',
+                '        }',
+                '',
+                '        // no need of another server nor to pollute access log with this probe',
+                '        req.setAttribute("skip-access-log", true);',
+                '',
+                '        // extract the kind of health probe',
+                '        final var healthCheckType = ofNullable(req.query())',
+                '                .map(it -> it.toLowerCase(ROOT))',
+                '                .map(q -> q.contains("ready") ? "ready" : "live")',
+                '                .orElse("live");',
+                '',
+                '        // do the needed checks, do fail (exception) if there is an issue',
+                '        switch (healthCheckType) {',
+                '           case "ready":',
+                '               // do "readiness" specific checks',
+                '               break;',
+                '           case "live":',
+                '           default:',
+                '               // do "liveness" specific checks',
+                '        }',
+                '',
+                '        // optional, returns something in success case',
+                '        return Response.of().status(200).body("{\\"status\\":\\"OK\\"}").build();',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        mainProbe.push({
+            id: idGenerator(),
+            name: 'HealthCheckServlet.java',
+            content: [
+                `package ${pck}.probe;`,
+                '',
+                `import ${pck}.configuration.ApplicationConfiguration;`,
+                'import jakarta.enterprise.context.Dependent;',
+                'import jakarta.inject.Inject;',
+                'import jakarta.servlet.http.HttpServlet;',
+                'import jakarta.servlet.http.HttpServletRequest;',
+                'import jakarta.servlet.http.HttpServletResponse;',
+                'import java.io.IOException;',
+                'import java.util.Objects;',
+                '',
+                'import static java.util.Locale.ROOT;',
+                'import static java.util.Optional.ofNullable;',
+                '',
+                '@Dependent',
+                'public class HealthCheckServlet extends HttpServlet {',
+                '    @Inject',
+                '    private ApplicationConfiguration configuration;',
+                '',
+                '    @Override',
+                '    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {',
+                '        // heck the caller is allowed to access the probe (~security)',
+                '        if (!Objects.equals(req.getHeader("Health-Key"), configuration.getHealthKey())) {',
+                '            resp.sendError(HttpServletResponse.SC_NOT_FOUND);',
+                '            return;',
+                '        }',
+                '',
+                '        // no need of another server nor to pollute access log with this probe',
+                '        req.setAttribute("skip-access-log", true);',
+                '',
+                '        // extract the kind of health probe',
+                '        final var healthCheckType = ofNullable(req.getQueryString())',
+                '                .map(it -> it.toLowerCase(ROOT))',
+                '                .map(q -> q.contains("ready") ? "ready" : "live")',
+                '                .orElse("live");',
+                '',
+                '        // do the needed checks, do fail (exception) if there is an issue',
+                '        switch (healthCheckType) {',
+                '           case "ready":',
+                '               // do "readiness" specific checks',
+                '               break;',
+                '           case "live":',
+                '           default:',
+                '               // do "liveness" specific checks',
+                '        }',
+                '',
+                '        // optional, returns something in success case',
+                '        try (final var writer = resp.getWriter()) {',
+                '            writer.write("{\\"status\\":\\"OK\\"}");',
+                '        }',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+        mainProbe.push({
+            id: idGenerator(),
+            name: 'HealthCheckServletRegistrar.java',
+            content: [
+                `package ${pck}.probe;`,
+                '',
+                'import jakarta.enterprise.context.Dependent;',
+                'import jakarta.inject.Inject;',
+                'import jakarta.servlet.ServletContainerInitializer;',
+                'import jakarta.servlet.ServletContext;',
+                'import java.util.Set;',
+                '',
+                '// thanks uship tomcat-webserver, we can register the health servlet this way',
+                '@Dependent',
+                'public class HealthCheckServletRegistrar implements ServletContainerInitializer {',
+                '    @Inject',
+                '    private HealthCheckServlet healthServlet;',
+                '',
+                '    @Override',
+                '    public void onStartup(final Set<Class<?>> c, final ServletContext ctx) {',
+                '        final var health = ctx.addServlet("health", healthServlet);',
+                '        health.setLoadOnStartup(1);',
+                '        health.addMapping("/health");',
+                '        ctx.log("Registered health check");',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
 };
 
 const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, readmePaths, spec) => {
@@ -870,157 +938,269 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
     const pck = toPackage(groupId, artifactId);
     const hasK8sClient = hasFeature('kubernetesClient');
     const frontend = hasFeature('frontend');
+    const useFusion = isUsingFusion(spec);
 
-    readmePaths.push('The application uses CDI as IoC, this is why `beans.xml` file is there - but you don\'t need to edit it in general.');
+    if (useFusion) {
+        readmePaths.push('The application uses Yupiik Fusion IoC.');
+    } else {
+        readmePaths.push('The application uses CDI as IoC, this is why `beans.xml` file is there - but you don\'t need to edit it in general.');
+    }
     readmePaths.push('');
     readmePaths.push('`ServerConfigurationProducer` file configured from the application specific configuration the embedded Tomcat.');
     readmePaths.push('');
     if (!spec.skipGeneration) {
         readmePaths.push('`GreetingEndpoint` is a sample JSON-RPC endpoint. You can add as much `@JsonRpcMethod` you need in this class or another one marked with `@JsonRpc`.');
-        readmePaths.push('These endpoints use JSON-B to map the models, you can use POJO or records and `@JsonbXXX` annotations.');
+        if (useFusion) {
+            readmePaths.push('These endpoints use Fusion JSON to map the models, you have to use records and `@JsonXXX` annotations.');
+        } else {
+            readmePaths.push('These endpoints use JSON-B to map the models, you can use POJO or records and `@JsonbXXX` annotations.');
+        }
         readmePaths.push('');
         readmePaths.push('Finally, `GreetingEndpointTest` shows a basic test using a random port for Tomcat server.');
         readmePaths.push('It relies on a JUnit5 stereotype `@ApplicationSupport` which ensure the test is executed in the application context.');
-        readmePaths.push('By default (`@Cdi(reusable = true)`), the context is reused accross tests so ensure to not leak any state.');
+        if (!useFusion) {
+            readmePaths.push('By default (`@Cdi(reusable = true)`), the context is reused accross tests so ensure to not leak any state.');
+        }
         readmePaths.push('');
-        readmePaths.push('TIP: the test is written as a client test but you can also `@Inject` your `GreetingEndpoint` bean and test it as a standard bean in such a test.');
+        if (useFusion) {
+            readmePaths.push('TIP: the test is written as a client test but you can also inject your `GreetingEndpoint` bean marking a method parameter with `@Fusion` and test it as a standard bean in such a test.');
+        } else {
+            readmePaths.push('TIP: the test is written as a client test but you can also `@Inject` your `GreetingEndpoint` bean and test it as a standard bean in such a test.');
+        }
         readmePaths.push('');
     }
 
-    // ensure CDI is enabled
-    getOrCreateFolder(files, 'src/main/resources/META-INF', idGenerator).push({
-        id: idGenerator(),
-        name: 'beans.xml',
-        content: [
-            '<?xml version="1.0" encoding="UTF-8"?>',
-            '<beans bean-discovery-mode="all" version="2.0"',
-            '       xmlns="http://xmlns.jcp.org/xml/ns/javaee"',
-            '       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
-            '       xsi:schemaLocation="',
-            '        http://xmlns.jcp.org/xml/ns/javaee',
-            '        http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd">',
-            '  <trim/>',
-            '</beans>',
-            '',
-        ].join('\n'),
-    });
+    if (!useFusion) { // ensure CDI is enabled
+        getOrCreateFolder(files, 'src/main/resources/META-INF', idGenerator).push({
+            id: idGenerator(),
+            name: 'beans.xml',
+            content: [
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<beans bean-discovery-mode="all" version="2.0"',
+                '       xmlns="http://xmlns.jcp.org/xml/ns/javaee"',
+                '       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+                '       xsi:schemaLocation="',
+                '        http://xmlns.jcp.org/xml/ns/javaee',
+                '        http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd">',
+                '  <trim/>',
+                '</beans>',
+                '',
+            ].join('\n'),
+        });
+    }
 
     // customize the configuration of tomcat server
     const webServer = getOrCreateFolder(main, 'web/server', idGenerator);
-    webServer.push({
-        id: idGenerator(),
-        name: 'ServerConfigurationProducer.java',
-        content: [
-            `package ${pck}.web.server;`,
-            '',
-            'import org.apache.catalina.Lifecycle;',
-            'import org.apache.catalina.servlets.DefaultServlet;',
-            `import ${pck}.configuration.ApplicationConfiguration;`,
-            'import io.yupiik.uship.webserver.tomcat.TomcatWebServerConfiguration;',
-            'import jakarta.enterprise.context.ApplicationScoped;',
-            'import jakarta.enterprise.inject.Produces;',
-            'import org.apache.catalina.valves.AbstractAccessLogValve;',
-            ...(frontend ? ['import org.apache.catalina.startup.Tomcat;'] : []),
-            'import java.util.List;',
-            'import java.util.stream.Stream;',
-            '',
-            '@ApplicationScoped',
-            'public class ServerConfigurationProducer {',
-            '    // propagate our configuration to Tomcat Server (unified configuration key)',
-            '    @Produces',
-            '    @ApplicationScoped',
-            '    public TomcatWebServerConfiguration configuration(',
-            '            final ApplicationConfiguration configuration) {',
-            '        final var tomcat = new TomcatWebServerConfiguration();',
-            '        tomcat.setPort(configuration.getPort());',
-            '        tomcat.setAccessLogPattern(configuration.getAccessLogPattern());',
-            '',
-            '        // ensure we can set skip-access-log attribute in servlet request to skip the access log',
-            '        // it is very useful for probes for example',
-            '        tomcat.setContextCustomizers(List.of(ctx -> {',
-            '            ctx.setParentClassLoader(Thread.currentThread().getContextClassLoader());',
-            '',
-            '            Stream.of(ctx.getPipeline().getValves())',
-            '                .filter(AbstractAccessLogValve.class::isInstance)',
-            '                .map(AbstractAccessLogValve.class::cast)',
-            '               .forEach(v -> v.setCondition("skip-access-log"));',
-            ...(frontend ? [
-                '',
-                '               // configure frontend resource binding when set up',
-                '               final var resources = configuration.getResources();',
-                '               if (resources != null && resources.getDocBase() != null) {',
-                '                   ctx.setDocBase(resources.getDocBase());',
-                '                   if (!resources.isWebResourcesCached()) {',
-                '                       ctx.addLifecycleListener(event -> {',
-                '                           if (Lifecycle.CONFIGURE_START_EVENT.equals(event.getType())) {',
-                '                               ctx.getResources().setCachingAllowed(resources.isWebResourcesCached());',
-                '                           }',
-                '                       });',
-                '                   }',
-                '                   final var defaultServlet = Tomcat.addServlet(ctx, "default", DefaultServlet.class.getName());',
-                '                   defaultServlet.setLoadOnStartup(1);',
-                '                   ctx.addServletMappingDecoded("/", "default");',
-                '                   ctx.addMimeMapping("css", "text/css");',
-                '                   ctx.addMimeMapping("js", "application/javascript");',
-                '                   ctx.addMimeMapping("html", "text/html");',
-                '                   ctx.addMimeMapping("svg", "image/svg+xml");',
-                '                   ctx.addMimeMapping("png", "image/png");',
-                '                   ctx.addMimeMapping("jpg", "image/jpg");',
-                '                   ctx.addMimeMapping("jpeg", "image/jpeg");',
-                '                   ctx.addWelcomeFile("index.html");',
-                '                   ctx.getLogger().info("Registered frontend");',
-                '               }',
-            ] : []),
-            '        }));',
-            '        return tomcat;',
-            '    }',
-            '}',
-            '',
-        ].join('\n'),
-    });
-
-    if (hasK8sClient) { // if there is a k8s client, ensure it is a CDI bean available in the application
-        const k8sClient = getOrCreateFolder(main, 'k8s/client', idGenerator);
-        k8sClient.push({
+    if (!useFusion) {
+        webServer.push({
             id: idGenerator(),
-            name: 'K8sClientProducer.java',
+            name: 'ServerConfigurationProducer.java',
             content: [
-                `package ${pck}.k8s.client;`,
+                `package ${pck}.web.server;`,
                 '',
+                'import org.apache.catalina.Lifecycle;',
+                'import org.apache.catalina.servlets.DefaultServlet;',
                 `import ${pck}.configuration.ApplicationConfiguration;`,
-                'import io.yupiik.uship.kubernetes.client.KubernetesClient;',
-                'import io.yupiik.uship.kubernetes.client.KubernetesClientConfiguration;',
-                'import jakarta.inject.Inject;',
+                'import io.yupiik.uship.webserver.tomcat.TomcatWebServerConfiguration;',
                 'import jakarta.enterprise.context.ApplicationScoped;',
                 'import jakarta.enterprise.inject.Produces;',
-                'import jakarta.annotation.PostConstruct;',
-                'import jakarta.annotation.PreDestroy;',
+                'import org.apache.catalina.valves.AbstractAccessLogValve;',
+                ...(frontend ? ['import org.apache.catalina.startup.Tomcat;'] : []),
+                'import java.util.List;',
+                'import java.util.stream.Stream;',
                 '',
                 '@ApplicationScoped',
-                'public class K8sClientProducer {',
-                '    @Inject',
-                '    private ApplicationConfiguration configuration;',
-                '',
-                '    private KubernetesClient client;',
-                '',
-                '    @PostConstruct',
-                '    private void create() {',
-                '        client = new KubernetesClient(configuration.getK8sClient());',
-                '    }',
-                '',
-                '    @PreDestroy',
-                '    private void release() {',
-                '        client.close();',
-                '    }',
-                '',
+                'public class ServerConfigurationProducer {',
+                '    // propagate our configuration to Tomcat Server (unified configuration key)',
                 '    @Produces',
-                '    public KubernetesClient client() {',
-                '        return client;',
+                '    @ApplicationScoped',
+                '    public TomcatWebServerConfiguration configuration(',
+                '            final ApplicationConfiguration configuration) {',
+                '        final var tomcat = new TomcatWebServerConfiguration();',
+                '        tomcat.setPort(configuration.getPort());',
+                '        tomcat.setAccessLogPattern(configuration.getAccessLogPattern());',
+                '',
+                '        // ensure we can set skip-access-log attribute in servlet request to skip the access log',
+                '        // it is very useful for probes for example',
+                '        tomcat.setContextCustomizers(List.of(ctx -> {',
+                '            ctx.setParentClassLoader(Thread.currentThread().getContextClassLoader());',
+                '',
+                '            Stream.of(ctx.getPipeline().getValves())',
+                '                .filter(AbstractAccessLogValve.class::isInstance)',
+                '                .map(AbstractAccessLogValve.class::cast)',
+                '               .forEach(v -> v.setCondition("skip-access-log"));',
+                ...(frontend ? [
+                    '',
+                    '               // configure frontend resource binding when set up',
+                    '               final var resources = configuration.getResources();',
+                    '               if (resources != null && resources.getDocBase() != null) {',
+                    '                   ctx.setDocBase(resources.getDocBase());',
+                    '                   if (!resources.isWebResourcesCached()) {',
+                    '                       ctx.addLifecycleListener(event -> {',
+                    '                           if (Lifecycle.CONFIGURE_START_EVENT.equals(event.getType())) {',
+                    '                               ctx.getResources().setCachingAllowed(resources.isWebResourcesCached());',
+                    '                           }',
+                    '                       });',
+                    '                   }',
+                    '                   final var defaultServlet = Tomcat.addServlet(ctx, "default", DefaultServlet.class.getName());',
+                    '                   defaultServlet.setLoadOnStartup(1);',
+                    '                   ctx.addServletMappingDecoded("/", "default");',
+                    '                   ctx.addMimeMapping("css", "text/css");',
+                    '                   ctx.addMimeMapping("js", "application/javascript");',
+                    '                   ctx.addMimeMapping("html", "text/html");',
+                    '                   ctx.addMimeMapping("svg", "image/svg+xml");',
+                    '                   ctx.addMimeMapping("png", "image/png");',
+                    '                   ctx.addMimeMapping("jpg", "image/jpg");',
+                    '                   ctx.addMimeMapping("jpeg", "image/jpeg");',
+                    '                   ctx.addWelcomeFile("index.html");',
+                    '                   ctx.getLogger().info("Registered frontend");',
+                    '               }',
+                ] : []),
+                '        }));',
+                '        return tomcat;',
                 '    }',
                 '}',
                 '',
             ].join('\n'),
         });
+    } else {
+        webServer.push({
+            id: idGenerator(),
+            name: 'ServerConfigurationProducer.java',
+            content: [
+                `package ${pck}.web.server;`,
+                '',
+                ...(frontend ? [
+                    'import org.apache.catalina.Lifecycle;',
+                    'import org.apache.catalina.servlets.DefaultServlet;',
+                ] : []),
+                `import ${pck}.configuration.ApplicationConfiguration;`,
+                'import io.yupiik.fusion.framework.api.scope.DefaultScoped;',
+                'import io.yupiik.fusion.framework.build.api.event.OnEvent;',
+                'import io.yupiik.fusion.http.server.api.WebServer;',
+                ...(frontend ? [
+                    'import io.yupiik.fusion.http.server.impl.tomcat.TomcatWebServerConfiguration;',
+                    'import org.apache.catalina.valves.AbstractAccessLogValve;',
+                    'import org.apache.catalina.startup.Tomcat;',
+                    'import java.util.List;',
+                    'import java.util.stream.Stream;',
+                ] : []),
+                '',
+                '@DefaultScoped',
+                'public class ServerConfigurationProducer {',
+                '    // propagate our configuration to Tomcat Server (unified configuration key)',
+                '    public void configuration(',
+                '            @OnEvent final WebServer.Configuration webConf) {',
+                '            final ApplicationConfiguration configuration) {',
+                '        webConf.port(configuration.port());',
+                '        webConf.accessLogPattern(configuration.accessLogPattern());',
+                ...(frontend ? [
+                    '',
+                    '        final var tomcat = webConf.unwrap(TomcatWebServerConfiguration.class);',
+                    '        tomcat.setContextCustomizers(List.of(ctx -> {',
+                    '               // configure frontend resource binding when set up',
+                    '               final var resources = configuration.resources();',
+                    '               if (resources != null && resources.docBase() != null) {',
+                    '                   ctx.setDocBase(resources.docBase());',
+                    '                   if (!resources.isWebResourcesCached()) {',
+                    '                       ctx.addLifecycleListener(event -> {',
+                    '                           if (Lifecycle.CONFIGURE_START_EVENT.equals(event.getType())) {',
+                    '                               ctx.getResources().setCachingAllowed(resources.webResourcesCached());',
+                    '                           }',
+                    '                       });',
+                    '                   }',
+                    '                   final var defaultServlet = Tomcat.addServlet(ctx, "default", DefaultServlet.class.getName());',
+                    '                   defaultServlet.setLoadOnStartup(1);',
+                    '                   ctx.addServletMappingDecoded("/", "default");',
+                    '                   ctx.addMimeMapping("css", "text/css");',
+                    '                   ctx.addMimeMapping("js", "application/javascript");',
+                    '                   ctx.addMimeMapping("html", "text/html");',
+                    '                   ctx.addMimeMapping("svg", "image/svg+xml");',
+                    '                   ctx.addMimeMapping("png", "image/png");',
+                    '                   ctx.addMimeMapping("jpg", "image/jpg");',
+                    '                   ctx.addMimeMapping("jpeg", "image/jpeg");',
+                    '                   ctx.addWelcomeFile("index.html");',
+                    '                   ctx.getLogger().info("Registered frontend");',
+                    '               }',
+                    '        }));',
+                ] : []),
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
+
+    if (hasK8sClient) { // if there is a k8s client, ensure it is a CDI bean available in the application
+        const k8sClient = getOrCreateFolder(main, 'k8s/client', idGenerator);
+        if (!useFusion) {
+            k8sClient.push({
+                id: idGenerator(),
+                name: 'K8sClientProducer.java',
+                content: [
+                    `package ${pck}.k8s.client;`,
+                    '',
+                    `import ${pck}.configuration.ApplicationConfiguration;`,
+                    'import io.yupiik.uship.kubernetes.client.KubernetesClient;',
+                    'import io.yupiik.uship.kubernetes.client.KubernetesClientConfiguration;',
+                    'import jakarta.inject.Inject;',
+                    'import jakarta.enterprise.context.ApplicationScoped;',
+                    'import jakarta.enterprise.inject.Produces;',
+                    'import jakarta.annotation.PostConstruct;',
+                    'import jakarta.annotation.PreDestroy;',
+                    '',
+                    '@ApplicationScoped',
+                    'public class K8sClientProducer {',
+                    '    @Inject',
+                    '    private ApplicationConfiguration configuration;',
+                    '',
+                    '    private KubernetesClient client;',
+                    '',
+                    '    @PostConstruct',
+                    '    private void create() {',
+                    '        client = new KubernetesClient(configuration.getK8sClient());',
+                    '    }',
+                    '',
+                    '    @PreDestroy',
+                    '    private void release() {',
+                    '        client.close();',
+                    '    }',
+                    '',
+                    '    @Produces',
+                    '    public KubernetesClient client() {',
+                    '        return client;',
+                    '    }',
+                    '}',
+                    '',
+                ].join('\n'),
+            });
+        } else {
+            k8sClient.push({
+                id: idGenerator(),
+                name: 'K8sClientProducer.java',
+                content: [
+                    `package ${pck}.k8s.client;`,
+                    '',
+                    `import ${pck}.configuration.ApplicationConfiguration;`,
+                    'import io.yupiik.fusion.kubernetes.client.KubernetesClient;',
+                    'import io.yupiik.fusion.kubernetes.client.KubernetesClientConfiguration;',
+                    'import io.yupiik.fusion.framework.api.scope.ApplicationScoped;',
+                    'import io.yupiik.fusion.framework.api.scope.DefaultScoped;',
+                    'import io.yupiik.fusion.framework.build.api.scanning.Bean;',
+                    '',
+                    '@DefaultScoped',
+                    'public class K8sClientProducer {',
+                    '    @Bean',
+                    '    @ApplicationScoped',
+                    '    public KubernetesClient client(final ApplicationConfiguration configuration) {',
+                    '        // TODO: wire more confguration from this.configuration to enable "out of cluster" clients for example, depends your need',
+                    '        return new KubernetesClient(new KubernetesClientConfiguration());',
+                    '    }',
+                    '}',
+                    '',
+                ].join('\n'),
+            });
+        }
     }
 
     if (spec.skipGeneration) {
@@ -1035,73 +1215,144 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
         content: [
             `package ${pck}.jsonrpc;`,
             '',
+            ...(useFusion ? [
+                'import io.yupiik.fusion.framework.build.api.json.JsonModel;',
+                '',
+                '@JsonModel',
+            ] : []),
             'public record Greeting(String message) {',
             '}',
             '',
         ].join('\n'),
     });
-    mainJsonRpc.push({
-        id: idGenerator(),
-        name: 'GreetingEndpoint.java',
-        content: [
-            `package ${pck}.jsonrpc;`,
-            '',
-            'import io.yupiik.uship.jsonrpc.core.api.JsonRpc;',
-            'import io.yupiik.uship.jsonrpc.core.api.JsonRpcError;',
-            'import io.yupiik.uship.jsonrpc.core.api.JsonRpcMethod;',
-            'import io.yupiik.uship.jsonrpc.core.api.JsonRpcParam;',
-            'import jakarta.enterprise.context.ApplicationScoped;',
-            '',
-            '@JsonRpc',
-            '@ApplicationScoped',
-            'public class GreetingEndpoint {',
-            '',
-            '    // if needed you can inject other beans:',
-            '    // @Inject ApplicationConfiguration configuration;',
-            ...(hasK8sClient ? ['    // @Inject KubernetesClient k8sClient;'] : []),
-            '',
-            '    @JsonRpcError(code = 400, documentation = "Invalid incoming data.")',
-            '    @JsonRpcMethod(name = "greet", documentation = "Returns some greeting.")',
-            '    public Greeting greet(',
-            '          @JsonRpcParam(documentation = "Name of the person.", required = true)',
-            '          final String name) {',
-            '        return new Greeting("Hi " + name);',
-            '    }',
-            '}',
-            '',
-        ].join('\n'),
-    });
+    if (!useFusion) {
+        mainJsonRpc.push({
+            id: idGenerator(),
+            name: 'GreetingEndpoint.java',
+            content: [
+                `package ${pck}.jsonrpc;`,
+                '',
+                'import io.yupiik.uship.jsonrpc.core.api.JsonRpc;',
+                'import io.yupiik.uship.jsonrpc.core.api.JsonRpcError;',
+                'import io.yupiik.uship.jsonrpc.core.api.JsonRpcMethod;',
+                'import io.yupiik.uship.jsonrpc.core.api.JsonRpcParam;',
+                'import jakarta.enterprise.context.ApplicationScoped;',
+                '',
+                '@JsonRpc',
+                '@ApplicationScoped',
+                'public class GreetingEndpoint {',
+                '',
+                '    // if needed you can inject other beans:',
+                '    // @Inject ApplicationConfiguration configuration;',
+                ...(hasK8sClient ? ['    // @Inject KubernetesClient k8sClient;'] : []),
+                '',
+                '    @JsonRpcError(code = 400, documentation = "Invalid incoming data.")',
+                '    @JsonRpcMethod(name = "greet", documentation = "Returns some greeting.")',
+                '    public Greeting greet(',
+                '          @JsonRpcParam(documentation = "Name of the person.", required = true)',
+                '          final String name) {',
+                '        return new Greeting("Hi " + name);',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        mainJsonRpc.push({
+            id: idGenerator(),
+            name: 'GreetingEndpoint.java',
+            content: [
+                `package ${pck}.jsonrpc;`,
+                '',
+                'import io.yupiik.fusion.framework.api.scope.ApplicationScoped;',
+                'import io.yupiik.fusion.framework.build.api.jsonrpc.JsonRpc;',
+                'import io.yupiik.fusion.framework.build.api.jsonrpc.JsonRpcError;',
+                'import io.yupiik.fusion.framework.build.api.jsonrpc.JsonRpcParam;',
+                '',
+                '@ApplicationScoped',
+                'public class GreetingEndpoint {',
+                '    // if needed you can inject other beans inject them using a constructor:',
+                '    // public GreetingEndpoint(',
+                '    //    final ApplicationConfiguration configuration' + (hasK8sClient ? ',' : ''),
+                ...(hasK8sClient ? ['    // final KubernetesClient k8sClient'] : []),
+                '    // ) {',
+                '    //     this.configuration = configuration;',
+                ...(hasK8sClient ? ['    //     this.k8sClient = k8sClient;'] : []),
+                '    // }',
+                '',
+                '    @JsonRpcError(code = 400, documentation = "Invalid incoming data.")',
+                '    @JsonRpc(value = "greet", documentation = "Returns some greeting.")',
+                '    public Greeting greet(',
+                '          @JsonRpcParam(documentation = "Name of the person.", required = true)',
+                '          final String name) {',
+                '        return new Greeting("Hi " + name);',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
 
     // tests
     const testJsonRpc = getOrCreateFolder(test, 'jsonrpc', idGenerator);
     const testInfra = getOrCreateFolder(test, 'test', idGenerator);
-    testInfra.push({
-        id: idGenerator(),
-        name: 'ApplicationSupport.java',
-        content: [
-            `package ${pck}.test;`,
-            '',
-            'import org.apache.openwebbeans.junit5.Cdi;',
-            'import org.junit.jupiter.api.extension.ExtendWith;',
-            '',
-            'import java.lang.annotation.Retention;',
-            'import java.lang.annotation.Target;',
-            '',
-            'import static java.lang.annotation.ElementType.TYPE;',
-            'import static java.lang.annotation.RetentionPolicy.RUNTIME;',
-            '',
-            '@Target(TYPE)',
-            '@Retention(RUNTIME)',
-            '@ExtendWith({',
-            '  SetEnvironment.class',
-            '  // add your other extensions there to ensure they are available for all tests',
-            '})',
-            '@Cdi(reusable = true)',
-            'public @interface ApplicationSupport {',
-            '}',
-            '',
-        ].join('\n'),
-    });
+    if (!useFusion) {
+        testInfra.push({
+            id: idGenerator(),
+            name: 'ApplicationSupport.java',
+            content: [
+                `package ${pck}.test;`,
+                '',
+                'import org.apache.openwebbeans.junit5.Cdi;',
+                'import org.junit.jupiter.api.extension.ExtendWith;',
+                '',
+                'import java.lang.annotation.Retention;',
+                'import java.lang.annotation.Target;',
+                '',
+                'import static java.lang.annotation.ElementType.TYPE;',
+                'import static java.lang.annotation.RetentionPolicy.RUNTIME;',
+                '',
+                '@Target(TYPE)',
+                '@Retention(RUNTIME)',
+                '@ExtendWith({',
+                '  SetEnvironment.class',
+                '  // add your other extensions there to ensure they are available for all tests',
+                '})',
+                '@Cdi(reusable = true)',
+                'public @interface ApplicationSupport {',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        testInfra.push({
+            id: idGenerator(),
+            name: 'ApplicationSupport.java',
+            content: [
+                `package ${pck}.test;`,
+                '',
+                'import io.yupiik.fusion.testing.MonoFusionSupport;',
+                'import org.junit.jupiter.api.extension.ExtendWith;',
+                '',
+                'import java.lang.annotation.Retention;',
+                'import java.lang.annotation.Target;',
+                '',
+                'import static java.lang.annotation.ElementType.TYPE;',
+                'import static java.lang.annotation.RetentionPolicy.RUNTIME;',
+                '',
+                '@Target(TYPE)',
+                '@Retention(RUNTIME)',
+                '@ExtendWith({',
+                '  SetEnvironment.class',
+                '  // add your other extensions there to ensure they are available for all tests',
+                '})',
+                '@MonoFusionSupport',
+                'public @interface ApplicationSupport {',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
     testInfra.push({
         id: idGenerator(),
         name: 'SetEnvironment.java',
@@ -1114,87 +1365,198 @@ const injectJsonRpc = (files, groupId, artifactId, idGenerator, hasFeature, read
             '    static {',
             '        // You can configure your test environment there, it is setup before CDI container starts',
             '',
-            '        // use a random tomcat port for tests',
+            '        // use a random tomcat port for tests using our specific configuration' + (useFusion ? ', fusion.http-server.port would work too' : ''),
             `        System.setProperty("${artifactId}-tomcat-port", "0");`,
             '    }',
             '}',
             '',
         ].join('\n'),
     });
-    testJsonRpc.push({
-        id: idGenerator(),
-        name: 'GreetingEndpointTest.java',
-        content: [
-            `package ${pck}.jsonrpc;`,
-            '',
-            `import io.yupiik.uship.webserver.tomcat.TomcatWebServerConfiguration;`,
-            `import ${pck}.test.ApplicationSupport;`,
-            'import jakarta.inject.Inject;',
-            'import jakarta.json.JsonBuilderFactory;',
-            'import org.junit.jupiter.api.Test;',
-            'import org.junit.jupiter.api.TestInstance;',
-            'import java.io.IOException;',
-            'import java.net.URI;',
-            'import java.net.http.HttpClient;',
-            'import java.net.http.HttpRequest;',
-            'import java.net.http.HttpResponse;',
-            '',
-            'import static java.nio.charset.StandardCharsets.UTF_8;',
-            'import static org.junit.jupiter.api.Assertions.assertEquals;',
-            'import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;',
-            '',
-            '@ApplicationSupport',
-            '@TestInstance(PER_CLASS)',
-            'public class GreetingEndpointTest {',
-            '    @Inject',
-            '    private JsonBuilderFactory json;',
-            '',
-            '    @Inject // enables to get the random server port',
-            '    private TomcatWebServerConfiguration server;',
-            '',
-            '    private final HttpClient client = HttpClient.newHttpClient();',
-            '',
-            '    @Test',
-            '    void greet() throws IOException, InterruptedException {',
-            '        final var res = client.send(',
-            '            HttpRequest.newBuilder()',
-            '                .POST(HttpRequest.BodyPublishers.ofString(json.createObjectBuilder()',
-            '                    .add("jsonrpc", "2.0")',
-            '                    .add("method", "greet")',
-            '                    .add("params", json.createObjectBuilder()',
-            '                        .add("name", "test"))',
-            '                    .build()',
-            '                    .toString(), UTF_8))',
-            '                .uri(URI.create("http://localhost:" + server.getPort() + "/jsonrpc"))',
-            '                .header("Accept", "application/json")',
-            '                .header("Content-Type", "application/json")',
-            '                .build(),',
-            '            HttpResponse.BodyHandlers.ofString(UTF_8));',
-            '        assertEquals(200, res.statusCode());',
-            '        assertEquals("{\\"jsonrpc\\":\\"2.0\\",\\"result\\":{\\"message\\":\\"Hi test\\"}}", res.body());',
-            '    }',
-            '}',
-            '',
-        ].join('\n'),
-    });
+    if (!useFusion) {
+        testJsonRpc.push({
+            id: idGenerator(),
+            name: 'GreetingEndpointTest.java',
+            content: [
+                `package ${pck}.jsonrpc;`,
+                '',
+                `import io.yupiik.uship.webserver.tomcat.TomcatWebServerConfiguration;`,
+                `import ${pck}.test.ApplicationSupport;`,
+                'import jakarta.inject.Inject;',
+                'import jakarta.json.JsonBuilderFactory;',
+                'import org.junit.jupiter.api.Test;',
+                'import org.junit.jupiter.api.TestInstance;',
+                'import java.io.IOException;',
+                'import java.net.URI;',
+                'import java.net.http.HttpClient;',
+                'import java.net.http.HttpRequest;',
+                'import java.net.http.HttpResponse;',
+                '',
+                'import static java.nio.charset.StandardCharsets.UTF_8;',
+                'import static org.junit.jupiter.api.Assertions.assertEquals;',
+                'import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;',
+                '',
+                '@ApplicationSupport',
+                '@TestInstance(PER_CLASS)',
+                'public class GreetingEndpointTest {',
+                '    @Inject',
+                '    private JsonBuilderFactory json;',
+                '',
+                '    @Inject // enables to get the random server port',
+                '    private TomcatWebServerConfiguration server;',
+                '',
+                '    private final HttpClient client = HttpClient.newHttpClient();',
+                '',
+                '    @Test',
+                '    void greet() throws IOException, InterruptedException {',
+                '        final var res = client.send(',
+                '            HttpRequest.newBuilder()',
+                '                .POST(HttpRequest.BodyPublishers.ofString(json.createObjectBuilder()',
+                '                    .add("jsonrpc", "2.0")',
+                '                    .add("method", "greet")',
+                '                    .add("params", json.createObjectBuilder()',
+                '                        .add("name", "test"))',
+                '                    .build()',
+                '                    .toString(), UTF_8))',
+                '                .uri(URI.create("http://localhost:" + server.getPort() + "/jsonrpc"))',
+                '                .header("Accept", "application/json")',
+                '                .header("Content-Type", "application/json")',
+                '                .build(),',
+                '            HttpResponse.BodyHandlers.ofString(UTF_8));',
+                '        assertEquals(200, res.statusCode());',
+                '        assertEquals("{\\"jsonrpc\\":\\"2.0\\",\\"result\\":{\\"message\\":\\"Hi test\\"}}", res.body());',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        testJsonRpc.push({
+            id: idGenerator(),
+            name: 'GreetingEndpointTest.java',
+            content: [
+                `package ${pck}.jsonrpc;`,
+                '',
+                `import io.yupiik.fusion.http.server.api.WebServer;`,
+                `import io.yupiik.fusion.json.JsonMapper;`,
+                `import io.yupiik.fusion.testing.Fusion;`,
+                `import ${pck}.test.ApplicationSupport;`,
+                'import org.junit.jupiter.api.Test;',
+                'import org.junit.jupiter.api.TestInstance;',
+                'import java.util.Map;',
+                'import java.io.IOException;',
+                'import java.net.URI;',
+                'import java.net.http.HttpClient;',
+                'import java.net.http.HttpRequest;',
+                'import java.net.http.HttpResponse;',
+                '',
+                'import static java.nio.charset.StandardCharsets.UTF_8;',
+                'import static org.junit.jupiter.api.Assertions.assertEquals;',
+                'import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;',
+                '',
+                '@ApplicationSupport',
+                '@TestInstance(PER_CLASS)',
+                'public class GreetingEndpointTest {',
+                '    @Inject',
+                '    private JsonBuilderFactory json;',
+                '',
+                '    @Inject // enables to get the random server port',
+                '    private TomcatWebServerConfiguration server;',
+                '',
+                '    private final HttpClient client = HttpClient.newHttpClient();',
+                '',
+                '    @Test',
+                '    void greet(@Fusion final WebServer.configuration server, @Fusion final JsonMapper json) throws IOException, InterruptedException {',
+                '        final var res = client.send(',
+                '            HttpRequest.newBuilder()',
+                '                .POST(HttpRequest.BodyPublishers.ofString(json.toString(Map.of(',
+                '                    "jsonrpc", "2.0", "method", "greet", "params", Map.of("name", "test"))), UTF_8))',
+                '                .uri(URI.create("http://localhost:" + server.port() + "/jsonrpc"))',
+                '                .header("Accept", "application/json")',
+                '                .header("Content-Type", "application/json")',
+                '                .build(),',
+                '            HttpResponse.BodyHandlers.ofString(UTF_8));',
+                '        assertEquals(200, res.statusCode());',
+                '        assertEquals("{\\"jsonrpc\\":\\"2.0\\",\\"result\\":{\\"message\\":\\"Hi test\\"}}", res.body());',
+                '    }',
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
 };
 
-const injectConfiguration = (files, { groupId, artifactId }, idGenerator, hasFeature, readmePaths) => {
+const injectConfiguration = (files, { groupId, artifactId }, idGenerator, hasFeature, readmePaths, spec) => {
     const pck = toPackage(groupId, artifactId);
     const hasJsonRpc = hasFeature('jsonRpc');
     const hasK8sClient = hasFeature('kubernetesClient');
     const frontend = hasFeature('frontend');
     const health = hasFeature('jib') || hasFeature('bundlebee');
+    const useFusion = isUsingFusion(spec);
 
     readmePaths.push('`ApplicationConfiguration` contains the application configuration.');
     readmePaths.push('');
-    readmePaths.push('It uses Yupiik `simple-configuration` and `@Param` to bind the configuration.');
+    if (useFusion) {
+        readmePaths.push('It uses Yupiik Fusion Configuration mecanism which uses system properties and environment variable to bind values on a record.');
+    } else {
+        readmePaths.push('It uses Yupiik `simple-configuration` and `@Param` to bind the configuration.');
+    }
     readmePaths.push('');
     readmePaths.push('It enables to inject the configuration from system properties or environment variable.');
     readmePaths.push('');
 
-    getOrCreateFolder(ensureBasePackage(files, idGenerator, groupId, artifactId).main, 'configuration', idGenerator)
-        .push({
+    const base = getOrCreateFolder(ensureBasePackage(files, idGenerator, groupId, artifactId).main, 'configuration', idGenerator);
+    if (useFusion) {
+        base.push({
+            id: idGenerator(),
+            name: 'ApplicationConfiguration.java',
+            content: [
+                `package ${pck}.configuration;`,
+                '',
+                'import io.yupiik.fusion.framework.api.scope.ApplicationScoped;',
+                'import io.yupiik.fusion.framework.build.api.configuration.Property;',
+                'import io.yupiik.fusion.framework.build.api.configuration.RootConfiguration;',
+                '',
+                '// hosts the application configuration, you can add @Param as you need',
+                '// by default fusion makes it injectable directly in any bean',
+                '@ApplicationScoped',
+                `@RootConfiguration("${artifactId}") // will be the prefix of the system properties filtered to bind on the instance`,
+                'public record ApplicationConfiguration(',
+                ...(hasJsonRpc ? [
+                    '    @Property(value = "tomcat-port", documentation = "Tomcat port.", defaultValue = "8080")',
+                    '    int port,',
+                    '',
+                    '    @Property(value = "tomcat-accessLogPattern", documentation = "Tomcat access log pattern.", defaultValue = "\"common\"")',
+                    '    String accessLogPattern' + (frontend || health ? ',' : ''),
+                    ''
+                ] : []),
+                ...(frontend ? [
+                    '    @Property(value = "resources", documentation = "Frontend resources configuration.", defaultValue = "new ApplicationConfiguration.ResourceConfiguration()")',
+                    '    ResourceConfiguration resources' + (health ? ',' : ''),
+                    ''
+                ] : []),
+                ...(health ? [
+                    '    @Property(value = "health-key", documentation = "The value of the \'Health-Key\'/api key header to access health probe.", defaultValue = "\"changeit\"")',
+                    '    String healthKey',
+                    ''
+                ] : []),
+                ') {',
+                ...(frontend ? [
+                    '',
+                    '    public static record ResourceConfiguration(',
+                    '        @Property(documentation = "If set, the folder is served through HTTP.")',
+                    '        private String docBase,',
+                    '',
+                    '        @Property(documentation = "Should web resource be cached, mainly useful when docBase is set.", defaultValue = "true")',
+                    '        boolean webResourcesCached',
+                    '    ) {',
+                    '    }',
+                ] : []),
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        base.push({
             id: idGenerator(),
             name: 'ApplicationConfiguration.java',
             content: [
@@ -1289,6 +1651,7 @@ const injectConfiguration = (files, { groupId, artifactId }, idGenerator, hasFea
                 '',
             ].join('\n'),
         });
+    }
 };
 
 const injectFrontend = (files, groupId, artifactId, idGenerator, hasFeature, singleModule, readmePaths) => {
@@ -1319,9 +1682,7 @@ const injectFrontend = (files, groupId, artifactId, idGenerator, hasFeature, sin
                 "preact": "^10.7.1",
                 "esbuild": "^0.14.9",
                 "fs-extra": "^10.0.0",
-                "tmp": "^0.2.1",
-                "file-saver": "^2.0.5",
-                "jszip": "^3.7.1"
+                "tmp": "^0.2.1"
             }
         }`.trim().replace(/^        /gm, ''),
     });
@@ -1430,9 +1791,10 @@ const injectFrontend = (files, groupId, artifactId, idGenerator, hasFeature, sin
     });
 };
 
-const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature, readmePaths) => {
+const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature, readmePaths, spec) => {
     const batch = hasFeature('batch');
     const jsonRpc = hasFeature('jsonRpc');
+    const useFusion = isUsingFusion(spec);
 
     const srcMain = getOrCreateFolder(files, 'src/main', idGenerator);
     const { main } = ensureBasePackage(files, idGenerator, groupId, artifactId);
@@ -1443,110 +1805,217 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
     readmePaths.push('');
     readmePaths.push('* Documentation using yupiik minisite in `src/main/minisite/content`');
     readmePaths.push('');
-    readmePaths.push('You can visualize the documentation running: `mvn process-classes yupiik-tools:serve-minisite [-Dyupiik.minisite.port=8080]`.');
+    readmePaths.push('You can visualize the documentation running: `mvn process-classes yupiik-tools:serve-minisite [-Dyupiik.minisite.port=8080 [-Dyupiik.minisite.openBrowser=false]]`.');
     readmePaths.push('');
 
     // add doc generator
     const pck = toPackage(groupId, artifactId);
-    getOrCreateFolder(main, 'build', idGenerator).push({
-        id: idGenerator(),
-        name: 'ConfigurationGenerator.java',
-        content: [
-            `package ${pck}.build;`,
-            '',
-            ...(batch ? [`import ${pck}.batch.SimpleBatch;`] : []),
-            ...(jsonRpc ? [
-                `import ${pck}.configuration.ApplicationConfiguration;`,
-                `import ${pck}.jsonrpc.GreetingEndpoint;`,
-                `import io.yupiik.uship.jsonrpc.doc.AsciidoctorJsonRpcDocumentationGenerator;`,
-                'import io.yupiik.batch.runtime.batch.Batch;',
-            ] : []),
-            'import io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector;',
-            'import java.io.IOException;',
-            'import java.io.PrintStream;',
-            'import java.nio.file.Files;',
-            'import java.nio.file.Path;',
-            'import java.util.List;',
-            'import java.util.Map;',
-            '',
-            'import static java.util.Locale.ROOT;',
-            'import static java.util.stream.Collectors.joining;',
-            '',
-            '// used by minisite at build time to enrich the doc content',
-            'public class ConfigurationGenerator implements Runnable {',
-            '    private final Path sourceBase;',
-            '',
-            '    public ConfigurationGenerator(final Path sourceBase) {',
-            '        this.sourceBase = sourceBase;',
-            '    }',
-            '',
-            '    @Override',
-            '    public void run() {',
-            '        // here you can generate anything you want in generated partials dir and include it in your .adoc',
-            '        final var base = sourceBase.resolve("content/_partials/generated");',
-            '        try { // ensure base exists',
-            '            Files.createDirectories(base);',
-            '        } catch (final IOException e) {',
-            '            throw new IllegalStateException(e);',
-            '        }',
-            ...(batch ? [
+    const build = getOrCreateFolder(main, 'build', idGenerator);
+
+    if (!useFusion) {
+        build.push({
+            id: idGenerator(),
+            name: 'ConfigurationGenerator.java',
+            content: [
+                `package ${pck}.build;`,
                 '',
-                `        generateConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
-            ] : []),
-            ...(jsonRpc ? [
+                ...(batch ? [`import ${pck}.batch.SimpleBatch;`] : []),
+                ...(jsonRpc ? [
+                    `import ${pck}.configuration.ApplicationConfiguration;`,
+                    `import ${pck}.jsonrpc.GreetingEndpoint;`,
+                    `import io.yupiik.uship.jsonrpc.doc.AsciidoctorJsonRpcDocumentationGenerator;`,
+                    'import io.yupiik.batch.runtime.batch.Batch;',
+                ] : []),
+                'import io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector;',
+                'import java.io.IOException;',
+                'import java.io.PrintStream;',
+                'import java.nio.file.Files;',
+                'import java.nio.file.Path;',
+                'import java.util.List;',
+                'import java.util.Map;',
                 '',
-                `        generateConfiguration(base.resolve("${artifactId}.application.configuration.adoc"), AppFakeBatch.class);`,
-                `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.jsonrpc.adoc"), List.of(GreetingEndpoint.class));`,
-            ] : []),
-            '    }',
-            '',
-            '    private void generateJsonRpcApi(final String name, final Path target, final List<Class<?>> classes) {',
-            '        try (final var out = new PrintStream(Files.newOutputStream(target))) {',
-            `            new AsciidoctorJsonRpcDocumentationGenerator(name, classes, out).run();`,
-            '        } catch (final IOException e) {',
-            '            throw new IllegalStateException(e);',
-            '        }',
-            '    }',
-            '',
-            '    private void generateConfiguration(final Path target, final Class<?> clazz) {',
-            '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
-            '        final var params = collector.getWithPrefix(c -> null);',
-            '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',
-            '        final var adoc = "" +',
-            '                "++++\\n" +',
-            '                "<input table-filter=\\"" + name + "-configuration\\" class=\\"form-control\\" type=\\"text\\" placeholder=\\"Filter...\\">\\n" +',
-            '                "++++\\n" +',
-            '                "[." + name + "-configuration,options=\\"header\\",cols=\\"a,a,2\\",role=\\"autowrap\\"]\\n" +',
-            '                "|===\\n" +',
-            '                "|Name|Env Variable|Description\\n" +',
-            '                params.entrySet().stream()',
-            '                    .sorted(Map.Entry.comparingByKey())',
-            '                    .map(e -> "" +',
-            '                        "| `--" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +',
-            '                        "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +',
-            '                        "| " + e.getValue().param().description() + "\\n")',
-            '                    .sorted()',
-            '                    .collect(joining()) + "\\n" +',
-            '                "|===\\n" +',
-            '                "";',
-            '',
-            '        try {',
-            '            Files.writeString(target, adoc);',
-            '        } catch (final IOException e) {',
-            '            throw new IllegalStateException(e);',
-            '        }',
-            '    }',
-            ...(jsonRpc ? [
+                'import static java.util.Locale.ROOT;',
+                'import static java.util.stream.Collectors.joining;',
                 '',
-                '    // fake batch class to use the parameter collector',
-                '    public static class AppFakeBatch implements Batch<ApplicationConfiguration> {',
-                '        @Override public void accept(final ApplicationConfiguration conf) {}',
+                '// used by minisite at build time to enrich the doc content',
+                'public class ConfigurationGenerator implements Runnable {',
+                '    private final Path sourceBase;',
+                '',
+                '    public ConfigurationGenerator(final Path sourceBase) {',
+                '        this.sourceBase = sourceBase;',
                 '    }',
-            ] : []),
-            '}',
-            '',
-        ].join('\n'),
-    });
+                '',
+                '    @Override',
+                '    public void run() {',
+                '        // here you can generate anything you want in generated partials dir and include it in your .adoc',
+                '        final var base = sourceBase.resolve("content/_partials/generated");',
+                '        try { // ensure base exists',
+                '            Files.createDirectories(base);',
+                '        } catch (final IOException e) {',
+                '            throw new IllegalStateException(e);',
+                '        }',
+                ...(batch ? [
+                    '',
+                    `        generateConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
+                ] : []),
+                ...(jsonRpc ? [
+                    '',
+                    `        generateConfiguration(base.resolve("${artifactId}.application.configuration.adoc"), AppFakeBatch.class);`,
+                    `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.jsonrpc.adoc"), List.of(GreetingEndpoint.class));`,
+                ] : []),
+                '    }',
+                '',
+                '    private void generateJsonRpcApi(final String name, final Path target, final List<Class<?>> classes) {',
+                '        try (final var out = new PrintStream(Files.newOutputStream(target))) {',
+                `            new AsciidoctorJsonRpcDocumentationGenerator(name, classes, out).run();`,
+                '        } catch (final IOException e) {',
+                '            throw new IllegalStateException(e);',
+                '        }',
+                '    }',
+                '',
+                '    private void generateConfiguration(final Path target, final Class<?> clazz) {',
+                '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
+                '        final var params = collector.getWithPrefix(c -> null);',
+                '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',
+                '        final var adoc = "" +',
+                '                "++++\\n" +',
+                '                "<input table-filter=\\"" + name + "-configuration\\" class=\\"form-control\\" type=\\"text\\" placeholder=\\"Filter...\\">\\n" +',
+                '                "++++\\n" +',
+                '                "[." + name + "-configuration,options=\\"header\\",cols=\\"a,a,2\\",role=\\"autowrap\\"]\\n" +',
+                '                "|===\\n" +',
+                '                "|Name|Env Variable|Description\\n" +',
+                '                params.entrySet().stream()',
+                '                    .sorted(Map.Entry.comparingByKey())',
+                '                    .map(e -> "" +',
+                '                        "| `--" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +',
+                '                        "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +',
+                '                        "| " + e.getValue().param().description() + "\\n")',
+                '                    .sorted()',
+                '                    .collect(joining()) + "\\n" +',
+                '                "|===\\n" +',
+                '                "";',
+                '',
+                '        try {',
+                '            Files.writeString(target, adoc);',
+                '        } catch (final IOException e) {',
+                '            throw new IllegalStateException(e);',
+                '        }',
+                '    }',
+                ...(jsonRpc ? [
+                    '',
+                    '    // fake batch class to use the parameter collector',
+                    '    public static class AppFakeBatch implements Batch<ApplicationConfiguration> {',
+                    '        @Override public void accept(final ApplicationConfiguration conf) {}',
+                    '    }',
+                ] : []),
+                '}',
+                '',
+            ].join('\n'),
+        });
+    } else {
+        // todo: fusion conf
+        build.push({
+            id: idGenerator(),
+            name: 'ConfigurationGenerator.java',
+            content: [
+                `package ${pck}.build;`,
+                '',
+                ...(batch ? [`import ${pck}.batch.SimpleBatch;`] : []),
+                'import io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector;',
+                'import java.io.IOException;',
+                'import java.io.PrintStream;',
+                'import java.nio.file.Files;',
+                'import java.nio.file.Path;',
+                'import java.util.List;',
+                'import java.util.Map;',
+                '',
+                'import static java.util.Locale.ROOT;',
+                'import static java.util.stream.Collectors.joining;',
+                '',
+                '// used by minisite at build time to enrich the doc content',
+                'public class ConfigurationGenerator implements Runnable {',
+                '    private final Path sourceBase;',
+                '',
+                '    public ConfigurationGenerator(final Path sourceBase) {',
+                '        this.sourceBase = sourceBase;',
+                '    }',
+                '',
+                '    @Override',
+                '    public void run() {',
+                '        // here you can generate anything you want in generated partials dir and include it in your .adoc',
+                '        final var base = sourceBase.resolve("content/_partials/generated");',
+                '        try { // ensure base exists',
+                '            Files.createDirectories(base);',
+                '        } catch (final IOException e) {',
+                '            throw new IllegalStateException(e);',
+                '        }',
+                ...(batch ? [
+                    '',
+                    `        generateConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
+                ] : []),
+                ...(jsonRpc ? [
+                    `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.jsonrpc.adoc"), List.of(GreetingEndpoint.class));`,
+                ] : []),
+                '    }',
+                ...(jsonRpc ? [
+                    '',
+                    '    private void generateJsonRpcApi(final String name, final Path target, final List<Class<?>> classes) {',
+                    '        try (final var out = new PrintStream(Files.newOutputStream(target));',
+                    '             final var container = ConfiguringContainer.of()',
+                    '                .disableAutoDiscovery(true)',
+                    '                .register(new JsonMapperBean(), new OpenRPCEndpoint(), new FusionBean<WebServer.Configuration>() {',
+                    '                    @Override public Type type() { return WebServer.Configuration.class; }',
+                    '                    @Override public WebServer.Configuration create(final RuntimeContainer container, final List<Instance<?>> dependents) { return new TomcatWebServerConfiguration().host("api.my.com").port(1234); }',
+                    '                })',
+                    '                .start();',
+                    '             final var mapperInstance = container.lookup(JsonMapper.class);',
+                    '             final var endpoint = container.lookup(OpenRPCEndpoint.Impl.class)) {',
+                    '            final var openrpc = mapperInstance.instance().toString(endpoint.instance()',
+                    '                    .invoke(new JsonRpcMethod.Context(null, null))',
+                    '                    .toCompletableFuture().get());',
+                    `            out.println(openrpc); // TODO: convert it to asciidoctor`,
+                    '        } catch (final IOException e) {',
+                    '            throw new IllegalStateException(e);',
+                    '        }',
+                    '    }',
+                    '',
+                ] : []),
+                ...(batch ? [
+                    '',
+                    '    private void generateConfiguration(final Path target, final Class<?> clazz) {',
+                    '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
+                    '        final var params = collector.getWithPrefix(c -> null);',
+                    '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',
+                    '        final var adoc = "" +',
+                    '                "++++\\n" +',
+                    '                "<input table-filter=\\"" + name + "-configuration\\" class=\\"form-control\\" type=\\"text\\" placeholder=\\"Filter...\\">\\n" +',
+                    '                "++++\\n" +',
+                    '                "[." + name + "-configuration,options=\\"header\\",cols=\\"a,a,2\\",role=\\"autowrap\\"]\\n" +',
+                    '                "|===\\n" +',
+                    '                "|Name|Env Variable|Description\\n" +',
+                    '                params.entrySet().stream()',
+                    '                    .sorted(Map.Entry.comparingByKey())',
+                    '                    .map(e -> "" +',
+                    '                        "| `--" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +',
+                    '                        "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +',
+                    '                        "| " + e.getValue().param().description() + "\\n")',
+                    '                    .sorted()',
+                    '                    .collect(joining()) + "\\n" +',
+                    '                "|===\\n" +',
+                    '                "";',
+                    '',
+                    '        try {',
+                    '            Files.writeString(target, adoc);',
+                    '        } catch (final IOException e) {',
+                    '            throw new IllegalStateException(e);',
+                    '        }',
+                    '    }',
+                ] : []),
+                '}',
+                '',
+            ].join('\n'),
+        });
+    }
 
 
     // doc itself
@@ -1580,7 +2049,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 '',
                 '== Configuration',
                 '',
-                `include::{partialsdir}/generated/${artifactId}.application.configuration.adoc[]`,
+                `include::{partialsdir}/generated/documentation.${artifactId}.adoc[]`,
                 '',
                 '== API',
                 '',
@@ -1612,7 +2081,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
     }
 };
 
-const injectGithub = (files, idGenerator, hasFeature, readmePaths) => {
+const injectGithub = (files, idGenerator, hasFeature, readmePaths, data) => {
     const documentation = hasFeature('documentation');
 
     readmePaths.push('Github workflow enables you to automatically execute command for your project for commits/pr.');
@@ -1647,13 +2116,13 @@ const injectGithub = (files, idGenerator, hasFeature, readmePaths) => {
     const sharedStepsBefore = [
         '      - name: Clone',
         '        id: clone',
-        '        uses: actions/checkout@v2',
-        '      - name: Set up JDK 17',
-        '        id: java17',
-        '        uses: actions/setup-java@v2',
+        '        uses: actions/checkout@v4',
+        `      - name: Set up JDK ${data.nav.javaVersion}`,
+        `        id: java${data.nav.javaVersion}`,
+        '        uses: actions/setup-java@v4',
         '        with:',
         '          distribution: \'zulu\'',
-        '          java-version: \'17\'',
+        `          java-version: \'${data.nav.javaVersion}\'`,
         '          cache: \'maven\'',
     ];
     const sharedStepsAfter = [
@@ -1700,13 +2169,13 @@ const injectGithub = (files, idGenerator, hasFeature, readmePaths) => {
     });
 };
 
-const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasFeature, readmePaths) => {
+const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasFeature, readmePaths, data) => {
     switch (feature.key) {
         case 'jsonRpc': {
             // for now config is linked to JSON-RPC (but should be linked to frontend too)
             readmePaths.push('== Application Configuration');
             readmePaths.push('');
-            injectConfiguration(files, { groupId, artifactId }, idGenerator, hasFeature, readmePaths);
+            injectConfiguration(files, { groupId, artifactId }, idGenerator, hasFeature, readmePaths, feature);
 
             readmePaths.push('== JSON-RPC server');
             readmePaths.push('');
@@ -1733,7 +2202,7 @@ const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasF
             if (!hasFeature('bundlebee') && hasFeature('jsonRpc')) {
                 readmePaths.push('== Health Probe');
                 readmePaths.push('');
-                injectHealthCheck(files, groupId, artifactId, idGenerator, readmePaths);
+                injectHealthCheck(files, groupId, artifactId, idGenerator, readmePaths, data.features.jsonRpc);
             }
             readmePaths.push('== Jib/Docker images');
             readmePaths.push('');
@@ -1745,19 +2214,19 @@ const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasF
             if (hasFeature('jsonRpc')) {
                 readmePaths.push('== Health Probe');
                 readmePaths.push('');
-                injectHealthCheck(files, groupId, artifactId, idGenerator, readmePaths);
+                injectHealthCheck(files, groupId, artifactId, idGenerator, readmePaths, data.features.jsonRpc);
             }
             injectBundleBee(files, groupId, artifactId, idGenerator, hasFeature, true, readmePaths);
             break;
         case 'documentation':
             readmePaths.push('== Documentation');
             readmePaths.push('');
-            injectDocumentation(files, groupId, artifactId, idGenerator, hasFeature, readmePaths);
+            injectDocumentation(files, groupId, artifactId, idGenerator, hasFeature, readmePaths, data.features.jsonRpc);
             break;
         case 'github':
             readmePaths.push('== Github Workflow');
             readmePaths.push('');
-            injectGithub(files, idGenerator, hasFeature, readmePaths);
+            injectGithub(files, idGenerator, hasFeature, readmePaths, data);
             break;
         default:
             throw new Error(`Unknown feature: ${feature.key}.`);
@@ -1807,7 +2276,7 @@ export const generateFiles = data => {
     const readmePaths = [];
     enabledFeatures.forEach(feature => {
         if (singleModule) {
-            injectSingle(files, data.nav, feature, idGenerator, hasFeature, readmePaths);
+            injectSingle(files, data.nav, feature, idGenerator, hasFeature, readmePaths, data);
         } else { // not yet implemented
             injectMulti(files, data.nav, feature, idGenerator, hasFeature);
         }
@@ -1816,7 +2285,7 @@ export const generateFiles = data => {
     files.push({
         id: id++,
         name: 'README.adoc',
-        content: `= ${data.nav.artifactId}\n:toc:\n\nGenerated project.\n\nIMPORTANT: ensure to use maven >= 3.6 and Java >= 17.\n\n${readmePaths.join('\n')}`,
+        content: `= ${data.nav.artifactId}\n:toc:\n\nGenerated project.\n\nIMPORTANT: ensure to use maven >= 3.8 and Java >= ${data.nav.javaVersion}.\n\n${readmePaths.join('\n')}`,
     });
 
     return files;

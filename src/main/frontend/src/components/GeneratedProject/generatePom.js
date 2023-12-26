@@ -5,18 +5,20 @@ const desindent = (lines, len) => lines.map(it => it.substring(len));
 
 const testProperties = [
     '    <!-- Main Dependencies -->',
-    '    <junit5.version>5.9.0</junit5.version>',
+    '    <junit5.version>5.10.0</junit5.version>',
+];
+const yupiikBatchProperties = [
+    '    <yupiik-batch.version>1.0.5</yupiik-batch.version>',
 ];
 const yupiikConstantProperties = [
-    '    <yupiik-batch.version>1.0.0</yupiik-batch.version>',
-    '    <yupiik-logging.version>1.0.6</yupiik-logging.version>',
+    '    <yupiik-logging.version>1.0.7</yupiik-logging.version>',
 ];
 const frontendProperties = [
     '',
     '    <!-- Node/frontend related configuration -->',
     '    <node.environment>production</node.environment>',
-    '    <node.version>v17.3.0</node.version>',
-    '    <npm.version>8.3.0</npm.version>',
+    '    <node.version>v18.0.0</node.version>',
+    '    <npm.version>8.6.0</npm.version>',
 ];
 const simpleConfigurationDependencies = [
     '      <dependency>',
@@ -44,11 +46,22 @@ const batchDependencies = [
     '        </exclusions>',
     '      </dependency>',
 ];
+const jsonRpcFusionProperties = [
+    '    <yupiik-fusion.version>1.0.12</yupiik-fusion.version>',
+];
 const jsonRpcTransitiveProperties = [
-    '    <owb.version>2.0.26</owb.version>',
-    '    <johnzon.version>1.2.18</johnzon.version>',
-    '    <tomcat.version>10.0.20</tomcat.version>',
-    '    <xbean.version>4.21</xbean.version>',
+    '    <owb.version>2.0.27</owb.version>',
+    '    <johnzon.version>1.2.21</johnzon.version>',
+    '    <tomcat.version>10.1.17</tomcat.version>',
+    '    <xbean.version>4.23</xbean.version>',
+];
+const jsonrpcFusionDocumentationDependency = [
+    '      <dependency> <!-- for the doc -->',
+    '        <groupId>io.yupiik.fusion</groupId>',
+    '        <artifactId>fusion-documentation</artifactId>',
+    '        <version>${yupiik-fusion.version}</version>',
+    '        <scope>provided</scope>',
+    '      </dependency>',
 ];
 const jsonrpcDocumentationDependency = [
     '      <dependency> <!-- for the doc -->',
@@ -56,6 +69,13 @@ const jsonrpcDocumentationDependency = [
     '        <artifactId>jsonrpc-documentation</artifactId>',
     '        <version>${yupiik-uship.version}</version>',
     '        <scope>provided</scope>',
+    '      </dependency>',
+];
+const jsonRpcFusionDependencies = [
+    '      <dependency>',
+    '        <groupId>io.yupiik.fusion</groupId>',
+    '        <artifactId>fusion-jsonrpc</artifactId>',
+    '        <version>${yupiik-fusion.version}</version>',
     '      </dependency>',
 ];
 const jsonRpcDependencies = [
@@ -103,6 +123,14 @@ const jsonRpcDependencies = [
     '        </exclusions>',
     '      </dependency>',
 ];
+const fusionTestingDependencies = [
+    '      <dependency>',
+    '        <groupId>io.yupiik.fusion</groupId>',
+    '        <artifactId>fusion-testing</artifactId>',
+    '        <version>${yupiik-fusion.version}</version>',
+    '        <scope>test</scope>',
+    '      </dependency>',
+];
 const openwebbeansTestingDependencies = [
     '      <dependency>',
     '        <groupId>org.apache.openwebbeans</groupId>',
@@ -118,6 +146,13 @@ const openwebbeansTestingDependencies = [
     '        </exclusions>',
     '      </dependency>',
 ];
+const fusionKubernetesClientDependencies = [
+    '      <dependency>',
+    '        <groupId>io.yupiik.fusion</groupId>',
+    '        <artifactId>fusion-kubernetes-client</artifactId>',
+    '        <version>${yupiik-fusion.version}</version>',
+    '      </dependency>',
+];
 const kubernetesClientDependencies = [
     '      <dependency>',
     '        <groupId>io.yupiik.uship</groupId>',
@@ -126,18 +161,18 @@ const kubernetesClientDependencies = [
     '      </dependency>',
 ];
 const documentationProperties = [
-    '    <yupiik-tools.version>1.1.0</yupiik-tools.version>',
+    '    <yupiik-tools.version>1.1.8</yupiik-tools.version>',
 ];
 const bundlebeeProperties = [
-    '    <yupiik-bundlebee.version>1.0.15</yupiik-bundlebee.version>',
+    '    <yupiik-bundlebee.version>1.0.24</yupiik-bundlebee.version>',
 ];
 const ushipProperties = [
-    '    <yupiik-uship.version>1.0.9</yupiik-uship.version>',
+    '    <yupiik-uship.version>1.0.19</yupiik-uship.version>',
 ];
 const jibProperties = [
     '',
     '    <!-- Image related configuration -->',
-    '    <image.base>ossyupiik/java:17.0.1@sha256:5e8040466437f8b04e8f08a26e65b80142b130d0652fd75fe28d8a19416f36c5</image.base>',
+    '    <image.base>ossyupiik/java:17.0.9.1@sha256:a07fca34db597cdf364af84e50a5aefec9b3fc5f88145073f6e0719c85506119</image.base>',
     '    <image.workdir>/opt/applications/${project.artifactId}</image.workdir>',
     '    <image.version>${project.version}</image.version>',
     '    <image.name>${project.artifactId}/${project.artifactId}:${image.version}</image.name>',
@@ -173,7 +208,6 @@ const loggingDependencies = [
     '      <groupId>io.yupiik.logging</groupId>',
     '      <artifactId>yupiik-logging-jul</artifactId>',
     '      <version>${yupiik-logging.version}</version>',
-    '      <classifier>jakarta</classifier>',
     '      <scope>runtime</scope>',
     '    </dependency>'
 ];
@@ -254,9 +288,9 @@ const jibPiProfile = [
 const gitPlugin = [
     '      <!-- ENABLE WHEN PUSHED ON GIT',
     '      <plugin>',
-    '        <groupId>pl.project13.maven</groupId>',
-    '        <artifactId>git-commit-id-plugin</artifactId>',
-    '        <version>4.9.10</version>',
+    '        <groupId>io.github.git-commit-id</groupId>',
+    '        <artifactId>git-commit-id-maven-plugin</artifactId>',
+    '        <version>7.0.0</version>',
     '        <executions>',
     '          <execution>',
     '            <id>get-the-git-infos</id>',
@@ -285,7 +319,7 @@ const resourcesPlugin = [
     '      <plugin>',
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-resources-plugin</artifactId>',
-    '        <version>3.2.0</version>',
+    '        <version>3.3.1</version>',
     '        <configuration>',
     '          <encoding>UTF-8</encoding>',
     '        </configuration>',
@@ -295,7 +329,7 @@ const compilerPlugin = data => [
     '      <plugin>',
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-compiler-plugin</artifactId>',
-    '        <version>3.8.1</version>',
+    '        <version>3.11.0</version>',
     '        <configuration>',
     `          <source>${data.nav.javaVersion}</source>`,
     `          <target>${data.nav.javaVersion}</target>`,
@@ -317,11 +351,11 @@ const ossIndexPlugin = [
     '        </configuration>',
     '      </plugin>',
 ];
-const jibPlugin = (singleModule, frontend, jsonRpc, batchClass) => [
+const jibPlugin = (singleModule, frontend, jsonRpc, batchClass, useFusion) => [
     '      <plugin>',
     '        <groupId>com.google.cloud.tools</groupId>',
     '        <artifactId>jib-maven-plugin</artifactId>',
-    '        <version>3.1.4</version>',
+    '        <version>3.3.1</version>',
     '        <!--',
     '        mvn package jib:build [-Dimage.registry=...] -> will be pushed',
     '        mvn package -Pdocker -> local docker image',
@@ -346,7 +380,7 @@ const jibPlugin = (singleModule, frontend, jsonRpc, batchClass) => [
     ] : []),
     '          <container>',
     `            <mainClass>${jsonRpc ? 'org.apache.openwebbeans.se.CDILauncher' : (batchClass || 'OVERRIDEN_IN_CHILD')}</mainClass>`,
-    ...(jsonRpc || frontend ? [
+    ...(!useFusion && (jsonRpc || frontend) ? [
         '            <args>',
         '              <arg>--openwebbeans.main</arg>',
         '              <arg>uShipTomcatAwait</arg>',
@@ -388,7 +422,7 @@ const jibPlugin = (singleModule, frontend, jsonRpc, batchClass) => [
     '        </configuration>',
     '      </plugin>',
 ];
-const minisiteConfiguration = pck => [
+const minisiteConfiguration = (pck, useFusion) => [
     '        <configuration>',
     '          <siteBase>https://${project.groupId}.github.io/${project.artifactId}</siteBase>',
     '          <logoText>${project.artifactId}</logoText>',
@@ -401,6 +435,16 @@ const minisiteConfiguration = pck => [
     '            <preAction>',
     `              <type>${pck}.build.ConfigurationGenerator</type>`,
     '            </preAction>',
+    ...(useFusion ? [
+        '            <preAction>',
+        '              <type>io.yupiik.fusion.documentation.DocumentationGenerator</type>',
+        '              <configuration>',
+        '                <includeEnvironmentNames>true</includeEnvironmentNames>',
+        '                <module>${project.artifactId}</module>',
+        '                <urls>file://${project.build.outputDirectory}</urls> <!-- where META-INF/fusion/configuration/documentation.json is generated -->',
+        '              </configuration>',
+        '            </preAction>',
+    ] : []),
     '          </preActions>',
     '          <customScripts>',
     '          <![CDATA[[',
@@ -477,7 +521,7 @@ const jarPlugin = [
     '      <plugin>',
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-jar-plugin</artifactId>',
-    '        <version>3.2.2</version>',
+    '        <version>3.3.0</version>',
     '        <configuration>',
     '          <excludes>',
     '            <exclude>**/.keepit</exclude>',
@@ -506,7 +550,7 @@ const surefirePlugin = [
     '      <plugin>',
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-surefire-plugin</artifactId>',
-    '        <version>3.0.0-M5</version>',
+    '        <version>3.2.3</version>',
     '        <configuration>',
     '          <trimStackTrace>false</trimStackTrace>',
     '          <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter"/>',
@@ -541,6 +585,7 @@ export const generatePom = data => {
     const singleModule = isSingleModule(enabledFeatures);
     const frontend = enabledFeatures.filter(it => it.key == 'frontend').length == 1;
     const needsProfiles = data.features.jib.enabled || (data.features.github.enabled && data.features.documentation.enabled);
+    const useFusion = (data.features.jsonRpc.switchValues.filter(it => it.enabled).map(it => it.name)[0] || 'useFusion') === 'useFusion';
 
     const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -559,11 +604,12 @@ export const generatePom = data => {
         '',
         '  <properties>',
         ...testProperties,
-        ...(!data.features.jsonRpc.enabled ? [] : jsonRpcTransitiveProperties),
-        ...(!data.features.jsonRpc.enabled && !data.features.kubernetesClient.enabled ? [] : ushipProperties),
+        ...(!data.features.jsonRpc.enabled ? [] : (useFusion ? jsonRpcFusionProperties : jsonRpcTransitiveProperties)),
+        ...(useFusion || (!data.features.jsonRpc.enabled && !data.features.kubernetesClient.enabled) ? [] : (useFusion ? jsonRpcFusionProperties : ushipProperties)),
         ...(!data.features.documentation.enabled ? [] : documentationProperties),
         ...(!data.features.bundlebee.enabled ? [] : bundlebeeProperties),
         // used for the configuration anyway so import it without a condition on the feature
+        ...(!useFusion ? yupiikBatchProperties : []),
         ...yupiikConstantProperties,
         ...(!data.features.frontend.enabled ? [] : frontendProperties),
         ...(!data.features.jib.enabled ? [] : jibProperties),
@@ -590,40 +636,40 @@ export const generatePom = data => {
             '  </modules>',
             '',
         ]),
-        ...(needsProfiles ? ['  <profiles>' ] : []),
+        ...(needsProfiles ? ['  <profiles>'] : []),
         ...(!data.features.documentation.enabled || !data.features.github.enabled ? [] : githubDocProfileProfile),
         ...(!data.features.jib.enabled ? [] : jibPiProfile),
-        ...(needsProfiles ? ['  </profiles>' ] : []),
+        ...(needsProfiles ? ['  </profiles>'] : []),
         ...(singleModule ? [] : [
             '  <dependencyManagement>',
             '    <dependencies>',
             // no dependency for data.features.documentation and data.features.jib themselves
-            ...(data.features.jsonRpc.enabled && data.features.documentation.enabled ? jsonrpcDocumentationDependency : []),
-            ...(!data.features.jsonRpc.enabled ? [] : jsonRpcDependencies),
-            ...simpleConfigurationDependencies,
+            ...(data.features.jsonRpc.enabled && data.features.documentation.enabled ? (useFusion ? jsonrpcFusionDocumentationDependency : jsonrpcDocumentationDependency) : []),
+            ...(!data.features.jsonRpc.enabled ? [] : (useFusion ? jsonRpcFusionDependencies : jsonRpcDependencies)),
+            ...(useFusion ? [] : simpleConfigurationDependencies),
             ...(!data.features.batch.enabled ? [] : batchDependencies),
-            ...(!data.features.kubernetesClient.enabled ? [] : kubernetesClientDependencies),
+            ...(!data.features.kubernetesClient.enabled ? [] : (useFusion ? fusionKubernetesClientDependencies : kubernetesClientDependencies)),
             '',
             '    <!-- Test dependencies -->',
-            ...(!data.features.jsonRpc.enabled ? [] : openwebbeansTestingDependencies),
+            ...(!data.features.jsonRpc.enabled ? [] : (useFusion ? fusionTestingDependencies : openwebbeansTestingDependencies)),
             '    </dependencies>',
             '  </dependencyManagement>',
             '',
         ]),
         '  <dependencies>',
         ...loggingDependencies,
-        ...(!singleModule ? [] : [
-            ...(data.features.jsonRpc.enabled && data.features.documentation.enabled ? desindent(jsonrpcDocumentationDependency, 2) : []),
-            ...(!data.features.jsonRpc.enabled ? [] : desindent(jsonRpcDependencies, 2)),
+        ...(!singleModule ? [] : [ // todo: this does not support fusion yet but since we didn't enable multi module support yet 
+            ...(data.features.jsonRpc.enabled && data.features.documentation.enabled ? desindent(useFusion ? jsonrpcFusionDocumentationDependency : jsonrpcDocumentationDependency, 2) : []),
+            ...(!data.features.jsonRpc.enabled ? [] : desindent(useFusion ? jsonRpcFusionDependencies : jsonRpcDependencies, 2)),
             ...desindent(simpleConfigurationDependencies, 2),
             ...(!data.features.batch.enabled ? [] : desindent(batchDependencies, 2)),
-            ...(!data.features.kubernetesClient.enabled ? [] : desindent(kubernetesClientDependencies, 2)),
+            ...(!data.features.kubernetesClient.enabled ? [] : desindent(useFusion ? fusionKubernetesClientDependencies : kubernetesClientDependencies, 2)),
         ]),
         '',
         '    <!-- Test dependencies -->',
         ...junit5Dependencies,
         ...(!singleModule ? [] : [
-            ...(!data.features.jsonRpc.enabled ? [] : desindent(openwebbeansTestingDependencies, 2)),
+            ...(!data.features.jsonRpc.enabled ? [] : desindent(useFusion ? fusionTestingDependencies : openwebbeansTestingDependencies, 2)),
         ]),
         '  </dependencies>',
         '',
@@ -637,7 +683,7 @@ export const generatePom = data => {
             '        <groupId>io.yupiik.maven</groupId>',
             '        <artifactId>yupiik-tools-maven-plugin</artifactId>',
             '        <version>${yupiik-tools.version}</version>',
-            ...(!singleModule ? [] : minisiteConfiguration(toPackage(data.nav.groupId, data.nav.artifactId))),
+            ...(!singleModule ? [] : minisiteConfiguration(toPackage(data.nav.groupId, data.nav.artifactId), useFusion)),
             '      </plugin>',
         ]),
         ...(!data.features.bundlebee.enabled ? [] : [
@@ -652,7 +698,7 @@ export const generatePom = data => {
             '      <plugin>',
             '        <groupId>com.github.eirslett</groupId>',
             '        <artifactId>frontend-maven-plugin</artifactId>',
-            '        <version>1.12.0</version>',
+            '        <version>1.12.1</version>',
             ...(!singleModule ? [] : frontendConfiguration(singleModule)),
             '      </plugin>',
         ]),
@@ -661,7 +707,7 @@ export const generatePom = data => {
             data.features.jsonRpc.enabled,
             data.features.batch.enabled && !data.features.jsonRpc.enabled ?
                 `${toPackage(data.nav.groupId, data.nav.artifactId)}.batch.SimpleBatch` :
-                undefined)),
+                undefined, useFusion)),
         ...resourcesPlugin,
         ...compilerPlugin(data),
         ...surefirePlugin,

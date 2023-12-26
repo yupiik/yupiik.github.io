@@ -427,7 +427,16 @@ class GeneratorTest {
                 "    \"version\": \"1.0.0-SNAPSHOT\"\n" +
                 "  },\n" +
                 "  \"features\": {\n" +
-                Stream.of("jsonRpc", "frontend", "batch", "kubernetesClient", "jib", "bundlebee", "documentation", "github")
+                "    \"jsonRpc\": {\n" +
+                "      \"enabled\": true,\n" +
+                "      \"supportSubModule\": false,\n" +
+                "      \"useParent\": false,\n" +
+                "      \"switchValues\": [\n" +
+                "        { \"name\": \"useFusion\", \"enabled\": false },\n" +
+                "        { \"name\": \"useUship\", \"enabled\": true }\n" +
+                "      ]\n" +
+                "    },\n" +
+                Stream.of("frontend", "batch", "kubernetesClient", "jib", "bundlebee", "documentation", "github")
                         .map(it -> "" +
                                 "    \"" + it + "\": {\n" +
                                 "      \"enabled\": true,\n" +

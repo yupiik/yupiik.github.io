@@ -61,9 +61,6 @@ const Folder = ({ folder, setSelectedFile }) => {
 };
 
 const findFileIcon = (name, fallback) => {
-    if (name == 'java' || name.startsWith('java/')) {
-        return 'fas fa-code';
-    }
     if (name.endsWith('.java') || name.endsWith('.json') || name.endsWith('.xml') || name.endsWith('.yaml')) {
         return 'far fa-file-code';
     }

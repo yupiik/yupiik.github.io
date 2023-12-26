@@ -14,6 +14,10 @@ export const defaultState = {
             useParent: false,
             tooltip: 'Enables JSON-RPC backend',
             icon: 'fa fa-server',
+            switchValues: [
+                { name: 'useFusion', enabled: true, label: 'Use Fusion', tooltip: 'Backend will use Fusion IoC/JSON-RPC server if checked else a CDI IoC with uShip JSON-RPC server' },
+                { name: 'useUship', enabled: false },
+            ],
         },
         frontend: {
             label: 'Frontend',

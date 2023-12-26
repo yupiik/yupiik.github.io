@@ -7,12 +7,16 @@
 </div>
 <section class="container section px-3 px-md-5">
 ++++
+
 {{{items}}}
+
 ++++
 </section>
 <div class="is-blog">
 ++++
+
 {{{links}}}
+
 ++++
 </div>
 ++++

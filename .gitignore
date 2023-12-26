@@ -19,3 +19,6 @@ generated_*.png
 .node
 node_modules
 
+# vscode
+.vscode
+

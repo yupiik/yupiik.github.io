@@ -47,7 +47,7 @@ const batchDependencies = [
     '      </dependency>',
 ];
 const jsonRpcFusionProperties = [
-    '    <yupiik-fusion.version>1.0.12</yupiik-fusion.version>',
+    '    <yupiik-fusion.version>1.0.13</yupiik-fusion.version>',
 ];
 const jsonRpcTransitiveProperties = [
     '    <owb.version>2.0.27</owb.version>',

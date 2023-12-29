@@ -707,7 +707,7 @@ export const generatePom = data => {
         ...(!singleModule ? [] : [ // todo: this does not support fusion yet but since we didn't enable multi module support yet 
             ...(data.features.jsonRpc.enabled && data.features.documentation.enabled ? desindent(useFusion ? jsonrpcFusionDocumentationDependency : jsonrpcDocumentationDependency, 2) : []),
             ...(!data.features.jsonRpc.enabled ? [] : desindent(useFusion ? jsonRpcFusionDependencies : jsonRpcDependencies, 2)),
-            ...desindent(simpleConfigurationDependencies, 2),
+            ...(useFusion && !data.features.batch.enabled ? [] : desindent(simpleConfigurationDependencies, 2)),
             ...(!data.features.batch.enabled ? [] : desindent(batchDependencies, 2)),
             ...(!data.features.kubernetesClient.enabled ? [] : desindent(useFusion ? fusionKubernetesClientDependencies : kubernetesClientDependencies, 2)),
         ]),

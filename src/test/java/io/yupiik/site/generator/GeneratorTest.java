@@ -100,7 +100,7 @@ class GeneratorTest {
     private void assertDocker(final Path project, final Path temp, final String java17Home, final boolean win) throws Throwable {
         exec(
                 temp.resolve("jib_outputs"), win, project, java17Home,
-                "mvn", "jib:dockerBuild");
+                "mvn", "-e", "jib:dockerBuild");
         final var image = "application/application:1.0.0-SNAPSHOT";
         try {
             final var httpClient = HttpClient.newHttpClient();
@@ -290,7 +290,7 @@ class GeneratorTest {
     private void assertBundleBeeDryRun(final Path project, final Path temp, final String java17Home, final boolean win) throws IOException, InterruptedException {
         final var stdout = Files.readAllLines(exec(
                 temp.resolve("mvn_bundlebee_outputs"), win, project, java17Home,
-                "mvn", "bundlebee:apply", "-Dbundlebee.kube.dryRun=true", "-Dkubeconfig=explicit"), UTF_8);
+                "mvn", "-e", "bundlebee:apply", "-Dbundlebee.kube.dryRun=true", "-Dkubeconfig=explicit"), UTF_8);
 
         // smoke test, check some requests were simulated in dry-run mode and build succeeded (so descriptors were properly read at least)
         final var requests = stdout.stream().filter("[INFO] Request succeeded:"::equals).count();
@@ -356,7 +356,7 @@ class GeneratorTest {
     }
 
     private void assertBuild(final Path mvnProject, final Path temp, final boolean win, final String java17Home) throws IOException, InterruptedException {
-        exec(temp.resolve("mvn_outputs"), win, mvnProject, java17Home, "mvn", "package", "yupiik-tools:minisite");
+        exec(temp.resolve("mvn_outputs"), win, mvnProject, java17Home, "mvn", "-e", "package", "yupiik-tools:minisite");
         assertBuildResult(mvnProject);
     }
 

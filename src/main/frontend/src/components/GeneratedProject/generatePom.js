@@ -184,7 +184,7 @@ const ushipProperties = [
 const jibProperties = javaVersion => [
     '',
     '    <!-- Image related configuration -->',
-    javaVersion === '21' ?
+    javaVersion === 21 ?
         '    <image.base>azul/zulu-openjdk-alpine:21.0.1@sha256:d45f86fffd7ccd63839d0518f7aa69dd8c8e1703e2c9b6a62dabb813300946cd</image.base>' :
         '    <image.base>ossyupiik/java:17.0.9.1@sha256:a07fca34db597cdf364af84e50a5aefec9b3fc5f88145073f6e0719c85506119</image.base>',
     '    <image.workdir>/opt/applications/${project.artifactId}</image.workdir>',
@@ -345,7 +345,7 @@ const compilerPlugin = data => [
     '        <groupId>org.apache.maven.plugins</groupId>',
     '        <artifactId>maven-compiler-plugin</artifactId>',
     '        <version>3.11.0</version>',
-    ...(data.nav.javaVersion === '21' ? [
+    ...(data.nav.javaVersion === 21 ? [
         '        <executions>',
         '          <execution>',
         '            <id>default-process-annotations</id>',
@@ -376,7 +376,7 @@ const compilerPlugin = data => [
     `          <target>${data.nav.javaVersion}</target>`,
     `          <release>${data.nav.javaVersion}</release>`,
     '          <encoding>UTF-8</encoding>',
-    ...(data.nav.javaVersion === '21' ? [
+    ...(data.nav.javaVersion === 21 ? [
         '          <useIncrementalCompilation>false</useIncrementalCompilation>',
         '          <annotationProcessors>',
         '            <annotationProcessor>io.yupiik.fusion.framework.processor.FusionProcessor</annotationProcessor>',

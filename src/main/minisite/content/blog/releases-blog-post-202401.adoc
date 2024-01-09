@@ -27,12 +27,12 @@ Published at: 08/01/2024
 
 Release 1.0.24
 
-* [build] Upgrade to yupiik-tools 1.1.8. [link](https://github.com/yupiik/bundlebee/commit/3a1ddb6ab2a39edf61e701aadcc87f2912ffd503).
-* [documentation] set min version for K8S json schema generator. [link](https://github.com/yupiik/bundlebee/commit/9b490bef867865e640e8c6bab45f3f2366747d1d).
-* [project] adding idea icon. [link](https://github.com/yupiik/bundlebee/commit/19eb095983c9bcc41f12156c4eb6611aa8193225).
-* [diff] adding diff command to compare local and k8s server states. [link](https://github.com/yupiik/bundlebee/commit/655edde12657664d24e117cda5e35a2149c4cb53).
-* [placeholder-extractor] adding a basic command to extract placeholder for doc purposes. [link](https://github.com/yupiik/bundlebee/commit/b4b35b732c2f2fc52815eae537578b428651ee9c).
-* [diff] cache diff + enable to fail with an error count. [link](https://github.com/yupiik/bundlebee/commit/7214dea8db2dab27d30cf8a17cfdc7a8d9b2cdf2).
+* [build] Upgrade to yupiik-tools 1.1.8. link:https://github.com/yupiik/bundlebee/commit/3a1ddb6ab2a39edf61e701aadcc87f2912ffd503[link].
+* [documentation] set min version for K8S json schema generator. link:https://github.com/yupiik/bundlebee/commit/9b490bef867865e640e8c6bab45f3f2366747d1d[link].
+* [project] adding idea icon. link:https://github.com/yupiik/bundlebee/commit/19eb095983c9bcc41f12156c4eb6611aa8193225[link].
+* [diff] adding diff command to compare local and k8s server states. link:https://github.com/yupiik/bundlebee/commit/655edde12657664d24e117cda5e35a2149c4cb53[link].
+* [placeholder-extractor] adding a basic command to extract placeholder for doc purposes. link:https://github.com/yupiik/bundlebee/commit/b4b35b732c2f2fc52815eae537578b428651ee9c[link].
+* [diff] cache diff + enable to fail with an error count. link:https://github.com/yupiik/bundlebee/commit/7214dea8db2dab27d30cf8a17cfdc7a8d9b2cdf2[link].
 
 
 === bundlebee-1.0.25
@@ -43,20 +43,33 @@ Published at: 08/01/2024
 
 Release 1.0.25
 
-* [diff] ensure diff command does not use logger logging when file mode is picked. [link](https://github.com/yupiik/bundlebee/commit/758486a0b67632ca949f6d0f6701f51dfc3836d5).
-* [diff] ensure diff command does not always write the diff type in auto mode. [link](https://github.com/yupiik/bundlebee/commit/9140785e120fe2f146e5c005780e5ef8a2689d58).
-* [diff] add remote url to diff command when exporting in JSON. [link](https://github.com/yupiik/bundlebee/commit/a5a7b208f354cedb5a404c23398349b40037a270).
-* [http kube client] support proxy configuration. [link](https://github.com/yupiik/bundlebee/commit/7c6acdc4914ff7f37251ee99213112cfe0684eeb).
-* [argocd] basic argocd integration. [link](https://github.com/yupiik/bundlebee/commit/3248a2cab2a97c8a5d8ebf70992df8809cdf0590).
-* [ciphering] integrate codec-core from yupiik tools to placeholders to support a default ciphering algorithm. [link](https://github.com/yupiik/bundlebee/commit/d1af13208eb8c6ed40bae37c108d51135a4de806).
-* [build][plugins] upgrade a few plugins to drop warnings. [link](https://github.com/yupiik/bundlebee/commit/90eeb80fcdd49d7dcd21f023cf83d3f84cc622e5).
-* [skip ci][doc] typo in doc. [link](https://github.com/yupiik/bundlebee/commit/374d6fa9f9083788d9a84311d4095983214be46f).
-* [doc] Highlight that ArgoCD stores sensitive information and that it can be challenging to use from a 'dev' environment. [link](https://github.com/yupiik/bundlebee/commit/469ece5b3b6162a66eecc3ab9b20bcb3c2281ee0).
-* [argocd] placeholder extractor can set required and tooltip flags. [link](https://github.com/yupiik/bundlebee/commit/58f5036beaf54b16d02295b6629c0bf5a09e93f1).
-* [project] Update license header year. [link](https://github.com/yupiik/bundlebee/commit/6e58f416ebbd547ae355877ca78860344ff2f4b4).
-* [build] Upgrade java version for github action. [link](https://github.com/yupiik/bundlebee/commit/333015dc274e3354dc308a36b32077bcd81799a2).
-* [test] Fix helm command test. [link](https://github.com/yupiik/bundlebee/commit/12c244d7b62a7506251c466c1f3f70e5e8fcbbd7).
+* [diff] ensure diff command does not use logger logging when file mode is picked. link:https://github.com/yupiik/bundlebee/commit/758486a0b67632ca949f6d0f6701f51dfc3836d5[link].
+* [diff] ensure diff command does not always write the diff type in auto mode. link:https://github.com/yupiik/bundlebee/commit/9140785e120fe2f146e5c005780e5ef8a2689d58[link].
+* [diff] add remote url to diff command when exporting in JSON. link:https://github.com/yupiik/bundlebee/commit/a5a7b208f354cedb5a404c23398349b40037a270[link].
+* [http kube client] support proxy configuration. link:https://github.com/yupiik/bundlebee/commit/7c6acdc4914ff7f37251ee99213112cfe0684eeb[link].
+* [argocd] basic argocd integration. link:https://github.com/yupiik/bundlebee/commit/3248a2cab2a97c8a5d8ebf70992df8809cdf0590[link].
+* [ciphering] integrate codec-core from yupiik tools to placeholders to support a default ciphering algorithm. link:https://github.com/yupiik/bundlebee/commit/d1af13208eb8c6ed40bae37c108d51135a4de806[link].
+* [build][plugins] upgrade a few plugins to drop warnings. link:https://github.com/yupiik/bundlebee/commit/90eeb80fcdd49d7dcd21f023cf83d3f84cc622e5[link].
+* [skip ci][doc] typo in doc. link:https://github.com/yupiik/bundlebee/commit/374d6fa9f9083788d9a84311d4095983214be46f[link].
+* [doc] Highlight that ArgoCD stores sensitive information and that it can be challenging to use from a 'dev' environment. link:https://github.com/yupiik/bundlebee/commit/469ece5b3b6162a66eecc3ab9b20bcb3c2281ee0[link].
+* [argocd] placeholder extractor can set required and tooltip flags. link:https://github.com/yupiik/bundlebee/commit/58f5036beaf54b16d02295b6629c0bf5a09e93f1[link].
+* [project] Update license header year. link:https://github.com/yupiik/bundlebee/commit/6e58f416ebbd547ae355877ca78860344ff2f4b4[link].
+* [build] Upgrade java version for github action. link:https://github.com/yupiik/bundlebee/commit/333015dc274e3354dc308a36b32077bcd81799a2[link].
+* [test] Fix helm command test. link:https://github.com/yupiik/bundlebee/commit/12c244d7b62a7506251c466c1f3f70e5e8fcbbd7[link].
 
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/bundlebee/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/bundlebee/getting-started.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/bundlebee/issues[GitHub issue page].
 
 == Yupiik-Tools-Maven-Plugin
 
@@ -68,37 +81,51 @@ Published at: 08/01/2024
 
 Release 1.2.0
 
-* [asciidoc-java] adding asciidoc-java module, for now it is not yet integrated with any other module until we switch to java17 as baseline. [link](https://github.com/yupiik/tools-maven-plugin/commit/6291d9c48d1f3d471335ea64c7ec138547e331dd).
-* [ci] move ci to java 17 to be able to build asciidoc module. [link](https://github.com/yupiik/tools-maven-plugin/commit/b2f14b5348c29659cac41511f61e107aa01348d7).
-* [doc] pick an icon for asciidoc-java module doc. [link](https://github.com/yupiik/tools-maven-plugin/commit/bce968b815c46398cfc9ca176bb0a2801d20ba99).
-* [doc] fix asciidoc-java doc page title. [link](https://github.com/yupiik/tools-maven-plugin/commit/8508ee2f681f793275e069e924f45a444cc48782).
-* [doc] typo. [link](https://github.com/yupiik/tools-maven-plugin/commit/eceb4c0555bfd2562cfd73735ab5120da04f3e8a).
-* [asciidoctor-java] few more html block implemented. [link](https://github.com/yupiik/tools-maven-plugin/commit/9e3f18a67007421f6b3cd1706bb084d743d91ee6).
-* [asciidoctor-java] basic html implementation. [link](https://github.com/yupiik/tools-maven-plugin/commit/b71fde899501a4c4bc828497d45c6b4b3e145871).
-* [asciidoc-java] fix header/body delimitation when there is no attributes + source headers. [link](https://github.com/yupiik/tools-maven-plugin/commit/499a2afb5675184ad062d7067fc96faffe444e3e).
-* [asciidoctor-java] adding help in minimalistic main. [link](https://github.com/yupiik/tools-maven-plugin/commit/2157ebeb1f39131280861dbacaa522c4bb008a81).
-* [asciidoctor-java] ensure ifeval can use build time attributes properly. [link](https://github.com/yupiik/tools-maven-plugin/commit/17eca02797a1f68017c701537ee157eacacedba5).
-* [asciidoctor-java] enable to embed images. [link](https://github.com/yupiik/tools-maven-plugin/commit/21786cfbe194c1d9c4bec30dce92e901139c78dc).
-* [build] licenses. [link](https://github.com/yupiik/tools-maven-plugin/commit/e10197cbef369e4f9d399019e9428a229b3b2400).
-* [asciidoctor-java] integrate code blocks with carbon.now. [link](https://github.com/yupiik/tools-maven-plugin/commit/5a3205a23d7e7b202f52c8060a59d503a2b26324).
-* [asciidoctor-java] integrate code blocks with carbon.now - using frame for a better portability for now. [link](https://github.com/yupiik/tools-maven-plugin/commit/85f6fe3d989f89d5827474db6c88ca5102d1ad71).
-* [browser] open with browser feature is broken on recent linux version due to a bug in java desktop, adding a workaround. [link](https://github.com/yupiik/tools-maven-plugin/commit/7f3c6f57c156936cf69197636c4762492430b49c).
+* [asciidoc-java] adding asciidoc-java module, for now it is not yet integrated with any other module until we switch to java17 as baseline. link:https://github.com/yupiik/tools-maven-plugin/commit/6291d9c48d1f3d471335ea64c7ec138547e331dd[link].
+* [ci] move ci to java 17 to be able to build asciidoc module. link:https://github.com/yupiik/tools-maven-plugin/commit/b2f14b5348c29659cac41511f61e107aa01348d7[link].
+* [doc] pick an icon for asciidoc-java module doc. link:https://github.com/yupiik/tools-maven-plugin/commit/bce968b815c46398cfc9ca176bb0a2801d20ba99[link].
+* [doc] fix asciidoc-java doc page title. link:https://github.com/yupiik/tools-maven-plugin/commit/8508ee2f681f793275e069e924f45a444cc48782[link].
+* [doc] typo. link:https://github.com/yupiik/tools-maven-plugin/commit/eceb4c0555bfd2562cfd73735ab5120da04f3e8a[link].
+* [asciidoctor-java] few more html block implemented. link:https://github.com/yupiik/tools-maven-plugin/commit/9e3f18a67007421f6b3cd1706bb084d743d91ee6[link].
+* [asciidoctor-java] basic html implementation. link:https://github.com/yupiik/tools-maven-plugin/commit/b71fde899501a4c4bc828497d45c6b4b3e145871[link].
+* [asciidoc-java] fix header/body delimitation when there is no attributes + source headers. link:https://github.com/yupiik/tools-maven-plugin/commit/499a2afb5675184ad062d7067fc96faffe444e3e[link].
+* [asciidoctor-java] adding help in minimalistic main. link:https://github.com/yupiik/tools-maven-plugin/commit/2157ebeb1f39131280861dbacaa522c4bb008a81[link].
+* [asciidoctor-java] ensure ifeval can use build time attributes properly. link:https://github.com/yupiik/tools-maven-plugin/commit/17eca02797a1f68017c701537ee157eacacedba5[link].
+* [asciidoctor-java] enable to embed images. link:https://github.com/yupiik/tools-maven-plugin/commit/21786cfbe194c1d9c4bec30dce92e901139c78dc[link].
+* [build] licenses. link:https://github.com/yupiik/tools-maven-plugin/commit/e10197cbef369e4f9d399019e9428a229b3b2400[link].
+* [asciidoctor-java] integrate code blocks with carbon.now. link:https://github.com/yupiik/tools-maven-plugin/commit/5a3205a23d7e7b202f52c8060a59d503a2b26324[link].
+* [asciidoctor-java] integrate code blocks with carbon.now - using frame for a better portability for now. link:https://github.com/yupiik/tools-maven-plugin/commit/85f6fe3d989f89d5827474db6c88ca5102d1ad71[link].
+* [browser] open with browser feature is broken on recent linux version due to a bug in java desktop, adding a workaround. link:https://github.com/yupiik/tools-maven-plugin/commit/7f3c6f57c156936cf69197636c4762492430b49c[link].
 * [minisite] enable to use asciidoctor-java (#9)
-* [version] moving to 1.2.0-SNAPSHOT. [link](https://github.com/yupiik/tools-maven-plugin/commit/31d1fc25ceb6520281e46db4f0a0cc04041b16fb).
-* [cleanup] ensure project builds without warnings. [link](https://github.com/yupiik/tools-maven-plugin/commit/0dbb311bd9bf6b28e711c381e324446746045091).
-* [asciidoc] tolerate an empty line before source block callouts. [link](https://github.com/yupiik/tools-maven-plugin/commit/f81ac120248508794feea1770841f9c6e4d7ace5).
-* [asciidoc] better support of multiline text in lists. [link](https://github.com/yupiik/tools-maven-plugin/commit/25b685a6bff54cfc615d2bfb7a00a29cceb1d9a9).
-* [asciidoc] support conditional blocks in header. [link](https://github.com/yupiik/tools-maven-plugin/commit/106e54a68c5758d3564334bfebe919970b0fc4e6).
-* [asciidoc] tolerate inline link in code block (weirdish). [link](https://github.com/yupiik/tools-maven-plugin/commit/808d59cae1c8c537fffdea39e16bb8d0af2dd06d).
-* [asciidoc] basic toc handling. [link](https://github.com/yupiik/tools-maven-plugin/commit/e8ed220e49281eec0f0e07b9a824ec05a13fbc72).
-* [build] upgrade to nexus-staging-maven-plugin 1.6.13. [link](https://github.com/yupiik/tools-maven-plugin/commit/6e8285877c0c10319736b1c936fb47aeffef919f).
-* [asciidoc][minisite] make the default html renderer of asciidoc module closer to asciidoctor to reuse its css. [link](https://github.com/yupiik/tools-maven-plugin/commit/a6af210b7797b9125892e08ec8ade7578170bef7).
-* git converging to asciidoctor html layout and style to reuse its css by default. [link](https://github.com/yupiik/tools-maven-plugin/commit/bd05af2b4376c190c922feaa810b532fb865baf0).
-* [crypt][properties] extract properties crypto logic from maven plugin to let it be reused more easily. [link](https://github.com/yupiik/tools-maven-plugin/commit/5cf0213ab8696128a1105476cf4885f1438b4247).
+* [version] moving to 1.2.0-SNAPSHOT. link:https://github.com/yupiik/tools-maven-plugin/commit/31d1fc25ceb6520281e46db4f0a0cc04041b16fb[link].
+* [cleanup] ensure project builds without warnings. link:https://github.com/yupiik/tools-maven-plugin/commit/0dbb311bd9bf6b28e711c381e324446746045091[link].
+* [asciidoc] tolerate an empty line before source block callouts. link:https://github.com/yupiik/tools-maven-plugin/commit/f81ac120248508794feea1770841f9c6e4d7ace5[link].
+* [asciidoc] better support of multiline text in lists. link:https://github.com/yupiik/tools-maven-plugin/commit/25b685a6bff54cfc615d2bfb7a00a29cceb1d9a9[link].
+* [asciidoc] support conditional blocks in header. link:https://github.com/yupiik/tools-maven-plugin/commit/106e54a68c5758d3564334bfebe919970b0fc4e6[link].
+* [asciidoc] tolerate inline link in code block (weirdish[link]. link:https://github.com/yupiik/tools-maven-plugin/commit/808d59cae1c8c537fffdea39e16bb8d0af2dd06d[link].
+* [asciidoc] basic toc handling. link:https://github.com/yupiik/tools-maven-plugin/commit/e8ed220e49281eec0f0e07b9a824ec05a13fbc72[link].
+* [build] upgrade to nexus-staging-maven-plugin 1.6.13. link:https://github.com/yupiik/tools-maven-plugin/commit/6e8285877c0c10319736b1c936fb47aeffef919f[link].
+* [asciidoc][minisite] make the default html renderer of asciidoc module closer to asciidoctor to reuse its css. link:https://github.com/yupiik/tools-maven-plugin/commit/a6af210b7797b9125892e08ec8ade7578170bef7[link].
+* git converging to asciidoctor html layout and style to reuse its css by default. link:https://github.com/yupiik/tools-maven-plugin/commit/bd05af2b4376c190c922feaa810b532fb865baf0[link].
+* [crypt][properties] extract properties crypto logic from maven plugin to let it be reused more easily. link:https://github.com/yupiik/tools-maven-plugin/commit/5cf0213ab8696128a1105476cf4885f1438b4247[link].
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/tools-maven-plugin/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/tools-maven-plugin[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/tools-maven-plugin/issues[GitHub issue page].
 
 == Yupiik-Batch
 
-The main improvement is the new Metric Relay module [link](https://www.yupiik.io/yupiik-batch/metrics-relay.html).
+The main improvement is the new Metric Relay module link:https://www.yupiik.io/yupiik-batch/metrics-relay.html[link].
 
 === yupiik-batch-1.0.4
 
@@ -108,14 +135,14 @@ Published at: 07/12/2023
 
 Release 1.0.4
 
-* [doc] Upgrade to yupiik-tools 1.1.8. [link](https://github.com/yupiik/yupiik-batch/commit/f7969043efa224006234b9559b56efd2f6372253).
-* [project] adding project icon for idea. [link](https://github.com/yupiik/yupiik-batch/commit/5ed519422029a367f39afc7c0cf3ec6dd8cc5000).
-* [modules] Add metrics-scraper module. [link](https://github.com/yupiik/yupiik-batch/commit/34e358f08f75f2b2ec3b35ae60fce3aa528a8683).
-* [modules] Add metrics-scraper documentation. [link](https://github.com/yupiik/yupiik-batch/commit/a7b2a1cbb895128507a8b8626f8785cd1b6dc2da).
-* [dependencies] Upgrade to Fusion 1.0.12. [link](https://github.com/yupiik/yupiik-batch/commit/f745b13e5dd298a085d38e6e8b32a3d7b897a38a).
-* [modules] Use completion stage in metrics relay. [link](https://github.com/yupiik/yupiik-batch/commit/18845d5f47015a7c9039bed606b9f5d19978a507).
-* [modules] Close bufferReader. [link](https://github.com/yupiik/yupiik-batch/commit/d130deb4e2b83d71270f86dc16cbced8e91a8a76).
-* [modules] Add metrics-scraper module. [link](https://github.com/yupiik/yupiik-batch/commit/24935c7d5f6e54d51a939a286a2e77f825ba9f0c).
+* [doc] Upgrade to yupiik-tools 1.1.8. link:https://github.com/yupiik/yupiik-batch/commit/f7969043efa224006234b9559b56efd2f6372253[link].
+* [project] adding project icon for idea. link:https://github.com/yupiik/yupiik-batch/commit/5ed519422029a367f39afc7c0cf3ec6dd8cc5000[link].
+* [modules] Add metrics-scraper module. link:https://github.com/yupiik/yupiik-batch/commit/34e358f08f75f2b2ec3b35ae60fce3aa528a8683[link].
+* [modules] Add metrics-scraper documentation. link:https://github.com/yupiik/yupiik-batch/commit/a7b2a1cbb895128507a8b8626f8785cd1b6dc2da[link].
+* [dependencies] Upgrade to Fusion 1.0.12. link:https://github.com/yupiik/yupiik-batch/commit/f745b13e5dd298a085d38e6e8b32a3d7b897a38a[link].
+* [modules] Use completion stage in metrics relay. link:https://github.com/yupiik/yupiik-batch/commit/18845d5f47015a7c9039bed606b9f5d19978a507[link].
+* [modules] Close bufferReader. link:https://github.com/yupiik/yupiik-batch/commit/d130deb4e2b83d71270f86dc16cbced8e91a8a76[link].
+* [modules] Add metrics-scraper module. link:https://github.com/yupiik/yupiik-batch/commit/24935c7d5f6e54d51a939a286a2e77f825ba9f0c[link].
 
 
 === yupiik-batch-1.0.5
@@ -126,13 +153,27 @@ Published at: 21/12/2023
 
 Release 1.0.5
 
-* [metrics-relay] Fix maven name. [link](https://github.com/yupiik/yupiik-batch/commit/f431b42b13e9b5aad6937ade4e31072cbd3e4b39).
-* [metrics-relay] Update docker image name. [link](https://github.com/yupiik/yupiik-batch/commit/5c21e2cc7b47603be97015cd7c8032459ea38a19).
-* [metrics-relay] Update docker image name. [link](https://github.com/yupiik/yupiik-batch/commit/b3dd2904fbf4a58ee7a701244e2718971e394537).
-* [metrics-relay] Add docker publish instruction. [link](https://github.com/yupiik/yupiik-batch/commit/0412c926b0278e216a15a5547c79da8bc62bcd4f).
-* [metrics-relay] Update documentation. [link](https://github.com/yupiik/yupiik-batch/commit/a1a74a5ae134b1e1f7faa7f6e90c4949313b5618).
-* [metric-relay] Fix empty response body when metric list is empty. [link](https://github.com/yupiik/yupiik-batch/commit/16f661016fe8362f51c3752cb3c731a88d4c566b).
-* [metric-relay] Fix maven warning. [link](https://github.com/yupiik/yupiik-batch/commit/323eaf954c74b933d9aec081d501114270caa952).
+* [metrics-relay] Fix maven name. link:https://github.com/yupiik/yupiik-batch/commit/f431b42b13e9b5aad6937ade4e31072cbd3e4b39[link].
+* [metrics-relay] Update docker image name. link:https://github.com/yupiik/yupiik-batch/commit/5c21e2cc7b47603be97015cd7c8032459ea38a19[link].
+* [metrics-relay] Update docker image name. link:https://github.com/yupiik/yupiik-batch/commit/b3dd2904fbf4a58ee7a701244e2718971e394537[link].
+* [metrics-relay] Add docker publish instruction. link:https://github.com/yupiik/yupiik-batch/commit/0412c926b0278e216a15a5547c79da8bc62bcd4f[link].
+* [metrics-relay] Update documentation. link:https://github.com/yupiik/yupiik-batch/commit/a1a74a5ae134b1e1f7faa7f6e90c4949313b5618[link].
+* [metric-relay] Fix empty response body when metric list is empty. link:https://github.com/yupiik/yupiik-batch/commit/16f661016fe8362f51c3752cb3c731a88d4c566b[link].
+* [metric-relay] Fix maven warning. link:https://github.com/yupiik/yupiik-batch/commit/323eaf954c74b933d9aec081d501114270caa952[link].
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/yupiik-batch/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/yupiik-batch/getting-started.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/yupiik-batch/issues[GitHub issue page].
 
 == Fusion
 
@@ -150,12 +191,29 @@ Published at: 08/01/2024
 
 Release 1.0.13
 
-* [dependencies] Upgrade to Apache Tomcat 10.1.17. [link](https://github.com/yupiik/fusion/commit/601f83a2b27f800f3ac323e5fb79dced09f276e4).
-* [doc] Fix persistence example code. [link](https://github.com/yupiik/fusion/commit/ca90b4952e14c27401f5eca7bc5858cc34a8b066).
-* [doc] Fix persistence example source code. [link](https://github.com/yupiik/fusion/commit/b52daf78d055703abc2660bd4b5d3f44d45998df).
-* [httpclient] add RoutingHttpClient. [link](https://github.com/yupiik/fusion/commit/74f71138e0b8c7836d7a91e20fe12b19bb90f548).
-* [openrpc] export openrpc jsonrpcmethod type to let it be referenced by consumers. [link](https://github.com/yupiik/fusion/commit/79729e8aa1f4b35b4f71ac4f7462ea4124602377).
-* [java >= 21] sample compiler plugin configuration for post java 21 versions. [link](https://github.com/yupiik/fusion/commit/5c13fc404a1935fd29e29ce33299553f12ebea47).
-* [openrpc] add a basic openrpc2adoc converter (io.yupiik.fusion.documentation.OpenRPC2Adoc). [link](https://github.com/yupiik/fusion/commit/0d8461e1bd204a12189c12b150f99a66f9a791f3).
-* [build] missing header. [link](https://github.com/yupiik/fusion/commit/3c3b02cb1fb51366eca3d5c61d122596b728a163).
-* [project] Update license year. [link](https://github.com/yupiik/fusion/commit/e42be8f6fd6a2f1e75c07c53004627d167841ddd).
+* [dependencies] Upgrade to Apache Tomcat 10.1.17. link:https://github.com/yupiik/fusion/commit/601f83a2b27f800f3ac323e5fb79dced09f276e4[link].
+* [doc] Fix persistence example code. link:https://github.com/yupiik/fusion/commit/ca90b4952e14c27401f5eca7bc5858cc34a8b066[link].
+* [doc] Fix persistence example source code. link:https://github.com/yupiik/fusion/commit/b52daf78d055703abc2660bd4b5d3f44d45998df[link].
+* [httpclient] add RoutingHttpClient. link:https://github.com/yupiik/fusion/commit/74f71138e0b8c7836d7a91e20fe12b19bb90f548[link].
+* [openrpc] export openrpc jsonrpcmethod type to let it be referenced by consumers. link:https://github.com/yupiik/fusion/commit/79729e8aa1f4b35b4f71ac4f7462ea4124602377[link].
+* [java >= 21] sample compiler plugin configuration for post java 21 versions. link:https://github.com/yupiik/fusion/commit/5c13fc404a1935fd29e29ce33299553f12ebea47[link].
+* [openrpc] add a basic openrpc2adoc converter (io.yupiik.fusion.documentation.OpenRPC2Adoc[link]. link:https://github.com/yupiik/fusion/commit/0d8461e1bd204a12189c12b150f99a66f9a791f3[link].
+* [build] missing header. link:https://github.com/yupiik/fusion/commit/3c3b02cb1fb51366eca3d5c61d122596b728a163[link].
+* [project] Update license year. link:https://github.com/yupiik/fusion/commit/e42be8f6fd6a2f1e75c07c53004627d167841ddd[link].
+
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/fusion/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/fusion/fusion/index.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/fusion/issues[GitHub issue page].
+
+Enjoy!

@@ -10,7 +10,16 @@ January 2024: Bundlebee, Tool-Maven-Plugin, Batch, Fusion.
 
 == Bundlebee
 
-=== Bundlebee-1.0.24
+Some great improvements has been done, especially:
+
+* ArgoCD basic integration (as an alternative to helm/kustomize)
+* Diff command support (between alveolus and Kubernetes state)
+* Simple ciphering support in placeholders
+* HTTP proxy configuration support
+
+*Highlight*: one more step to demo that BundleBee is GitOps friendly (but not limited to) and automation friendly.
+
+=== bundlebee-1.0.24
 
 URL: https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24
 
@@ -48,6 +57,9 @@ Release 1.0.25
 * [build] Upgrade java version for github action. [link](https://github.com/yupiik/bundlebee/commit/333015dc274e3354dc308a36b32077bcd81799a2).
 * [test] Fix helm command test. [link](https://github.com/yupiik/bundlebee/commit/12c244d7b62a7506251c466c1f3f70e5e8fcbbd7).
 
+
+== Yupiik-Tools-Maven-Plugin
+
 === yupiik-tools-maven-plugin-parent-1.2.0
 
 URL: https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0
@@ -84,7 +96,9 @@ Release 1.2.0
 * git converging to asciidoctor html layout and style to reuse its css by default. [link](https://github.com/yupiik/tools-maven-plugin/commit/bd05af2b4376c190c922feaa810b532fb865baf0).
 * [crypt][properties] extract properties crypto logic from maven plugin to let it be reused more easily. [link](https://github.com/yupiik/tools-maven-plugin/commit/5cf0213ab8696128a1105476cf4885f1438b4247).
 
-== yupiik-batch
+== Yupiik-Batch
+
+The main improvement is the new Metric Relay module [link](https://www.yupiik.io/yupiik-batch/metrics-relay.html).
 
 === yupiik-batch-1.0.4
 
@@ -120,7 +134,13 @@ Release 1.0.5
 * [metric-relay] Fix empty response body when metric list is empty. [link](https://github.com/yupiik/yupiik-batch/commit/16f661016fe8362f51c3752cb3c731a88d4c566b).
 * [metric-relay] Fix maven warning. [link](https://github.com/yupiik/yupiik-batch/commit/323eaf954c74b933d9aec081d501114270caa952).
 
-== fusion
+== Fusion
+
+The Fusion project continue to grow and the latest major improvements are related to:
+
+* [living doc] openrpc 2 asciidoc support
+* [httpclient] RoutingHttpClient to switch between different client configuration based on a custom rule
+* [doc] explain how to avoid warnings with Java >= 21
 
 === fusion-1.0.13
 

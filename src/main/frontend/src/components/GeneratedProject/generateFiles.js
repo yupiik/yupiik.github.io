@@ -472,7 +472,7 @@ const deployment = (singleModule, name, artifactId, main, args, injectProbes, sy
     '}',
 ].join('\n');
 
-const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, singleModule, readmePaths) => {
+const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, singleModule, readmePaths, useFusion) => {
     readmePaths.push('Bundlebee enables you to automate the deployment of your application in Kubernetes.');
     readmePaths.push('');
     readmePaths.push('Generator creates a basic recipe in `manifest.json` for your application.');
@@ -576,7 +576,7 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
                     '      ]',
                     '    }',
                 ].join('\n') : ''),
-            ].join(',\n'),
+            ].filter(it => it.length > 0).join(',\n'),
             '  ]',
             '}',
         ].join('\n'),
@@ -607,9 +607,11 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
         moduleFolder.push({
             id: idGenerator(),
             name: 'deployment.json',
-            content: deployment(singleModule, name, artifactId, 'org.apache.openwebbeans.se.CDILauncher', BUNDLEBEE_TOMCAT_ARGS, false, [
-                `-D${artifactId}-resources-docBase=/opt/applications/${artifactId}/docs`,
-            ]),
+            content: deployment(
+                singleModule, name, artifactId,
+                useFusion ? 'io.yupiik.fusion.framework.api.main.Launcher' : 'org.apache.openwebbeans.se.CDILauncher',
+                useFusion ? [] : BUNDLEBEE_TOMCAT_ARGS,
+                false, [ `-D${artifactId}-resources-docBase=/opt/applications/${artifactId}/docs` ]),
         });
     }
     if (jsonRpc) {
@@ -636,7 +638,11 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
         moduleFolder.push({
             id: idGenerator(),
             name: 'deployment.json',
-            content: deployment(singleModule, name, artifactId, 'org.apache.openwebbeans.se.CDILauncher', BUNDLEBEE_TOMCAT_ARGS, true, []),
+            content: deployment(
+                singleModule, name, artifactId,
+                useFusion ? 'io.yupiik.fusion.framework.api.main.Launcher' : 'org.apache.openwebbeans.se.CDILauncher',
+                useFusion ? [] : BUNDLEBEE_TOMCAT_ARGS,
+                true, []),
         });
     }
     if (batch) {
@@ -2203,7 +2209,7 @@ const injectSingle = (files, { groupId, artifactId }, feature, idGenerator, hasF
                 readmePaths.push('');
                 injectHealthCheck(files, groupId, artifactId, idGenerator, readmePaths, data.features.jsonRpc);
             }
-            injectBundleBee(files, groupId, artifactId, idGenerator, hasFeature, true, readmePaths);
+            injectBundleBee(files, groupId, artifactId, idGenerator, hasFeature, true, readmePaths, isUsingFusion(data.features.jsonRpc));
             break;
         case 'documentation':
             readmePaths.push('== Documentation');

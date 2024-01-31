@@ -1,5 +1,5 @@
 = IaC Manage your Kubernetes deployments
-:minisite-blog-published-date: 2025-01-01
+:minisite-blog-published-date: 2024-01-31
 :minisite-blog-categories: Infrastructure
 :minisite-blog-authors: Romain Manni-Bucau
 :minisite-blog-summary: Kubernetes infrastructure as code has a few challenge, let's share our tips about it.
@@ -12,16 +12,21 @@ Let see what we tend to recommend at Yupiik and why we preferred it over some we
 == The operator or chicken-egg issue
 
 The first myth to understand and kill is that Kubernetes operators are not intended to help with the deployment.
-They are great tools to enable a specific DSL and abstract some details in some cases, they are awesome for insanely complicated and dynamic deployments but they are by design not very welcomed in most of the case because they are required to keep watching or querying Kubernetes API plus being up in the cluster.
+They are great tools to enable a specific DSL and abstract some details in some cases, they are awesome for insanely complicated and dynamic deployments, but they are by design not very welcomed in most of the case
+because they are required to keep watching or querying Kubernetes API plus being up in the cluster.
 
 What does it mean? Assume you have a cluster of two nodes of 4 CPU and 4Gi of RAM - let's ignore the OS/kubelet daemon resources for the exercise, then your operator will need some resource since it "runs".
 Reviewing some common operators it is often something like `[requests=200m;limits=500m]` for the CPU and `[requests=250Mi;limits=500Mi]` for the RAM - when using a single instance.
-A common example is that ArgoCD "default" configuration will consume `[requests=1.250m+1.(50m+10m)+1.10m+1.100m+1.100m;limits=1.500m+5.(100m+50m)+5.50m+1.100m+1.100m]` (controller+server with ui option+repo+applicationSet+notifications) which makes `[requests=520m;limits=1700m]`.
-Now keep in mind you need at least the most consuming instance to be able to rollout a pod (if you have 4 CPU and that 3.1 are taken you can't deploy a new instance needing 1 CPU), then it means you need at least `250m` of margin to rollout ArgoCD so overall ArgoCD will require 2CPU in your cluster.
+A common example is that ArgoCD "default" configuration will consume `[requests=1.250m+1.(50m+10m)+1.10m+1.100m+1.100m;limits=1.500m+5.(100m+50m)+5.50m+1.100m+1.100m]`
+(controller+server with ui option+repo+applicationSet+notifications) which makes `[requests=520m;limits=1700m]`.
+Now keep in mind you need at least the most consuming instance to be able to rollout a pod (if you have 4 CPU and that 3.1 are taken you can't deploy a new instance needing 1 CPU),
+then it means you need at least `250m` of margin to rollout ArgoCD so overall ArgoCD will require 2CPU in your cluster.
 
-TIP: as always setting the requests a limits value for resources is not always good in Kubernetes, in particular, the CPU limits should rarely be set because it preallocate it and prevents it to be used even when idle, this will make your server requiring way more CPU - but it is often the recommended configuration for operators even if default tends to not set resources (which is worse cause you can end up with your operator just not running and keep failing to boot).
+TIP: as always setting the requests a limits value for resources is not always good in Kubernetes, in particular, the CPU limits should rarely be set because it preallocate it and prevents
+it to be used even when idle, this will make your server requiring way more CPU - but it is often the recommended configuration for operators even if default tends to not set resources
+(which is worse because you can end up with your operator just not running and keep failing to boot).
 
-NOTE: you can do the same kind of reasoning for the memory but we'll not in this post for brievity.
+NOTE: you can do the same kind of reasoning for the memory, but we'll not in this post for brevity.
 
 To rephrase it in a trivial way: from a cluster of 8 available CPU (two nodes with 4 CPU) you now just have a cluster of 6 CPU for your applications.
 What is important to keep in mind is that any resource is paid in a cluster.
@@ -34,7 +39,9 @@ So yes operators make it looks like it is easy but:
 * It consumes resources by design you can prefer to reallocate to applications,
 * It is something more to manage in time (security issues, version rollouts, ...) so more work for your ops team in terms of testing and deployment work.
 
-From that statement, we tend to prefer client only deployment solution at Yupiik, it has the big advantage to not add any resource pression on the cluster which is not intended in terms of resources allocation - CPU, memory but also image garbage collection or storage.
+Considering all the above mentioned and the effect-consequences, at Yupiik, we tend to prefer client-only deployment solution rather than..... (add a benchmark)
+The main big advantage is that you don't need to add any resource pressure on the cluster (which is not its primary scope), CPU, memory but also image garbage collection or storage.
+
 
 == Infrastructure as code (IaC)
 
@@ -44,7 +51,8 @@ The statement:
 
 > It worked on my machine!
 
-is not something acceptable and therefore being able to bundle the application *AND* its deployment is a key part to ensure the developers and ops can work *together* toward a better application for end user with smoother deployments for everybody.
+Is not something acceptable and therefore being able to bundle the application *AND* its deployment is a key part to ensure the developers and ops can work *together* toward
+a better application for end user with smoother deployments for everybody.
 
 We ear a lot about GitOps but without entering inside a solution first it is important to understand the key aspects behind it.
 
@@ -60,7 +68,11 @@ In other words, IaC means you can:
 
 == BundleBee: the enterprise Kubernetes deployer!
 
-Yupiik link:https://yupiik.io/bundlebee/[BundleBee] was designed with these principles in mind.
+Yupiik link:https://yupiik.io/bundlebee/[BundleBee] is a light Java package manager for Kubernetes applications and was designed with the principles of Infrastructure as Code in mind:
+
+> Generate the same deployment easily and automatically without the risk of manually execution errors.
+
+Like the same binary is the result of the same source code, the same infrastructure is the result of the same configuration or definition file.
 
 It is a way to:
 
@@ -69,7 +81,17 @@ It is a way to:
 * to validate the deployment with Junit5 - or any other solution,
 * to compare the state of your cluster with the recipe - to identify the differences made manually if any ("quick fixes") and ensure both converge to the same state.
 
-TIP: BundleBee is way more than just these points but it is what makes the most sens in regard of this post topic.
+Recently we used Bundlebee for a customer in the Bank industry to bootstrap from scratch a devops stack and a full Kubernetes cluster from dev to production:
+
+Environment management with configuration tuning per env
+Integration in a standard Apache Maven pipeline
+Secrets injections based on crypto
+~100 apps (cronjobs, deployments, jobs - without cron)
+Dev factory setup in 1 command (Gitea, Drone, Mattermost, Gitea-pages)
+Placeholders extraction for an easier interaction with ops
+Living documentation of the available configuration
+Auto redeployment and easy rollbacks on need
+
 
 We often combine BundleBee with our generic Maven Plugin (a.k.a. `yupiik-tools-maven-plugin`) which contains two little gems:
 
@@ -125,8 +147,10 @@ However, a lot is either full marketing content or more about promoting a techni
 As usual, the best is to step back and see what is really needed for you and pick your own trade-off.
 
 In this post, we saw that there is no free lunch and that a well thought CI/CD pipeline can be worth any operator or runtime.
-As we saw people moving away from wordpress to embrace static website generation 10 years ago, the same will hopefully slow happen on infrastructure as code for the good.
+As we saw people moving away from WordPress to embrace static website generation 10 years ago, the same will hopefully slow happen on infrastructure as code for the good.
 
-BundleBee is a really worth it solution on that aspect which can help your to use the same recipe from dev to production with a high quality validation pipeline (linting, testing, reporting).
+BundleBee is a really worth it solution on that aspect which can help you to use the same recipe from dev to production with a high quality validation pipeline (linting, testing, reporting).
 
 Stay tuned for more information on how to make it happening in the coming blog posts!
+
+NOTE: This post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.

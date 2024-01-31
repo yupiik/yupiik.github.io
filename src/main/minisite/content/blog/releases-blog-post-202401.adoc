@@ -1,0 +1,137 @@
+= Yupiik Releases Roundup
+:minisite-blog-published-date: 2024-01-10
+:minisite-blog-categories: Release
+:minisite-blog-authors: Francois Papon
+:minisite-blog-summary: Yupiik Releases Roundup: Bundlebee, Tool-Maven-Plugin, Batch, Fusion
+
+[abstract]
+On behalf the Yupiik OSS team and other contributors, I'm happy to talk about the latest release from December 2023 to
+January 2024: Bundlebee, Tool-Maven-Plugin, Batch, Fusion.
+
+== Bundlebee
+
+Some great improvements has been done, especially:
+
+* ArgoCD basic integration (as an alternative to helm/kustomize)
+* Diff command support (between alveolus and Kubernetes state)
+* Simple ciphering support in placeholders
+* HTTP proxy configuration support
+
+*Highlight*: one more step to demo that BundleBee is GitOps friendly (but not limited to) and automation friendly.
+
+=== bundlebee-1.0.24
+
+URL: https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24
+
+Published at: 08/01/2024
+
+
+=== bundlebee-1.0.25
+
+URL: https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.25
+
+Published at: 08/01/2024
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/bundlebee/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/bundlebee/getting-started.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/bundlebee/issues[GitHub issue page].
+
+== Yupiik-Tools-Maven-Plugin
+
+New great improvements around asciidoc integration:
+
+* Implement a java native asciidoc parser + renderer
+* Implement *ascii2svg* in plain java for git friendly diagrams
+* Add copy button to code snippets in *Minisite*
+
+=== yupiik-tools-maven-plugin-parent-1.2.0
+
+URL: https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0
+
+Published at: 08/01/2024
+
+Release 1.2.0
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/tools-maven-plugin/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/tools-maven-plugin[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/tools-maven-plugin/issues[GitHub issue page].
+
+== Yupiik-Batch
+
+The main improvement is the new Metric Relay module link:https://www.yupiik.io/yupiik-batch/metrics-relay.html[link].
+
+=== yupiik-batch-1.0.4
+
+URL: https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.4
+
+Published at: 07/12/2023
+
+=== yupiik-batch-1.0.5
+
+URL: https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.5
+
+Published at: 21/12/2023
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/yupiik-batch/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/yupiik-batch/getting-started.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/yupiik-batch/issues[GitHub issue page].
+
+== Fusion
+
+The Fusion project continue to grow and the latest major improvements are related to:
+
+* [living doc] openrpc 2 asciidoc support
+* [httpclient] RoutingHttpClient to switch between different client configuration based on a custom rule
+* [doc] explain how to avoid warnings with Java >= 21
+
+=== fusion-1.0.13
+
+URL: https://github.com/yupiik/fusion/releases/tag/fusion-1.0.13
+
+Published at: 08/01/2024
+
+=== Documentation
+
+The documentation is up-to-date here:
+
+https://www.yupiik.io/fusion/
+
+=== How to start?
+
+You can start be reading the link:https://www.yupiik.io/fusion/fusion/index.html[Getting Started page].
+
+=== Feedback are welcome
+
+You can contribute, report bug or ask for improvement in the link:https://github.com/yupiik/fusion/issues[GitHub issue page].
+
+Enjoy!

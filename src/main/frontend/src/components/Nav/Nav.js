@@ -36,25 +36,27 @@ export const Nav = ({ data, dispatch }) => {
                             <b>Java Version</b>
                         </div>
                         <div>
-                            <div className="form-check">
-                                <input
-                                    type="radio"
-                                    className="form-check-input"
-                                    checked={data.javaVersion == '17'}
-                                    onChange={e => dispatch({
-                                        type: 'nav.javaVersion',
-                                        value: parseInt(e.target.value),
-                                    })}
-                                    id="javaVersion"
-                                    value={data.javaVersion}
-                                    aria-describedby="javaVersion"
-                                    placeholder="Java Version" />
-                                <label
-                                    for="javaVersion"
-                                    className="form-check-label">
-                                    17
-                                </label>
-                            </div>
+                            {['17', '21'].map(v => (
+                                <div className="form-check form-check-inline" key={v}>
+                                    <input
+                                        type="radio"
+                                        className="form-check-input"
+                                        checked={(data.javaVersion + '') === v}
+                                        onChange={e => dispatch({
+                                            type: 'nav.javaVersion',
+                                            value: parseInt(e.target.value),
+                                        })}
+                                        id="javaVersion"
+                                        value={v}
+                                        aria-describedby="javaVersion"
+                                        placeholder="Java Version" />
+                                    <label
+                                        for="javaVersion"
+                                        className="form-check-label">
+                                        {v}
+                                    </label>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <Input name="groupId" dispatch={dispatch} data={data} />

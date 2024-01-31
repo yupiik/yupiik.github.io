@@ -83,15 +83,14 @@ It is a way to:
 
 Recently we used Bundlebee for a customer in the Bank industry to bootstrap from scratch a devops stack and a full Kubernetes cluster from dev to production:
 
-Environment management with configuration tuning per env
-Integration in a standard Apache Maven pipeline
-Secrets injections based on crypto
-~100 apps (cronjobs, deployments, jobs - without cron)
-Dev factory setup in 1 command (Gitea, Drone, Mattermost, Gitea-pages)
-Placeholders extraction for an easier interaction with ops
-Living documentation of the available configuration
-Auto redeployment and easy rollbacks on need
-
+* Environment management with configuration tuning per env
+* Integration in a standard Apache Maven pipeline
+* Secrets injections based on crypto
+* ~100 apps (cronjobs, deployments, jobs - without cron)
+* Dev factory setup in 1 command (Gitea, Drone, Mattermost, Gitea-pages)
+* Placeholders extraction for an easier interaction with ops
+* Living documentation of the available configuration
+* Auto redeployment and easy rollbacks on need
 
 We often combine BundleBee with our generic Maven Plugin (a.k.a. `yupiik-tools-maven-plugin`) which contains two little gems:
 

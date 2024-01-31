@@ -2,8 +2,8 @@
 target
 
 # idea
-.idea
 !.idea/icon.png
+.idea
 *.iws
 *.ipr
 *.iml

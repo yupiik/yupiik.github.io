@@ -306,3 +306,7 @@ div.content > img {
     padding: 0 3rem;
   }
 }
+
+div.title, .quoteblock blockquote:before {
+  color: #1b449b !important;
+}

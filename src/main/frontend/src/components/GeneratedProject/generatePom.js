@@ -377,6 +377,7 @@ const compilerPlugin = data => [
     `          <release>${data.nav.javaVersion}</release>`,
     '          <encoding>UTF-8</encoding>',
     ...(data.nav.javaVersion === 21 ? [
+        '          <proc>none</proc>',
         '          <useIncrementalCompilation>false</useIncrementalCompilation>',
         '          <annotationProcessors>',
         '            <annotationProcessor>io.yupiik.fusion.framework.processor.FusionProcessor</annotationProcessor>',

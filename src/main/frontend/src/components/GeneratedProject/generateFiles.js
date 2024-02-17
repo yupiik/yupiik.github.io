@@ -1954,12 +1954,15 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 '        } catch (final IOException e) {',
                 '            throw new IllegalStateException(e);',
                 '        }',
-                ...(batch ? [
-                    '',
-                    `        generateConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
-                ] : []),
+                '',
+                '        // note that this can be done in the pom too using preactions only if you prefer',
+                `        new DocumentationGenerator(Map.of("includeEnvironmentNames", "true", "formatter", "definitionlist", "module", "${artifactId}")).run();`,
                 ...(jsonRpc ? [
                     `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.openrpc.json"), base.resolve("${artifactId}.openrpc.adoc"));`,
+                ] : []),
+                ...(batch ? [
+                    '',
+                    `        generateBatchConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
                 ] : []),
                 '    }',
                 ...(jsonRpc ? [
@@ -1967,15 +1970,12 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                     '    private void generateJsonRpcApi(final String name, final Path targetJson, final Path targetAdoc) {',
                     '        new OpenRpcGenerator(Map.of("output", targetJson.toString(), "title", name)).run();',
                     '        new OpenRPC2Adoc(Map.of("input", targetJson.toString(), "output", targetAdoc.toString())).run();',
-                    ...(useFusion ? [
-                        `        new DocumentationGenerator(Map.of("includeEnvironmentNames", "true", "formatter", "definitionlist", "module", "${artifactId}")).run();`,
-                    ] : []),
                     '    }',
                     '',
                 ] : []),
                 ...(batch ? [
                     '',
-                    '    private void generateConfiguration(final Path target, final Class<?> clazz) {',
+                    '    private void generateBatchConfiguration(final Path target, final Class<?> clazz) {',
                     '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
                     '        final var params = collector.getWithPrefix(c -> null);',
                     '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',

@@ -1966,7 +1966,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                     '',
                     '    private void generateJsonRpcApi(final String name, final Path targetJson, final Path targetAdoc) {',
                     '        new OpenRpcGenerator(Map.of("output", targetJson.toString(), "title", name)).run();',
-                    '        new OpenRPC2Adoc(Map.of("input", targetJson.toString(), "output", targetAdoc)).run();',
+                    '        new OpenRPC2Adoc(Map.of("input", targetJson.toString(), "output", targetAdoc.toString())).run();',
                     '    }',
                     '',
                 ] : []),

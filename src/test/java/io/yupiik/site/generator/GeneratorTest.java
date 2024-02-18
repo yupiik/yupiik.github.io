@@ -303,7 +303,7 @@ class GeneratorTest {
     private void assertBuildResult(final Path project) throws IOException {
         final var target = project.resolve("target");
         final var targetFiles = collectTargetFiles(target);
-        assertEquals(35, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
+        assertEquals(36, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
         // tests passed (so jsonrpc and batch were ok)
         assertSurefireReport("org.example.application.batch.SimpleBatchTest", targetFiles.get("surefire-reports/org.example.application.batch.SimpleBatchTest.txt"));
         assertSurefireReport("org.example.application.jsonrpc.GreetingEndpointTest", targetFiles.get("surefire-reports/org.example.application.jsonrpc.GreetingEndpointTest.txt"));

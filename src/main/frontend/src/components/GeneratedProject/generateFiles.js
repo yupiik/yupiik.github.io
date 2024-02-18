@@ -2041,14 +2041,10 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 ':minisite-keywords: api, json-rpc, documentation',
                 ':minisite-breadcrumb: Home[/] > JSON-RPC API',
                 '',
-                '== Configuration',
-                '',
-                `include::{partialsdir}/generated/documentation.${artifactId}.adoc[]`,
-                '',
                 '== API',
                 '',
                 useFusion ?
-                    `[source,json]\n----\ninclude::{partialsdir}/generated/${artifactId}.openrpc.adpc[leveloffset=+1]\n\n` +
+                    `include::{partialsdir}/generated/${artifactId}.openrpc.adoc[leveloffset=+1]\n\n` +
                     `=== JSON\n\n[source,json]\n----\ninclude::{partialsdir}/generated/${artifactId}.openrpc.json[]\n----\n\n` :
                     `include::{partialsdir}/generated/${artifactId}.jsonrpc.adoc[lines=3..-1,leveloffset=+1]`,
                 '',
@@ -2076,26 +2072,24 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
             ].join('\n'),
         });
     }
-    if (useFusion) {
-        content.push({
-            id: idGenerator(),
-            name: 'configuration.adoc',
-            content: [
-                '= Configuration',
-                ':minisite-index: 300',
-                ':minisite-index-title: Configuration',
-                ':minisite-index-description: Application Configuration.',
-                ':minisite-index-icon: code',
-                ':minisite-keywords: configuration, json-rpc, documentation',
-                ':minisite-breadcrumb: Home[/] > Configuration',
-                '',
-                'Here is the application configuration:',
-                '',
-                `include::{partialsdir}/generated/documentation.${artifactId}.adoc[]`,
-                '',
-            ].join('\n'),
-        });
-    }
+    content.push({
+        id: idGenerator(),
+        name: 'configuration.adoc',
+        content: [
+            '= Configuration',
+            ':minisite-index: 300',
+            ':minisite-index-title: Configuration',
+            ':minisite-index-description: Application Configuration.',
+            ':minisite-index-icon: code',
+            ':minisite-keywords: configuration, json-rpc, documentation',
+            ':minisite-breadcrumb: Home[/] > Configuration',
+            '',
+            'Here is the application configuration:',
+            '',
+            `include::{partialsdir}/generated/documentation.${artifactId}.adoc[${useFusion ? 'lines=4..-1' : ''}]`,
+            '',
+        ].join('\n'),
+    });
 };
 
 const injectGithub = (files, idGenerator, hasFeature, readmePaths, data) => {

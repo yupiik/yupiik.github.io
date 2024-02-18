@@ -519,7 +519,7 @@ const minisiteConfiguration = (pck, useFusion, jsonRpc, batch) => [
         '            <preAction>',
         '              <type>io.yupiik.fusion.documentation.OpenRPC2Adoc</type>',
         '              <configuration>',
-        '                <input>${project.basedir}/src/main/minisite/content/_partials/generated/${artifactId}.openrpc.json</input>',
+        '                <input>${project.build.outputDirectory}/META-INF/fusion/jsonrpc/openrpc.json</input>',
         '                <output>${project.basedir}/src/main/minisite/content/_partials/generated/${artifactId}.openrpc.adoc</output>',
         '              </configuration>',
         '            </preAction>',

@@ -303,7 +303,7 @@ class GeneratorTest {
     private void assertBuildResult(final Path project) throws IOException {
         final var target = project.resolve("target");
         final var targetFiles = collectTargetFiles(target);
-        assertEquals(36, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
+        assertEquals(38, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
         // tests passed (so jsonrpc and batch were ok)
         assertSurefireReport("org.example.application.batch.SimpleBatchTest", targetFiles.get("surefire-reports/org.example.application.batch.SimpleBatchTest.txt"));
         assertSurefireReport("org.example.application.jsonrpc.GreetingEndpointTest", targetFiles.get("surefire-reports/org.example.application.jsonrpc.GreetingEndpointTest.txt"));
@@ -522,7 +522,8 @@ class GeneratorTest {
         final var stderrValue = Files.lines(stderr, UTF_8)
                 // ignore jruby warnings
                 .filter(it -> !it.contains("WARN FilenoUtil") &&
-                        !it.contains("Pass '--add-opens"))
+                        !it.contains("Pass '--add-opens") &&
+                        !it.contains("/completion/placeholders.completion.properties'"))
                 .collect(joining("\n"));
         if (!stderrValue.isBlank()) {
             fail(stderrValue);

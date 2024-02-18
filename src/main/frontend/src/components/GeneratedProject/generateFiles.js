@@ -387,7 +387,7 @@ const deployment = (singleModule, name, artifactId, main, args, injectProbes, sy
     '          {',
     `            "name": "${name}",`,
     `            "image":"{{image.registry}}/${artifactId}:{{project.version}}",`,
-    '            "imagePullPolicy": "{{pharmaplus.image.pullPolicy:-IfNotPresent}}",',
+    '            "imagePullPolicy": "{{image.pullPolicy:-IfNotPresent}}",',
     ...(singleModule ? [
         '            "command": [',
         '              "java",',
@@ -490,6 +490,17 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
     const frontend = hasFeature('frontend');
 
     const baseName = artifactId;
+    const descriptions = [ // shared
+        'app.deploytime = Label with the deployment time injected. Using maven setup it uses `maven.build.timestamp` property.',
+        'bundlebee.environment = Label hosting the environment name (can enable to identify deployment errors).',
+        'image.pullPolicy = Deployment image pull policy (if image is moving - `snapshot` or `latest`, ensure to set it to `Always`).',
+        'image.registry = Base image registry to pull the image from.',
+        'project.version = Deployment version - injected in a label.',
+        'user.name = Deployment user - injected in a label.',
+    ];
+    if (jsonRpc || frontend) {
+        descriptions.push('bundlebee.probes.health.key = Health probe security key value.');
+    }
 
     bundlebee.push({
         id: idGenerator(),
@@ -613,6 +624,7 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
                 useFusion ? [] : BUNDLEBEE_TOMCAT_ARGS,
                 false, [`-D${artifactId}-resources-docBase=/opt/applications/${artifactId}/docs`]),
         });
+        descriptions.push(`bundlebee.deployments.${name}.replicas`);
     }
     if (jsonRpc) {
         const moduleFolder = getOrCreateFolder(kubernetesSubFolder, 'jsonrpc-server', idGenerator);
@@ -644,6 +656,7 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
                 useFusion ? [] : BUNDLEBEE_TOMCAT_ARGS,
                 true, []),
         });
+        descriptions.push(`bundlebee.deployments.${name}.replicas`);
     }
     if (batch) {
         const moduleFolder = getOrCreateFolder(kubernetesSubFolder, 'batch', idGenerator);
@@ -658,11 +671,11 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
             id: idGenerator(),
             name: 'configmap.json',
             content: configMap(name, [
-                '    "SIMPLEBATCH_SKIPTRACING":"{{bundlebee.cronjob.simplebatch.configuration.skipTracing:-true}}",',
-                '    "SIMPLEBATCH_TRACING_DATASOURCE_DRIVER":"{{bundlebee.cronjob.simplebatch.configuration.driver:-TBD}}",',
-                '    "SIMPLEBATCH_TRACING_DATASOURCE_URL":"{{bundlebee.cronjob.simplebatch.configuration.url:-TBD}}",',
-                '    "SIMPLEBATCH_TRACING_DATASOURCE_USERNAME":"{{bundlebee.cronjob.simplebatch.configuration.username:-TBD}}",',
-                '    "SIMPLEBATCH_TRACING_DATASOURCE_PASSWORD":"{{bundlebee.cronjob.simplebatch.configuration.password:-TBD}}"',
+                `    "SIMPLEBATCH_SKIPTRACING":"{{bundlebee.cronjob.${artifactId}.configuration.skipTracing:-true}}",`,
+                `    "SIMPLEBATCH_TRACING_DATASOURCE_DRIVER":"{{bundlebee.cronjob.${artifactId}.configuration.driver:-TBD}}",`,
+                `    "SIMPLEBATCH_TRACING_DATASOURCE_URL":"{{bundlebee.cronjob.${artifactId}.configuration.url:-TBD}}",`,
+                `    "SIMPLEBATCH_TRACING_DATASOURCE_USERNAME":"{{bundlebee.cronjob.${artifactId}.configuration.username:-TBD}}",`,
+                `    "SIMPLEBATCH_TRACING_DATASOURCE_PASSWORD":"{{bundlebee.cronjob.${artifactId}.configuration.password:-TBD}}"`,
             ]),
         });
         moduleFolder.push({
@@ -699,7 +712,7 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
                 '              {',
                 `                "app": "${name}",`,
                 `                "image":"{{image.registry}}/${artifactId}:{{project.version}}",`,
-                '                "imagePullPolicy": "{{bundlebee.image.pullPolicy:-IfNotPresent}}",',
+                '                "imagePullPolicy": "{{image.pullPolicy:-IfNotPresent}}",',
                 ...(singleModule ? [
                     '                "command": [',
                     '                  "java",',
@@ -752,7 +765,24 @@ const injectBundleBee = (files, groupId, artifactId, idGenerator, hasFeature, si
                 '}',
             ].join('\n'),
         });
+
+        descriptions.push(`bundlebee.cronjob.${artifactId}.failedJobsHistoryLimit`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.schedule`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.startingDeadlineSeconds`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.successfulJobsHistoryLimit`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.configuration.driver`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.configuration.password`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.configuration.skipTracing`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.configuration.url`);
+        descriptions.push(`bundlebee.cronjob.${artifactId}.configuration.username`);
     }
+
+    bundlebee.push({
+        id: idGenerator(),
+        name: 'placeholders.descriptions.properties',
+        content: descriptions.join('\n'),
+    });
+
     readmePaths.push('TIP: If you enabled documentation feature you can see the environment names to use there.');
     readmePaths.push('');
 };
@@ -1793,6 +1823,7 @@ const injectFrontend = (files, groupId, artifactId, idGenerator, hasFeature, sin
 const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature, readmePaths, spec) => {
     const batch = hasFeature('batch');
     const jsonRpc = hasFeature('jsonRpc');
+    const bundlebee = hasFeature('bundlebee');
     const useFusion = isUsingFusion(spec);
 
     const srcMain = getOrCreateFolder(files, 'src/main', idGenerator);
@@ -1955,54 +1986,37 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 '            throw new IllegalStateException(e);',
                 '        }',
                 '',
-                '        // note that this can be done in the pom too using preactions only if you prefer',
-                ...(jsonRpc ? [
-                    `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.openrpc.json"), base.resolve("${artifactId}.openrpc.adoc"));`,
-                ] : []),
-                ...(batch ? [
-                    '',
-                    `        generateBatchConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
-                ] : []),
+                `        generateBatchConfiguration(base.resolve("${artifactId}.batch.configuration.adoc"), SimpleBatch.class);`,
                 '    }',
-                ...(jsonRpc ? [
-                    '',
-                    '    private void generateJsonRpcApi(final String name, final Path targetJson, final Path targetAdoc) {',
-                    '        new OpenRpcGenerator(Map.of("output", targetJson.toString(), "title", name)).run();',
-                    '        new OpenRPC2Adoc(Map.of("input", targetJson.toString(), "output", targetAdoc.toString())).run();',
-                    '    }',
-                    '',
-                ] : []),
-                ...(batch ? [
-                    '',
-                    '    private void generateBatchConfiguration(final Path target, final Class<?> clazz) {',
-                    '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
-                    '        final var params = collector.getWithPrefix(c -> null);',
-                    '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',
-                    '        final var adoc = "" +',
-                    '                "++++\\n" +',
-                    '                "<input table-filter=\\"" + name + "-configuration\\" class=\\"form-control\\" type=\\"text\\" placeholder=\\"Filter...\\">\\n" +',
-                    '                "++++\\n" +',
-                    '                "[." + name + "-configuration,options=\\"header\\",cols=\\"a,a,2\\",role=\\"autowrap\\"]\\n" +',
-                    '                "|===\\n" +',
-                    '                "|Name|Env Variable|Description\\n" +',
-                    '                params.entrySet().stream()',
-                    '                    .sorted(Map.Entry.comparingByKey())',
-                    '                    .map(e -> "" +',
-                    '                        "| `--" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +',
-                    '                        "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +',
-                    '                        "| " + e.getValue().param().description() + "\\n")',
-                    '                    .sorted()',
-                    '                    .collect(joining()) + "\\n" +',
-                    '                "|===\\n" +',
-                    '                "";',
-                    '',
-                    '        try {',
-                    '            Files.writeString(target, adoc);',
-                    '        } catch (final IOException e) {',
-                    '            throw new IllegalStateException(e);',
-                    '        }',
-                    '    }',
-                ] : []),
+                '',
+                '    private void generateBatchConfiguration(final Path target, final Class<?> clazz) {',
+                '        final var collector = new ConfigurationParameterCollector(List.of(Class.class.cast(clazz)));',
+                '        final var params = collector.getWithPrefix(c -> null);',
+                '        final var name = target.getFileName().toString().replace(".configuration.adoc", "");',
+                '        final var adoc = "" +',
+                '                "++++\\n" +',
+                '                "<input table-filter=\\"" + name + "-configuration\\" class=\\"form-control\\" type=\\"text\\" placeholder=\\"Filter...\\">\\n" +',
+                '                "++++\\n" +',
+                '                "[." + name + "-configuration,options=\\"header\\",cols=\\"a,a,2\\",role=\\"autowrap\\"]\\n" +',
+                '                "|===\\n" +',
+                '                "|Name|Env Variable|Description\\n" +',
+                '                params.entrySet().stream()',
+                '                    .sorted(Map.Entry.comparingByKey())',
+                '                    .map(e -> "" +',
+                '                        "| `--" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +',
+                '                        "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +',
+                '                        "| " + e.getValue().param().description() + "\\n")',
+                '                    .sorted()',
+                '                    .collect(joining()) + "\\n" +',
+                '                "|===\\n" +',
+                '                "";',
+                '',
+                '        try {',
+                '            Files.writeString(target, adoc);',
+                '        } catch (final IOException e) {',
+                '            throw new IllegalStateException(e);',
+                '        }',
+                '    }',
                 '}',
                 '',
             ].join('\n'),
@@ -2022,6 +2036,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
             ':minisite-index-icon: desktop',
             ':minisite-keywords: demo, documentation',
             ':minisite-breadcrumb: Home[/] > Getting Started',
+            ':minisite-nav-next-label: Configuration',
             '',
             'This documentation is generated by Yupiik minisite.',
             '',
@@ -2040,6 +2055,8 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 ':minisite-index-icon: laptop-house',
                 ':minisite-keywords: api, json-rpc, documentation',
                 ':minisite-breadcrumb: Home[/] > JSON-RPC API',
+                ':minisite-nav-prev-label: Configuration',
+                ...(bundlebee ? [':minisite-nav-next-label: Deployment'] : []),
                 '',
                 '== API',
                 '',
@@ -2064,6 +2081,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 ':minisite-index-icon: code',
                 ':minisite-keywords: batch, configuration, documentation',
                 ':minisite-breadcrumb: Home[/] > Batch',
+                ':minisite-nav-prev-label: Configuration',
                 '',
                 'Here is the batch configuration:',
                 '',
@@ -2083,6 +2101,8 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
             ':minisite-index-icon: code',
             ':minisite-keywords: configuration, json-rpc, documentation',
             ':minisite-breadcrumb: Home[/] > Configuration',
+            ':minisite-nav-prev-label: Getting Started',
+            ...(jsonRpc ? [':minisite-nav-next-label: JSON-RPC'] : []),
             '',
             'Here is the application configuration:',
             '',
@@ -2090,6 +2110,43 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
             '',
         ].join('\n'),
     });
+    if (bundlebee) {
+        content.push({
+            id: idGenerator(),
+            name: 'deployment.adoc',
+            content: [
+                '= Deployment',
+                ':minisite-index: 800',
+                ':minisite-index-title: Deployment',
+                ':minisite-index-description: Deploy.',
+                ':minisite-index-icon: fas fa-space-shuttle',
+                ':minisite-keywords: configuration, json-rpc, documentation',
+                ':minisite-breadcrumb: Home[/] > Configuration',
+                (jsonRpc ? ':minisite-nav-prev-label: JSON-RPC' : ':minisite-nav-prev-label: Configuration'),
+                '',
+                'This page lists deployment configuration.',
+                'It is based on placeholders (variables) and tunable using an environment file or maven properties.',
+                'You can check the pom for `bundlebee-placeholder-import` comment to see how to enable an externalised file to host the environment variables.',
+                '',
+                '== Placeholders',
+                '',
+                'include::{partialsdir}/generated/deployment/placeholders.adoc[]',
+                '',
+                '== Sample',
+                '',
+                'This part shows a a sample configuration file you can use as a base for `bundlebee-placeholder-import` file.',
+                '',
+                'TIP: if you use link:https://code.visualstudio.com/[VSCode,window=_blank] you can install link:https://marketplace.visualstudio.com/items?itemName=rmannibucau.properties-completion[properties completion,window=_blank] extension to fill this page.',
+                'Use this link:completion/placeholders.completion.properties[link] url as a header of the file: `# vscode_properties_completion_proposals=https://.../completion/placeholders.completion.properties.`.',
+                '',
+                '[source,properties]',
+                '----',
+                'include::{partialsdir}/generated/deployment/placeholders.properties[]',
+                '----',
+                '',
+            ].join('\n'),
+        });
+    }
 };
 
 const injectGithub = (files, idGenerator, hasFeature, readmePaths, data) => {
@@ -2114,9 +2171,11 @@ const injectGithub = (files, idGenerator, hasFeature, readmePaths, data) => {
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<settings>',
             '  <servers>',
-            '    <id>github.com</id>',
-            '    <!-- DOC: you can also setup a custom token in your secrets and wire it there and env: of the maven.yaml -->',
-            '    <password>${env.GITHUB_TOKEN}</password>',
+            '    <server>',
+            '      <id>github.com</id>',
+            '      <!-- DOC: you can also setup a custom token in your secrets and wire it there and env: of the maven.yaml -->',
+            '      <password>${env.GITHUB_TOKEN}</password>',
+            '    </server>',
             '  </servers>',
             '</settings>',
             '',

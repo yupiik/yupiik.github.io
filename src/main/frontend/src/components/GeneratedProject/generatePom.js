@@ -236,11 +236,11 @@ const junit5Dependencies = [
 ];
 const githubDocProfileProfile = `
 <profile> <!--  mvn clean package -Pgh-pages  -->
-<id>gh-pages</id>
-<properties>
-  <minisite.serverId>github.com</minisite.serverId>
-</properties>
-<build>
+  <id>gh-pages</id>
+  <properties>
+    <minisite.serverId>github.com</minisite.serverId>
+  </properties>
+  <build>
   <plugins>
     <plugin>
       <groupId>io.yupiik.maven</groupId>
@@ -250,7 +250,7 @@ const githubDocProfileProfile = `
           <id>gh-pages</id>
           <phase>prepare-package</phase>
           <goals>
-            <goal>minisite</goal>
+              <goal>minisite</goal>
           </goals>
           <configuration>
             <git>
@@ -265,7 +265,7 @@ const githubDocProfileProfile = `
       </executions>
     </plugin>
   </plugins>
-</build>
+  </build>
 </profile>`.trim().split('\n');
 const jibPiProfile = [
     '    <profile>',
@@ -338,6 +338,20 @@ const resourcesPlugin = [
     '        <configuration>',
     '          <encoding>UTF-8</encoding>',
     '        </configuration>',
+    '      </plugin>',
+];
+const cleanPlugin = [
+    '      <plugin>',
+    '        <groupId>org.apache.maven.plugins</groupId>',
+    '        <artifactId>maven-clean-plugin</artifactId>',
+    '        <version>3.3.2</version>',
+    '      </plugin>',
+];
+const installPlugin = [
+    '      <plugin>',
+    '        <groupId>org.apache.maven.plugins</groupId>',
+    '        <artifactId>maven-install-plugin</artifactId>',
+    '        <version>3.1.1</version>',
     '      </plugin>',
 ];
 const compilerPlugin = data => [
@@ -470,7 +484,7 @@ const jibPlugin = (singleModule, frontend, jsonRpc, batchClass, useFusion) => [
     '        </configuration>',
     '      </plugin>',
 ];
-const minisiteConfiguration = (pck, useFusion) => [
+const minisiteConfiguration = (pck, useFusion, jsonRpc, batch) => [
     '        <configuration>',
     '          <siteBase>https://${project.groupId}.github.io/${project.artifactId}</siteBase>',
     '          <logoText>${project.artifactId}</logoText>',
@@ -480,9 +494,11 @@ const minisiteConfiguration = (pck, useFusion) => [
     '          <indexSubTitle>${project.description}</indexSubTitle>',
     '          <injectYupiikTemplateExtensionPoints>false</injectYupiikTemplateExtensionPoints>',
     '          <preActions>',
-    '            <preAction>',
-    `              <type>${pck}.build.ConfigurationGenerator</type>`,
-    '            </preAction>',
+    ...(!useFusion || batch ? [
+        '            <preAction>',
+        `              <type>${pck}.build.ConfigurationGenerator</type>`,
+        '            </preAction>',
+    ] : []),
     ...(useFusion ? [
         '            <preAction>',
         '              <type>io.yupiik.fusion.documentation.DocumentationGenerator</type>',
@@ -492,6 +508,22 @@ const minisiteConfiguration = (pck, useFusion) => [
         '                <urls>file://${project.build.outputDirectory}/META-INF/fusion/configuration/documentation.json</urls>',
         '              </configuration>',
         '            </preAction>',
+        ...(jsonRpc ? [
+        '            <preAction>',
+        '              <type>io.yupiik.fusion.documentation.OpenRpcGenerator</type>',
+        '              <configuration>',
+        '                <output>${project.basedir}/src/main/minisite/content/_partials/generated/${artifactId}.openrpc.json</output>',
+        '                <title>${artifactId} API</title>',
+        '              </configuration>',
+        '            </preAction>',
+        '            <preAction>',
+        '              <type>io.yupiik.fusion.documentation.OpenRPC2Adoc</type>',
+        '              <configuration>',
+        '                <input>${project.basedir}/src/main/minisite/content/_partials/generated/${artifactId}.openrpc.json</input>',
+        '                <output>${project.basedir}/src/main/minisite/content/_partials/generated/${artifactId}.openrpc.adoc</output>',
+        '              </configuration>',
+        '            </preAction>',
+        ] : []),
     ] : []),
     '          </preActions>',
     '          <customScripts>',
@@ -730,7 +762,7 @@ export const generatePom = data => {
             '        <groupId>io.yupiik.maven</groupId>',
             '        <artifactId>yupiik-tools-maven-plugin</artifactId>',
             '        <version>${yupiik-tools.version}</version>',
-            ...(!singleModule ? [] : minisiteConfiguration(toPackage(data.nav.groupId, data.nav.artifactId), useFusion)),
+            ...(!singleModule ? [] : minisiteConfiguration(toPackage(data.nav.groupId, data.nav.artifactId), useFusion, data.features.jsonRpc.enabled, data.features.batch.enabled)),
             '      </plugin>',
         ]),
         ...(!data.features.bundlebee.enabled ? [] : [
@@ -755,10 +787,12 @@ export const generatePom = data => {
             data.features.batch.enabled && !data.features.jsonRpc.enabled ?
                 `${toPackage(data.nav.groupId, data.nav.artifactId)}.batch.SimpleBatch` :
                 undefined, useFusion)),
+        ...cleanPlugin,
         ...resourcesPlugin,
         ...compilerPlugin(data),
         ...surefirePlugin,
         ...jarPlugin,
+        ...installPlugin,
         ...releasePlugin,
         ...ossIndexPlugin,
         '    </plugins>',

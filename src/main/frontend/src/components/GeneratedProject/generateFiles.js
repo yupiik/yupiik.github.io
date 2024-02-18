@@ -1911,7 +1911,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 '',
             ].join('\n'),
         });
-    } else {
+    } else if (batch) {
         // todo: fusion conf
         build.push({
             id: idGenerator(),
@@ -1956,7 +1956,6 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 '        }',
                 '',
                 '        // note that this can be done in the pom too using preactions only if you prefer',
-                `        new DocumentationGenerator(Map.of("includeEnvironmentNames", "true", "formatter", "definitionlist", "module", "${artifactId}")).run();`,
                 ...(jsonRpc ? [
                     `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.openrpc.json"), base.resolve("${artifactId}.openrpc.adoc"));`,
                 ] : []),

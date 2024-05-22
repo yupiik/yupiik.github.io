@@ -470,7 +470,7 @@ const jibPlugin = (singleModule, frontend, jsonRpc, batchClass, useFusion) => [
     '            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>',
     '            <jvmFlags>',
     '              <jvmFlag>-Djava.util.logging.manager=io.yupiik.logging.jul.YupiikLogManager</jvmFlag>',
-    '              <jvmFlag>-Dio.yupiik.logging.jul.handler.StandardHandler.formatter=json</jvmFlag>',
+    '              <jvmFlag>-Dio.yupiik.logging.jul.handler.AsyncHandler.formatter=json</jvmFlag>',
     '              <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>',
     '              <jvmFlag>-Djdk.serialFilter=!*</jvmFlag>',
     '              <jvmFlag>-Djdk.jndi.object.factoriesFilter=!*</jvmFlag>',

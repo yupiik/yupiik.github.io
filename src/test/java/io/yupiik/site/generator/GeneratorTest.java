@@ -253,6 +253,7 @@ class GeneratorTest {
                         Stream.of(
                                 "docker", "run",
                                 "--name", id,
+                                "-e", "_HANDLERS=io.yupiik.logging.jul.handler.StandardHandler", // force sync logging to avoid to loose logs when too fast
                                 "--entrypoint", entrypoint.get(0)),
                         port <= 0 ?
                                 Stream.<String>empty() :

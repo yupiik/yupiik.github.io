@@ -23,6 +23,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,8 +57,8 @@ class GeneratorTest {
     @Test
     void validateGeneratedProject(@TempDir final Path temp) throws Throwable {
         // setup the environment
-        final var java17Home = System.getProperty("java17.home");
-        assumeTrue(java17Home != null && !java17Home.isBlank(), "No java.17.home set");
+        final var java17Home = System.getProperty("java17.home", System.getProperty("user.home") + "/.sdkman/candidates/java/17.0.9-zulu");
+        assumeTrue(java17Home != null && !java17Home.isBlank() && Files.exists(Path.of(java17Home)), "No java.17.home set");
 
         final var basedir = Path.of(".").toAbsolutePath().normalize();
         final var windows = System.getProperty("os.name").toLowerCase(ROOT).contains("win");
@@ -156,7 +157,7 @@ class GeneratorTest {
                                         .uri(jsonRpcUri)
                                         .build(),
                                 HttpResponse.BodyHandlers.ofString(UTF_8));
-                        assertEquals(200, index.statusCode());
+                        assertEquals(200, index.statusCode(), "Invalid JSON-RPC status: " + index);
                         assertEquals("{\"jsonrpc\":\"2.0\",\"result\":{\"message\":\"Hi test\"}}", index.body());
                     },
                     jsonRpcContainer, jsonRpcPort, image);
@@ -167,8 +168,8 @@ class GeneratorTest {
                     temp, "docker-batch", win, project, java17Home,
                     stdout -> {
                         final var content = Files.readString(stdout);
-                        assertTrue(content.contains("Starting batch SimpleBatch"));
-                        assertTrue(content.contains("Batch SimpleBatch ended in "));
+                        assertTrue(content.contains("Starting batch SimpleBatch"), content);
+                        assertTrue(content.contains("Batch SimpleBatch ended in "), content);
                     },
                     batchContainer, -1, image,
                     "--simplebatch-tracing-datasource-url", "skipped",
@@ -188,14 +189,16 @@ class GeneratorTest {
     }
 
     private void assertHealthCheck(final HttpClient httpClient, final URI uri) throws IOException, InterruptedException {
-        assertEquals(200, httpClient.send(
-                        HttpRequest.newBuilder()
-                                .GET()
-                                .uri(uri.resolve("/health"))
-                                .header("Health-Key", "changeit")
-                                .build(),
-                        discarding())
-                .statusCode());
+        final var response = httpClient.send(
+                HttpRequest.newBuilder()
+                        .GET()
+                        .uri(uri.resolve("/health"))
+                        .header("Health-Key", "changeit")
+                        .build(),
+                discarding());
+        assertEquals(200, response
+                .statusCode(),
+                "Invalid health check: " + response);
     }
 
     private void ensureStarted(final Path stdout) throws IOException {
@@ -266,11 +269,15 @@ class GeneratorTest {
             for (int i = 0; i < maxRetries; i++) {
                 // theorically we could use the container liveness check to do the assertion but we can bypass it for now
                 try {
+                    if (!exec.getFirst().isAlive() && exec.getFirst().exitValue() != 0) {
+                        throw new IllegalStateException("Invalid exit status: " + exec.getFirst().exitValue() + "\n" +
+                                new String(exec.getFirst().getErrorStream().readAllBytes(), UTF_8));
+                    }
                     asserts.accept(exec.getSecond().getFirst());
                     break;
                 } catch (final Throwable re) {
                     if (maxRetries - 1 == i) {
-                        fail((Files.readString(exec.getSecond().getFirst(), UTF_8) + "\n" + Files.readString(exec.getSecond().getSecond(), UTF_8)).strip(), re);
+                        fail((Files.readString(exec.getSecond().getFirst(), UTF_8) + "\n" + Files.readString(exec.getSecond().getSecond(), UTF_8)).strip() + "\n" + re.getMessage(), re);
                     }
                     Thread.sleep(1_000);
                 }
@@ -303,7 +310,7 @@ class GeneratorTest {
     private void assertBuildResult(final Path project) throws IOException {
         final var target = project.resolve("target");
         final var targetFiles = collectTargetFiles(target);
-        assertEquals(38, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
+        assertEquals(39, targetFiles.size(), () -> targetFiles.keySet().stream().sorted().map(it -> "- " + it).collect(joining("\n", "\n", "\n")));
         // tests passed (so jsonrpc and batch were ok)
         assertSurefireReport("org.example.application.batch.SimpleBatchTest", targetFiles.get("surefire-reports/org.example.application.batch.SimpleBatchTest.txt"));
         assertSurefireReport("org.example.application.jsonrpc.GreetingEndpointTest", targetFiles.get("surefire-reports/org.example.application.jsonrpc.GreetingEndpointTest.txt"));
@@ -311,7 +318,7 @@ class GeneratorTest {
         assertTrue(targetFiles.get("application-1.0.0-SNAPSHOT/getting-started.html")
                 .contains("<h1>Getting Started</h1>"), () -> targetFiles.get("application-1.0.0-SNAPSHOT/getting-started.html"));
         assertTrue(targetFiles.get("application-1.0.0-SNAPSHOT/batch.html")
-                .contains("<p><code>--skipTracing</code></p>"), () -> targetFiles.get("application-1.0.0-SNAPSHOT/batch.html"));
+                .contains("<p> <code>--skipTracing</code> </p>"), () -> targetFiles.get("application-1.0.0-SNAPSHOT/batch.html"));
         // frontend was bundled (smoke test)
         assertTrue(targetFiles.get("classes/META-INF/resources/js/app.js")
                 .contains("\"h1\",null,\"Hello application\""), () -> targetFiles.get("classes/META-INF/resources/js/app.js"));
@@ -383,7 +390,7 @@ class GeneratorTest {
         final var outs = Files.createDirectories(stdDir);
         final var stderr = outs.resolve("stderr");
         final var stdout = outs.resolve("stdout");
-        final var mvn = Path.of(System.getProperty("maven.home")).resolve("bin/mvn" + (win ? ".cmd" : "")).toString();
+        final var mvn = Path.of(System.getProperty("maven.home", System.getProperty("user.home") + "/.sdkman/candidates/maven/current")).resolve("bin/mvn" + (win ? ".cmd" : "")).toString();
         final var processBuilder = new ProcessBuilder(Stream.of(cmd).map(it -> "mvn".equals(it) ? mvn : it).toArray(String[]::new))
                 .redirectError(stderr.toFile())
                 .redirectOutput(stdout.toFile())

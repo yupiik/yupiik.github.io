@@ -1890,7 +1890,7 @@ const injectDocumentation = (files, groupId, artifactId, idGenerator, hasFeature
                 ] : []),
                 ...(jsonRpc ? [
                     '',
-                    `        generateConfiguration(base.resolve("${artifactId}.application.configuration.adoc"), AppFakeBatch.class);`,
+                    `        generateConfiguration(base.resolve("documentation.${artifactId}.adoc"), AppFakeBatch.class);`,
                     `        generateJsonRpcApi("${artifactId} API", base.resolve("${artifactId}.jsonrpc.adoc"), List.of(GreetingEndpoint.class));`,
                 ] : []),
                 '    }',
@@ -2356,6 +2356,13 @@ export const generateFiles = data => {
         id: id++,
         name: 'README.adoc',
         content: `= ${data.nav.artifactId}\n:toc:\n\nGenerated project.\n\nIMPORTANT: ensure to use maven >= 3.8 and Java >= ${data.nav.javaVersion}.\n\n${readmePaths.join('\n')}`,
+    });
+
+    // with mvn4 a .mvn is more welcomed to identify project's root
+    getOrCreateFolder(files, '.mvn', idGenerator).push({
+        id: idGenerator(),
+        name: 'jvm.config',
+        content: '-Djava.util.logging.SimpleFormatter.format=[%4$s]ㅤ%5$s%6$s%n',
     });
 
     return files;

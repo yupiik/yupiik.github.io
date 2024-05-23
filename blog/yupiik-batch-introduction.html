@@ -19,6 +19,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
     <link id="theme-style" rel="stylesheet" href="/css/theme.css?v=1.0.0-SNAPSHOT">
     <link rel="stylesheet" href="/css/yupiik.github.io.css?v=1.0.0-SNAPSHOT">
+                        <!-- Matomo -->
+                        <script>
+                          var _paq = window._paq = window._paq || [];
+                          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                          _paq.push(['trackPageView']);
+                          _paq.push(['enableLinkTracking']);
+                          (function() {
+                          var u="https://yupiik.matomo.cloud/";
+                          _paq.push(['setTrackerUrl', u+'matomo.php']);
+                          _paq.push(['setSiteId', '1']);
+                          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                          g.async=true; g.src='//cdn.matomo.cloud/yupiik.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+                          })();
+                        </script>
+                        <!-- End Matomo Code -->
 </head>
 <body class="blog">
 <header class="header fixed-top">
@@ -501,7 +516,7 @@ The very nice point is that the integration in Kubernetes is super smooth and it
     <script>if (!(window.minisite || {}).skipHighlightJs) { hljs.highlightAll(); }</script>
     <script src="/js/minisite.js?v=1.0.0-SNAPSHOT"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
-    
+    <script>$('.is-blog').addClass('container');</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>
 
 </body>

@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.2.1</yupiik-tools.version>
+    <yupiik-tools.version>1.1.7</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
     <yupiik.projects.generate.showSkipped>false</yupiik.projects.generate.showSkipped>
 

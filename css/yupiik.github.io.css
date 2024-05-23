@@ -1,0 +1,312 @@
+/* reset the centered content (better for landing pages) */
+.page-content {
+  border: none;
+  padding: 0;
+}
+p {
+  font-size: large;
+}
+
+#index-html-container.container,
+#community-html-container.container,
+#projects-html-container.container {
+  max-width: none !important;
+}
+@media (min-width: 1px) {
+  #index-html-container .page-content-body,
+  #community-html-container > .page-content-body,
+  #projects-html-container > .page-content-body {
+    max-width: none !important;
+  }
+}
+#index-html-container > div.page-header,
+#projects-html-container > div.page-header,
+#community-html-container > div.page-header {
+  display: none;
+}
+
+div.page-header {
+    display: none;
+}
+
+.is-blog > div.page-header {
+    display: inherit !important;
+}
+
+#content h1>a.anchor:before,
+#toctitle>a.anchor:before,
+.sidebarblock>.content>.title>a.anchor:before,
+h2>a.anchor:before,
+h3>a.anchor:before,
+h4>a.anchor:before,
+h5>a.anchor:before,
+h6>a.anchor:before {
+  display: none;
+}
+#content h1:hover>a.anchor,
+#content h1>a.anchor:hover,
+#toctitle:hover>a.anchor,
+#toctitle>a.anchor:hover,
+.sidebarblock>.content>.title:hover>a.anchor,
+.sidebarblock>.content>.title>a.anchor:hover,
+h2:hover>a.anchor,
+h2>a.anchor:hover,
+h3:hover>a.anchor,
+h3>a.anchor:hover,
+h4:hover>a.anchor,
+h4>a.anchor:hover,
+h5:hover>a.anchor,
+h5>a.anchor:hover,
+h6:hover>a.anchor,
+h6>a.anchor:hover {
+  visibility: hidden;
+}
+.page-navigation-right {
+  display: none;
+}
+
+a {
+  color: #1b449b;
+}
+
+.btn-link {
+  color: #1b449b;
+}
+
+.docs-logo-wrapper {
+  position: absolute;
+  left: 15px;
+  top: 5px;
+}
+
+.banner {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #1b449b;
+  background-blend-mode: overlay;
+  min-height: 15rem;
+  font-size: 24px;
+}
+
+.banner .lead {
+  font-weight: 500;
+  font-size: 22px;
+}
+
+.home {
+  min-height: 25rem;
+}
+
+.section {
+  min-height: 15rem;
+  font-size: 18px;
+}
+
+.section .lead {
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.section-content {
+  margin: auto;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b449b;
+  border-color: #1b449b;
+}
+
+.btn-white {
+  color: #fff;
+  background-color: transparent;
+  border-color: #ffffff;
+  border-size: 2px;
+}
+
+.btn-white:hover {
+  color: #1b449b;
+  background-color: #ffffff;
+  border-color: #ffffff;
+  border-size: 2px;
+}
+
+svg[role="group"] > g > g > g:nth-child(2) {
+  visibility: hidden;
+}
+#project-diagram {
+  min-height: 500px;
+}
+.project-ulist li, .project-ulist li > p {
+  display: inline;
+}
+.project-ulist ul {
+  margin: auto;
+  width: 1140px;
+}
+
+.project {
+  margin: auto;
+  max-width: 90rem;
+}
+
+.card {
+  border-radius: 0rem !important;
+  min-height: 25rem;
+  max-width: 20rem;
+  margin: auto;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  background: none !important;
+}
+
+.card-footer {
+  border: none;
+  background: inherit;
+}
+
+.yupiik-logo {
+  max-height: 30px;
+  margin-top: -0.25rem;
+}
+.sect1+.sect1 {
+  border-top: none;
+}
+.icon-important:before {
+    color: #fa131b !important;
+}
+.icon-note:before {
+    color: #1845AA !important;
+}
+.icon-tip:before {
+    color: #01c1fc !important;
+}
+.icon-warning:before {
+    color: #ffc300 !important;
+}
+
+div.content > img {
+    display:block;
+    margin:auto;
+}
+
+.category-infrastructure {
+    color:#3069DE !important;
+}
+.category-technology {
+    color:#08bd68 !important;
+}
+.category-release {
+    color:#3069DE !important;
+}
+
+.blog-avatar {
+  vertical-align: middle;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.blog-list-item+.blog-list-item {
+  border-top: 1px solid #979797;
+  margin-bottom: 0;
+  margin-top: 40px;
+  padding-top: 40px;
+}
+.blog-list-item .author {
+  color: #3d3d3d;
+  font-size: 22px;
+  font-weight: 500;
+}
+.blog-list-item .blog-meta {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.blog-list-item .blog-meta > div {
+  width: 50%;
+}
+.blog-list-item .blog-meta > time {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  order: 2;
+  text-align: right;
+  width: 50%;
+}
+.blog-list-item h4 {
+  margin-top: 20px;
+  font-size: 30px;
+}
+.blog-list-item h4 > a {
+  border-bottom: 1px solid transparent;
+  text-decoration: none;
+  color: #3d3d3d;
+  transition: border 0.4s, color 0.4s;
+}
+
+.community-logo {
+  min-width: 70px;
+  max-width: 70px;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 400px) {
+  h3 {
+    font-size: 1.4rem;
+  }
+  .list-inline-item .btn-link {
+    padding: 0.200rem;
+  }
+}
+
+.metadata-readingtime, .metadata-published, .metadata-authors {
+  white-space: nowrap;
+}
+
+.blog-links ul {
+  width: inherit;
+}
+
+#searchModal label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.page {
+  /*display: grid;*/
+  justify-content: center;
+}
+
+.page-content-body{
+  max-width: none !important;
+}
+
+.page-header {
+  margin-top: 20px;
+}
+
+.page-header, #preamble, .sect1 {
+  max-width: none;
+  padding: 0 1.5rem;
+}
+
+/* MD size*/
+@media (min-width: 768px) {
+  .page-header, #preamble, .sect1 {
+    padding: 0 3rem;
+  }
+}
+
+div.title, .quoteblock blockquote:before {
+  color: #1b449b !important;
+}

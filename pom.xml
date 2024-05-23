@@ -194,27 +194,6 @@
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://www.yupiik.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
-          <customScripts>
-            &lt;script&gt;$('.is-blog').addClass('container');&lt;/script&gt;
-          </customScripts>
-          <customHead>
-            &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
-            &lt;!-- Matomo --&gt;
-            &lt;script&gt;
-              var _paq = window._paq = window._paq || [];
-              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-              _paq.push(['trackPageView']);
-              _paq.push(['enableLinkTracking']);
-              (function() {
-              var u="https://yupiik.matomo.cloud/";
-              _paq.push(['setTrackerUrl', u+'matomo.php']);
-              _paq.push(['setSiteId', '1']);
-              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-              g.async=true; g.src='//cdn.matomo.cloud/yupiik.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-              })();
-            &lt;/script&gt;
-            &lt;!-- End Matomo Code --&gt;
-          </customHead>
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
@@ -249,16 +228,6 @@
             </Other>
           </blogCategoriesCustomizations>
           <preActions>
-            <action>
-              <type>io.yupiik.site.GenerateProjectsPage</type>
-              <configuration>
-                <serverId>${githubServerId}</serverId>
-                <settingsXml>${yupiik.settings.xml}</settingsXml>
-                <active>${yupiik.projects.generate}</active>
-                <showSkipped>${yupiik.projects.generate.showSkipped}</showSkipped>
-                <overridesLocations>${project.basedir}/src/main/minisite/oss/metadata/overrides</overridesLocations>
-              </configuration>
-            </action>
           </preActions>
         </configuration>
       </plugin>

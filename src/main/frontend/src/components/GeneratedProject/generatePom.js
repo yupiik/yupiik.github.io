@@ -11,7 +11,7 @@ const yupiikBatchProperties = [
     '    <yupiik-batch.version>1.0.5</yupiik-batch.version>',
 ];
 const yupiikConstantProperties = [
-    '    <yupiik-logging.version>1.0.7</yupiik-logging.version>',
+    '    <yupiik-logging.version>1.0.8</yupiik-logging.version>',
 ];
 const frontendProperties = [
     '',
@@ -47,12 +47,12 @@ const batchDependencies = [
     '      </dependency>',
 ];
 const jsonRpcFusionProperties = [
-    '    <yupiik-fusion.version>1.0.13</yupiik-fusion.version>',
+    '    <yupiik-fusion.version>1.0.18</yupiik-fusion.version>',
 ];
 const jsonRpcTransitiveProperties = [
     '    <owb.version>2.0.27</owb.version>',
     '    <johnzon.version>1.2.21</johnzon.version>',
-    '    <tomcat.version>10.1.17</tomcat.version>',
+    '    <tomcat.version>10.1.24</tomcat.version>',
     '    <xbean.version>4.23</xbean.version>',
 ];
 const jsonrpcFusionDocumentationDependency = [
@@ -173,10 +173,10 @@ const kubernetesClientDependencies = [
     '      </dependency>',
 ];
 const documentationProperties = [
-    '    <yupiik-tools.version>1.1.8</yupiik-tools.version>',
+    '    <yupiik-tools.version>1.2.1</yupiik-tools.version>',
 ];
 const bundlebeeProperties = [
-    '    <yupiik-bundlebee.version>1.0.24</yupiik-bundlebee.version>',
+    '    <yupiik-bundlebee.version>1.0.27</yupiik-bundlebee.version>',
 ];
 const ushipProperties = [
     '    <yupiik-uship.version>1.0.19</yupiik-uship.version>',
@@ -470,7 +470,7 @@ const jibPlugin = (singleModule, frontend, jsonRpc, batchClass, useFusion) => [
     '            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>',
     '            <jvmFlags>',
     '              <jvmFlag>-Djava.util.logging.manager=io.yupiik.logging.jul.YupiikLogManager</jvmFlag>',
-    '              <jvmFlag>-Dio.yupiik.logging.jul.handler.StandardHandler.formatter=json</jvmFlag>',
+    '              <jvmFlag>-Dio.yupiik.logging.jul.handler.AsyncHandler.formatter=json</jvmFlag>',
     '              <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>',
     '              <jvmFlag>-Djdk.serialFilter=!*</jvmFlag>',
     '              <jvmFlag>-Djdk.jndi.object.factoriesFilter=!*</jvmFlag>',
@@ -509,6 +509,7 @@ const minisiteConfiguration = (pck, useFusion, jsonRpc, batch, useBundlebee) => 
     '          <linkedInCompany>${project.artifactId}</linkedInCompany>',
     '          <indexSubTitle>${project.description}</indexSubTitle>',
     '          <injectYupiikTemplateExtensionPoints>false</injectYupiikTemplateExtensionPoints>',
+    '          <preferYupiikAsciidoc>true</preferYupiikAsciidoc>',
     '          <preActions>',
     ...(!useFusion || batch ? [
         '            <preAction>',
@@ -579,6 +580,13 @@ const minisiteConfiguration = (pck, useFusion, jsonRpc, batch, useBundlebee) => 
     '            -->',
     '          </attributes>',
     '        </configuration>',
+    '        <dependencies>',
+    '          <dependency>',
+    '            <groupId>io.yupiik.maven</groupId>',
+    '            <artifactId>asciidoc-java</artifactId>',
+    '            <version>${yupiik-tools.version}</version>',
+    '          </dependency>',
+    '        </dependencies>',
 ];
 const frontendConfiguration = singleModule => ([
     '        <executions>',

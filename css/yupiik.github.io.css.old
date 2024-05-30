@@ -1,4 +1,11 @@
 /* reset the centered content (better for landing pages) */
+.page-content {
+  border: none;
+  padding: 0;
+}
+p {
+  font-size: large;
+}
 
 #index-html-container.container,
 #community-html-container.container,
@@ -16,28 +23,6 @@
 #projects-html-container > div.page-header,
 #community-html-container > div.page-header {
   display: none;
-}
-
-.header-menu > li {
-    margin-right: 2.5em !important;
-}
-
-.header-menu a {
-    color: var(--yupiik-color-white);
-    text-decoration: none;
-}
-
-.header-menu a:hover {
-  color: var(--yupiik-color-white);
-  text-decoration: none;
-}
-
-.header-menu a:focus, a:hover {
-  color: var(--yupiik-color-white);
-}
-
-.header-menu a:hover {
-  cursor: pointer;
 }
 
 div.page-header {
@@ -81,11 +66,11 @@ h6>a.anchor:hover {
 }
 
 a {
-  color: var(--yupiik-site-blue-dark);
+  color: #1b449b;
 }
 
 .btn-link {
-  color: var(--yupiik-site-blue-dark);
+  color: #1b449b;
 }
 
 .docs-logo-wrapper {
@@ -97,19 +82,10 @@ a {
 .banner {
   background-repeat: no-repeat;
   background-size: cover;
+  background-color: #1b449b;
   background-blend-mode: overlay;
-  background: rgb(2,171,234);
-  background: linear-gradient(0deg, rgba(2,171,234,1) 0%, rgba(5,110,187,1) 100%);
   min-height: 15rem;
   font-size: 24px;
-}
-
-.banner h2 {
-    color: var(--yupiik-site-green);
-}
-
-h3 {
-    color: var(--yupiik-site-blue-light) !important;
 }
 
 .banner .lead {
@@ -141,8 +117,8 @@ h3 {
 
 .btn-primary {
   color: #fff;
-  background-color: var(--yupiik-site-blue-light);
-  border-color: var(--yupiik-site-blue-light);
+  background-color: #1b449b;
+  border-color: #1b449b;
 }
 
 .btn-white {
@@ -153,7 +129,7 @@ h3 {
 }
 
 .btn-white:hover {
-  color: var(--yupiik-site-blue-dark);
+  color: #1b449b;
   background-color: #ffffff;
   border-color: #ffffff;
   border-size: 2px;
@@ -196,7 +172,7 @@ svg[role="group"] > g > g > g:nth-child(2) {
 }
 
 .yupiik-logo {
-  max-height: 20px;
+  max-height: 30px;
   margin-top: -0.25rem;
 }
 .sect1+.sect1 {
@@ -307,33 +283,12 @@ div.content > img {
 }
 
 .page {
+  /*display: grid;*/
   justify-content: center;
 }
 
-.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
-  width: 100%;
-  padding-right: 0px !important;
-  padding-left: 0px !important;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.page-content {
-  padding-top: 0rem !important;
-  padding-left: 0rem !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  width: 100%;
-  border-right: solid lightgrey 0px !important;
-}
-
-.blog .page-content-body{
+.page-content-body{
   max-width: none !important;
-  padding-top: 58px;
-}
-
-.blog div.page-header {
-  display: flex;
 }
 
 .page-header {
@@ -353,14 +308,5 @@ div.content > img {
 }
 
 div.title, .quoteblock blockquote:before {
-  color: var(--yupiik-site-blue-dark) !important;
-}
-
-/* STARTER */
-.project-starter {
-
-}
-
-.project-starter h3 {
-    padding-top: 50px;
+  color: #1b449b !important;
 }

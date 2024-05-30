@@ -128,7 +128,7 @@ const Feature = ({ label, id, dispatch, data, switchValues }) => {
 
 export const Features = ({ dispatch, data }) => {
     return (
-        <div>
+        <div className="border-bottom pb-4">
             <div>
                 <h3>Features</h3>
             </div>

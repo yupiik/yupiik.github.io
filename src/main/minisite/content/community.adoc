@@ -2,9 +2,9 @@
 
 ++++
 <div class="banner px-3 px-md-5">
-    <div class="container text-white text-left">
-        <h2 class="pt-5 text-white">Community</h2>
-        <p class="pt-3">Part of our team is strongly involved in open source software foundation.</p>
+    <div class="container text-left">
+        <h2 class="pt-5">Community</h2>
+        <p class="lead pt-3 text-white">Part of our team is strongly involved in open source software foundation.</p>
     </div>
 </div>
 
@@ -25,7 +25,6 @@
             more than 800 individual volunteer Members and 7,800+ code Committers across six continents successfully collaborate on innovations
             in Artificial Intelligence and Deep Learning, Big Data, Build Management, Cloud Computing, Content Management, DevOps, IoT and Edge Computing,
             Mobile, Servers, and Web Frameworks, among other categories.</p>
-          <footer class="blockquote-footer">What is the ASF from https://www.apache.org</footer>
         </blockquote>
         <p><a href="https://www.apache.org/" target="_blank" title="ASF">Visit</a></p>
     </div>
@@ -42,7 +41,6 @@
         <blockquote class="blockquote">
           <p class="mb-0 font-italic">The Eclipse Foundation provides our global community of individuals and organizations with a mature, scalable,
             and business-friendly environment for open source software collaboration and innovation.</p>
-          <footer class="blockquote-footer">What is the Eclipse Foundation from https://www.eclipse.org</footer>
         </blockquote>
         <p><a href="https://www.eclipse.org/" target="_blank" title="Eclipse Foundation">Visit</a></p>
     </div>

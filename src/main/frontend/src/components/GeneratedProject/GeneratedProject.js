@@ -160,15 +160,15 @@ export const GeneratedProject = ({ dispatch, data }) => {
             <h3 className="mt-3">Skeleton Project Files</h3>
             <div className="row">
                 <div className="col-sm-4" style={{ overflowX: 'auto' }}>
-                    <div>
-                        <button type="button" className="btn btn-outline-primary" onClick={() => downloadZip(data, files)}>
+                    <ul style={{ marginLeft: 0 }}>
+                        {files.sort(compareChildren).map(it => <Item item={it} setSelectedFile={setSelectedFile} />)}
+                    </ul>
+                    <div className="mt-5">
+                        <button type="button" className="btn btn-primary" onClick={() => downloadZip(data, files)}>
                             <i className="fa fa-file-archive mr-1" />
                             Download Project
                         </button>
                     </div>
-                    <ul style={{ marginLeft: 0 }}>
-                        {files.sort(compareChildren).map(it => <Item item={it} setSelectedFile={setSelectedFile} />)}
-                    </ul>
                 </div>
                 <div className="col-sm-8">
                     {selectedFile && selectedFile.content && <pre>

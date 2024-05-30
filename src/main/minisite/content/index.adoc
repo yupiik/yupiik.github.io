@@ -5,9 +5,9 @@
 
 ++++
 <div class="banner home px-3 px-md-5">
-    <div class="container text-white pt-5">
-        <h2 class="pt-5 text-white">Yupiik Open Source Stack</h2>
-        <p class="lead pt-3">From microservices to cloud deployment, we provide a full stack to simplify all the aspect
+    <div class="container pt-5">
+        <h2 class="pt-5">Yupiik Open Source Stack</h2>
+        <p class="lead pt-3 text-white">From microservices to cloud deployment, we provide a full stack to simplify all the aspect
 of development focusing on productivity and efficiency.</p>
         <a class="btn btn-white" href="/blog/yupiik-stack.html">Learn more</a>
     </div>

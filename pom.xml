@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.1.7</yupiik-tools.version>
+    <yupiik-tools.version>1.2.2</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
     <yupiik.projects.generate.showSkipped>false</yupiik.projects.generate.showSkipped>
 
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.28</version>
+      <version>1.18.32</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -52,13 +52,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>5.10.0</version>
+      <version>5.11.0-M1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.yupiik</groupId>
       <artifactId>bundlebee-core</artifactId>
-      <version>1.0.25</version>
+      <version>1.0.26</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -70,6 +70,13 @@
           <groupId>io.yupiik.maven</groupId>
           <artifactId>yupiik-tools-maven-plugin</artifactId>
           <version>${yupiik-tools.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>io.yupiik.maven</groupId>
+              <artifactId>asciidoc-java</artifactId>
+              <version>${yupiik-tools.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -172,8 +179,13 @@
           </execution>
         </executions>
         <configuration>
+          <preferYupiikAsciidoc>false</preferYupiikAsciidoc>
           <title>Yupiik Open Source Software</title>
-          <logoText></logoText>
+          <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.</description>
+          <indexText>Fusion documentation</indexText>
+          <indexSubTitle>Fusion framework aims at providing a very light java framework and graal native.</indexSubTitle>
+          <logoText>Open Source</logoText>
+          <logoSideText>Software</logoSideText>
           <requires>
               <require>asciidoctor-diagram</require>
           </requires>
@@ -185,7 +197,6 @@
           <gravatar>
             <url>https://www.gravatar.com/avatar/%s?d=identicon&amp;size=75</url>
           </gravatar>
-          <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.</description>
           <copyright>© 2024 &lt;strong&gt;Yupiik&lt;/strong&gt;. All Rights Reserved</copyright>
           <generateIndex>false</generateIndex>
           <generateSiteMap>true</generateSiteMap>
@@ -194,6 +205,35 @@
           <injectBlogMeta>true</injectBlogMeta>
           <siteBase>https://www.yupiik.io</siteBase>
           <!-- drop the right menu removing footer-top.html -->
+          <customScripts>
+            &lt;script&gt;$('.is-blog').addClass('container');&lt;/script&gt;
+          </customScripts>
+          <customHead>
+            &lt;link rel="stylesheet" href="{{base}}/css/yupiik.github.io.css?v=${project.version}"&gt;
+            &lt;!-- Matomo --&gt;
+            &lt;script&gt;
+              var _paq = window._paq = window._paq || [];
+              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+              _paq.push(['trackPageView']);
+              _paq.push(['enableLinkTracking']);
+              (function() {
+              var u="https://yupiik.matomo.cloud/";
+              _paq.push(['setTrackerUrl', u+'matomo.php']);
+              _paq.push(['setSiteId', '1']);
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.async=true; g.src='//cdn.matomo.cloud/yupiik.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+              })();
+            &lt;/script&gt;
+            &lt;!-- End Matomo Code --&gt;
+          </customHead>
+          <customMenu>
+            &lt;ul class="header-menu list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex" &gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Starter" href="/project-starter.html"&gt;Starter&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Project" href="/projects.html"&gt;Project&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Community" href="/community.html"&gt;Community&lt;/a&gt;&lt;/li&gt;
+              &lt;li class="list-inline-item"&gt;&lt;a title="Blog" href="/blog/"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          </customMenu>
           <siteBase>/</siteBase>
           <templateExtensionPoints>
             <socialLinks>
@@ -959,6 +999,13 @@
     <url>https://github.com/yupiik/yupiik.github.io.git</url>
     <tag>HEAD</tag>
   </scm>
+  <repositories>
+    <repository>
+      <id>maven_central</id>
+      <name>Maven Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <snapshotRepository>

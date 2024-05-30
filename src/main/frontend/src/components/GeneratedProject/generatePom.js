@@ -53,7 +53,7 @@ const jsonRpcTransitiveProperties = [
     '    <owb.version>2.0.27</owb.version>',
     '    <johnzon.version>1.2.21</johnzon.version>',
     '    <tomcat.version>10.1.24</tomcat.version>',
-    '    <xbean.version>4.23</xbean.version>',
+    '    <xbean.version>4.25</xbean.version>',
 ];
 const jsonrpcFusionDocumentationDependency = [
     '      <dependency> <!-- for the doc -->',

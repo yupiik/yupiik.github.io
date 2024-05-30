@@ -25,7 +25,7 @@ const Input = ({ name, dispatch, data }) => {
 
 export const Nav = ({ data, dispatch }) => {
     return (
-        <div>
+        <div className="border-bottom pb-4">
             <div>
                 <h3>Metadata</h3>
             </div>

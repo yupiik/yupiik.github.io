@@ -1,0 +1,22 @@
+++++
+<div class="banner px-3 px-md-5">
+    <div class="container text-white text-left">
+        <h2 class="pt-5 text-white">Blog</h2>
+        <p class="pt-3">Follow our insights about technology and Yupiik OSS release updates.</p>
+    </div>
+</div>
+<section class="container section px-3 px-md-5">
+++++
+
+{{{items}}}
+
+++++
+</section>
+<div class="is-blog">
+++++
+
+{{{links}}}
+
+++++
+</div>
+++++

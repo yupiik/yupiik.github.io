@@ -32,6 +32,7 @@ export const App = () => {
     const [state, dispatch] = useReducer((state, action) => mergeState(state, action), defaultState);
     return (
         <div className="project-starter container">
+            <h2 class="pt-5">Yupiik OSS - Project Starter</h2>
             <div style={{ marginRight: '0', marginLeft: '0' }}>
                 <div>
                     <Nav data={state.nav} dispatch={dispatch} />

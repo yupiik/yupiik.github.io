@@ -16,7 +16,7 @@
     <yupiik-tools.dryRun>false</yupiik-tools.dryRun>
     <yupiik-tools.force>false</yupiik-tools.force>
     <yupiik.settings.xml />
-    <yupiik-tools.version>1.2.2</yupiik-tools.version>
+    <yupiik-tools.version>1.2.3-SNAPSHOT</yupiik-tools.version>
     <yupiik.projects.generate>true</yupiik.projects.generate>
     <yupiik.projects.generate.showSkipped>false</yupiik.projects.generate.showSkipped>
 
@@ -179,7 +179,7 @@
           </execution>
         </executions>
         <configuration>
-          <preferYupiikAsciidoc>false</preferYupiikAsciidoc>
+          <preferYupiikAsciidoc>true</preferYupiikAsciidoc>
           <title>Yupiik Open Source Software</title>
           <description>Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.</description>
           <indexText>Fusion documentation</indexText>
@@ -268,6 +268,16 @@
             </Other>
           </blogCategoriesCustomizations>
           <preActions>
+            <preAction>
+              <type>io.yupiik.site.GenerateProjectsPage</type>
+              <configuration>
+                <serverId>${githubServerId}</serverId>
+                <settingsXml>${yupiik.settings.xml}</settingsXml>
+                <active>${yupiik.projects.generate}</active>
+                <showSkipped>${yupiik.projects.generate.showSkipped}</showSkipped>
+                <overridesLocations>${project.basedir}/src/main/minisite/oss/metadata/overrides</overridesLocations>
+              </configuration>
+            </preAction>
           </preActions>
         </configuration>
       </plugin>

@@ -57,7 +57,7 @@ Yupiik Batch design is to be simple and as close as possible to plain Java code.
 
 There is no constraints on the way you write the batch itself but the recommended way is to:
 
-* define your configuation using `simple-configuration` which consists in marking a Java class fields with `@Param`:
+* define your configuration using `simple-configuration` which consists in marking a Java class fields with `@Param`:
 +
 [source,java]
 ----

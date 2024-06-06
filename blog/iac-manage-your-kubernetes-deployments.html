@@ -152,293 +152,368 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph metadata">
-<p><span class="mr-2 category-infrastructure"><span class="icon"><i class="fa fa-fas fa-network-wired"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2024-01-31</span>, <span class="metadata-readingtime">7 min read</span></p>
-</div>
-<div class="quoteblock abstract">
-<blockquote>
-Deploying to Kubernetes requires some understanding of the underlying concepts but is not by itself difficult but setting up the right tools to do it can be fastidious.
-Let see what we tend to recommend at Yupiik and why we preferred it over some well advertised tools.
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_the_operator_or_chicken_egg_issue">The operator or chicken-egg issue</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The first myth to understand and kill is that Kubernetes operators are not intended to help with the deployment.
-They are great tools to enable a specific DSL and abstract some details in some cases, they are awesome for insanely complicated and dynamic deployments, but they are by design not very welcomed in most of the case
-because they are required to keep watching or querying Kubernetes API plus being up in the cluster.</p>
-</div>
-<div class="paragraph">
-<p>What does it mean? Assume you have a cluster of two nodes of 4 CPU and 4Gi of RAM - let&#8217;s ignore the OS/kubelet daemon resources for the exercise, then your operator will need some resource since it "runs".
-Reviewing some common operators it is often something like <code>[requests=200m;limits=500m]</code> for the CPU and <code>[requests=250Mi;limits=500Mi]</code> for the RAM - when using a single instance.
-A common example is that ArgoCD "default" configuration will consume <code>[requests=1.250m+1.(50m+10m)+1.10m+1.100m+1.100m;limits=1.500m+5.(100m+50m)+5.50m+1.100m+1.100m]</code>
-(controller+server with ui option+repo+applicationSet+notifications) which makes <code>[requests=520m;limits=1700m]</code>.
-Now keep in mind you need at least the most consuming instance to be able to rollout a pod (if you have 4 CPU and that 3.1 are taken you can&#8217;t deploy a new instance needing 1 CPU),
-then it means you need at least <code>250m</code> of margin to rollout ArgoCD so overall ArgoCD will require 2CPU in your cluster.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-as always setting the requests a limits value for resources is not always good in Kubernetes, in particular, the CPU limits should rarely be set because it preallocate it and prevents
-it to be used even when idle, this will make your server requiring way more CPU - but it is often the recommended configuration for operators even if default tends to not set resources
-(which is worse because you can end up with your operator just not running and keep failing to boot).
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-you can do the same kind of reasoning for the memory, but we&#8217;ll not in this post for brevity.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To rephrase it in a trivial way: from a cluster of 8 available CPU (two nodes with 4 CPU) you now just have a cluster of 6 CPU for your applications.
-What is important to keep in mind is that any resource is paid in a cluster.
-It is quite obvious in the cloud but on premise, even if you abstract it with a virtual machines solution like VMWare, it is still resources you have to pre-allocate and not allocate to business applications.</p>
-</div>
-<div class="paragraph">
-<p>So yes operators make it looks like it is easy but:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>It abstracts even more what you do and can make you loose control on what you deploy,</p>
-</li>
-<li>
-<p>It needs to be installed before you can rely on it - only assumption which is fair is "Kubernetes is running" - if you use ArgoCD you can&#8217;t deploy before having deployed it for example,</p>
-</li>
-<li>
-<p>It consumes resources by design you can prefer to reallocate to applications,</p>
-</li>
-<li>
-<p>It is something more to manage in time (security issues, version rollouts, &#8230;&#8203;) so more work for your ops team in terms of testing and deployment work.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Considering all the above mentioned and the effect-consequences, at Yupiik, we tend to prefer client-only deployment solution rather than&#8230;&#8203;.. (add a benchmark)
-The main big advantage is that you don&#8217;t need to add any resource pressure on the cluster (which is not its primary scope), CPU, memory but also image garbage collection or storage.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_infrastructure_as_code_iac">Infrastructure as code (IaC)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Since day-0 we thought that infrastructure as code is a key part of any project.</p>
-</div>
-<div class="paragraph">
-<p>The statement:</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>It worked on my machine!</p>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>Is not something acceptable and therefore being able to bundle the application <strong>AND</strong> its deployment is a key part to ensure the developers and ops can work <strong>together</strong> toward
-a better application for end user with smoother deployments for everybody.</p>
-</div>
-<div class="paragraph">
-<p>We ear a lot about GitOps but without entering inside a solution first it is important to understand the key aspects behind it.</p>
-</div>
-<div class="paragraph">
-<p>Seeing the infrastructure as code aims at enabling to use code tools which are advanced and automated on the ops side of our work.</p>
-</div>
-<div class="paragraph">
-<p>In other words, IaC means you can:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>(optionally) generate your deployment,</p>
-</li>
-<li>
-<p>(optionally) test your deployment,</p>
-</li>
-<li>
-<p>put your deployment in a CI/CD pipeline,</p>
-</li>
-<li>
-<p>execute your deployment automatically based on triggers/conditions (from a manual trigger - a human being clicks on a button, to a rule like <em>production branch was updated</em>),</p>
-</li>
-<li>
-<p>(optionally) audit your deployment (CVE for example).</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_bundlebee_the_enterprise_kubernetes_deployer">BundleBee: the enterprise Kubernetes deployer!</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Yupiik <a href="https://yupiik.io/bundlebee/">BundleBee</a> is a light Java package manager for Kubernetes applications and was designed with the principles of Infrastructure as Code in mind:</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>Generate the same deployment easily and automatically without the risk of manually execution errors.</p>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>Like the same binary is the result of the same source code, the same infrastructure is the result of the same configuration or definition file.</p>
-</div>
-<div class="paragraph">
-<p>It is a way to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>package a Kubernetes deployment recipe (called <em>alveolus</em> in BundleBee semantic),</p>
-</li>
-<li>
-<p>to make the deployment dynamic using <em>placeholders</em> - and here no need to learn <em>Go</em> language like with Helm charts,</p>
-</li>
-<li>
-<p>to validate the deployment with Junit5 - or any other solution,</p>
-</li>
-<li>
-<p>to compare the state of your cluster with the recipe - to identify the differences made manually if any ("quick fixes") and ensure both converge to the same state.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Recently we used Bundlebee for a customer in the Bank industry to bootstrap from scratch a devops stack and a full Kubernetes cluster from dev to production:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Environment management with configuration tuning per env</p>
-</li>
-<li>
-<p>Integration in a standard Apache Maven pipeline</p>
-</li>
-<li>
-<p>Secrets injections based on crypto</p>
-</li>
-<li>
-<p>~100 apps (cronjobs, deployments, jobs - without cron)</p>
-</li>
-<li>
-<p>Dev factory setup in 1 command (Gitea, Drone, Mattermost, Gitea-pages)</p>
-</li>
-<li>
-<p>Placeholders extraction for an easier interaction with ops</p>
-</li>
-<li>
-<p>Living documentation of the available configuration</p>
-</li>
-<li>
-<p>Auto redeployment and easy rollbacks on need</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>We often combine BundleBee with our generic Maven Plugin (a.k.a. <code>yupiik-tools-maven-plugin</code>) which contains two little gems:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>a properties (de)ciphering solution we use to store the placeholder values in our sources (often a <code>git</code> repository) in a secured manner,</p>
-</li>
-<li>
-<p>a static site generator (a.k.a. <em>minisite</em>) we use to integrate the documentation of our alveoli (recipes), ie the available placeholders but also the diff with the cluster per environment.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-this post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Here is a diagram showing this kind of pipeline:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnIHN0YW5kYWxvbmU9J25vJz8+PHN2ZyBjb250ZW50U3R5bGVUeXBlPSd0ZXh0L2NzcycgaGVpZ2h0PScyOThweCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgc3R5bGU9J3dpZHRoOjIyNHB4O2hlaWdodDoyOThweDtiYWNrZ3JvdW5kOiNGRkZGRkY7JyB2ZXJzaW9uPScxLjEnIHZpZXdCb3g9JzAgMCAyMjQgMjk4JyB3aWR0aD0nMjI0cHgnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHpvb21BbmRQYW49J21hZ25pZnknPjxkZWZzLz48Zz48ZWxsaXBzZSBjeD0nMTEyJyBjeT0nMjAnIGZpbGw9JyMyMjIyMjInIHJ4PScxMCcgcnk9JzEwJyBzdHlsZT0nc3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjEuMDsnLz48cmVjdCBmaWxsPScjRjFGMUYxJyBoZWlnaHQ9JzMzLjk2ODgnIHJ4PScxMi41JyByeT0nMTIuNScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7JyB3aWR0aD0nMTQ3JyB4PSczOC41JyB5PSc1MCcvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzEyNycgeD0nNDguNScgeT0nNzEuMTM4Nyc+Q2xvbmUgdGhlIHJlcG9zaXRvcnk8L3RleHQ+PHJlY3QgZmlsbD0nI0YxRjFGMScgaGVpZ2h0PSczMy45Njg4JyByeD0nMTIuNScgcnk9JzEyLjUnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41Oycgd2lkdGg9JzEzOScgeD0nNDIuNScgeT0nMTAzLjk2ODgnLz48dGV4dCBmaWxsPScjMDAwMDAwJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxMicgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScxMTknIHg9JzUyLjUnIHk9JzEyNS4xMDc0Jz5SZXRyaWV2ZSB0aGUgcmVjaXBlPC90ZXh0PjxyZWN0IGZpbGw9JyNGMUYxRjEnIGhlaWdodD0nMzMuOTY4OCcgcng9JzEyLjUnIHJ5PScxMi41JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsnIHdpZHRoPScxODYnIHg9JzE5JyB5PScxNTcuOTM3NScvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzE2NicgeD0nMjknIHk9JzE3OS4wNzYyJz5EZWNpcGhlciB0aGUgcGxhY2Vob2xkZXJzPC90ZXh0PjxyZWN0IGZpbGw9JyNGMUYxRjEnIGhlaWdodD0nMzMuOTY4OCcgcng9JzEyLjUnIHJ5PScxMi41JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsnIHdpZHRoPScyMDInIHg9JzExJyB5PScyMTEuOTA2MycvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzE4MicgeD0nMjEnIHk9JzIzMy4wNDQ5Jz5EZXBsb3kgdG8ga3ViZXJuZXRlcyBjbHVzdGVyPC90ZXh0PjxlbGxpcHNlIGN4PScxMTInIGN5PScyNzYuODc1JyByeD0nMTEnIHJ5PScxMScgc3R5bGU9J3N0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxLjA7ZmlsbDpub25lOycvPjxlbGxpcHNlIGN4PScxMTInIGN5PScyNzYuODc1JyBmaWxsPScjMjIyMjIyJyByeD0nNicgcnk9JzYnIHN0eWxlPSdzdHJva2U6IzExMTExMTtzdHJva2Utd2lkdGg6MS4wOycvPjxsaW5lIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycgeDE9JzExMicgeDI9JzExMicgeTE9JzMwJyB5Mj0nNTAnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzEwOCw0MCwxMTIsNTAsMTE2LDQwLDExMiw0NCcgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7Jy8+PGxpbmUgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7JyB4MT0nMTEyJyB4Mj0nMTEyJyB5MT0nODMuOTY4OCcgeTI9JzEwMy45Njg4Jy8+PHBvbHlnb24gZmlsbD0nIzE4MTgxOCcgcG9pbnRzPScxMDgsOTMuOTY4OCwxMTIsMTAzLjk2ODgsMTE2LDkzLjk2ODgsMTEyLDk3Ljk2ODgnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycvPjxsaW5lIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycgeDE9JzExMicgeDI9JzExMicgeTE9JzEzNy45Mzc1JyB5Mj0nMTU3LjkzNzUnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzEwOCwxNDcuOTM3NSwxMTIsMTU3LjkzNzUsMTE2LDE0Ny45Mzc1LDExMiwxNTEuOTM3NScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7Jy8+PGxpbmUgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7JyB4MT0nMTEyJyB4Mj0nMTEyJyB5MT0nMTkxLjkwNjMnIHkyPScyMTEuOTA2MycvPjxwb2x5Z29uIGZpbGw9JyMxODE4MTgnIHBvaW50cz0nMTA4LDIwMS45MDYzLDExMiwyMTEuOTA2MywxMTYsMjAxLjkwNjMsMTEyLDIwNS45MDYzJyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnLz48bGluZSBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnIHgxPScxMTInIHgyPScxMTInIHkxPScyNDUuODc1JyB5Mj0nMjY1Ljg3NScvPjxwb2x5Z29uIGZpbGw9JyMxODE4MTgnIHBvaW50cz0nMTA4LDI1NS44NzUsMTEyLDI2NS44NzUsMTE2LDI1NS44NzUsMTEyLDI1OS44NzUnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycvPjwvZz48L3N2Zz4=" alt="generated manage your kubernetes deployments pipeline deploy" width="400px" height="298">
-</div>
-<div class="title">Figure 1. Deployment pipeline</div>
-</div>
-<div class="paragraph">
-<p>In parallel two other pipelines are generally used.
-The first one is in the build of the alveolus/recipe itself:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnIHN0YW5kYWxvbmU9J25vJz8+PHN2ZyBjb250ZW50U3R5bGVUeXBlPSd0ZXh0L2NzcycgaGVpZ2h0PScyOThweCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgc3R5bGU9J3dpZHRoOjI0OHB4O2hlaWdodDoyOThweDtiYWNrZ3JvdW5kOiNGRkZGRkY7JyB2ZXJzaW9uPScxLjEnIHZpZXdCb3g9JzAgMCAyNDggMjk4JyB3aWR0aD0nMjQ4cHgnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHpvb21BbmRQYW49J21hZ25pZnknPjxkZWZzLz48Zz48ZWxsaXBzZSBjeD0nMTI0JyBjeT0nMjAnIGZpbGw9JyMyMjIyMjInIHJ4PScxMCcgcnk9JzEwJyBzdHlsZT0nc3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjEuMDsnLz48cmVjdCBmaWxsPScjRjFGMUYxJyBoZWlnaHQ9JzMzLjk2ODgnIHJ4PScxMi41JyByeT0nMTIuNScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7JyB3aWR0aD0nMTQ3JyB4PSc1MC41JyB5PSc1MCcvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzEyNycgeD0nNjAuNScgeT0nNzEuMTM4Nyc+Q2xvbmUgdGhlIHJlcG9zaXRvcnk8L3RleHQ+PHJlY3QgZmlsbD0nI0YxRjFGMScgaGVpZ2h0PSczMy45Njg4JyByeD0nMTIuNScgcnk9JzEyLjUnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41Oycgd2lkdGg9JzE1NycgeD0nNDUuNScgeT0nMTAzLjk2ODgnLz48dGV4dCBmaWxsPScjMDAwMDAwJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxMicgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScxMzcnIHg9JzU1LjUnIHk9JzEyNS4xMDc0Jz5SdW4gZGVwbG95bWVudCB0ZXN0czwvdGV4dD48cmVjdCBmaWxsPScjRjFGMUYxJyBoZWlnaHQ9JzMzLjk2ODgnIHJ4PScxMi41JyByeT0nMTIuNScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7JyB3aWR0aD0nMjI2JyB4PScxMScgeT0nMTU3LjkzNzUnLz48dGV4dCBmaWxsPScjMDAwMDAwJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxMicgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScyMDYnIHg9JzIxJyB5PScxNzkuMDc2Mic+R2VuZXJhdGUgcHJvamVjdCBkb2N1bWVudGF0aW9uPC90ZXh0PjxyZWN0IGZpbGw9JyNGMUYxRjEnIGhlaWdodD0nMzMuOTY4OCcgcng9JzEyLjUnIHJ5PScxMi41JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsnIHdpZHRoPScxNjInIHg9JzQzJyB5PScyMTEuOTA2MycvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzE0MicgeD0nNTMnIHk9JzIzMy4wNDQ5Jz5EZXBsb3kgcHJvamVjdCBtaW5pc2l0ZTwvdGV4dD48ZWxsaXBzZSBjeD0nMTI0JyBjeT0nMjc2Ljg3NScgcng9JzExJyByeT0nMTEnIHN0eWxlPSdzdHJva2U6IzIyMjIyMjtzdHJva2Utd2lkdGg6MS4wO2ZpbGw6bm9uZTsnLz48ZWxsaXBzZSBjeD0nMTI0JyBjeT0nMjc2Ljg3NScgZmlsbD0nIzIyMjIyMicgcng9JzYnIHJ5PSc2JyBzdHlsZT0nc3Ryb2tlOiMxMTExMTE7c3Ryb2tlLXdpZHRoOjEuMDsnLz48bGluZSBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnIHgxPScxMjQnIHgyPScxMjQnIHkxPSczMCcgeTI9JzUwJy8+PHBvbHlnb24gZmlsbD0nIzE4MTgxOCcgcG9pbnRzPScxMjAsNDAsMTI0LDUwLDEyOCw0MCwxMjQsNDQnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycvPjxsaW5lIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycgeDE9JzEyNCcgeDI9JzEyNCcgeTE9JzgzLjk2ODgnIHkyPScxMDMuOTY4OCcvPjxwb2x5Z29uIGZpbGw9JyMxODE4MTgnIHBvaW50cz0nMTIwLDkzLjk2ODgsMTI0LDEwMy45Njg4LDEyOCw5My45Njg4LDEyNCw5Ny45Njg4JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnLz48bGluZSBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnIHgxPScxMjQnIHgyPScxMjQnIHkxPScxMzcuOTM3NScgeTI9JzE1Ny45Mzc1Jy8+PHBvbHlnb24gZmlsbD0nIzE4MTgxOCcgcG9pbnRzPScxMjAsMTQ3LjkzNzUsMTI0LDE1Ny45Mzc1LDEyOCwxNDcuOTM3NSwxMjQsMTUxLjkzNzUnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycvPjxsaW5lIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycgeDE9JzEyNCcgeDI9JzEyNCcgeTE9JzE5MS45MDYzJyB5Mj0nMjExLjkwNjMnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzEyMCwyMDEuOTA2MywxMjQsMjExLjkwNjMsMTI4LDIwMS45MDYzLDEyNCwyMDUuOTA2Mycgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7Jy8+PGxpbmUgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7JyB4MT0nMTI0JyB4Mj0nMTI0JyB5MT0nMjQ1Ljg3NScgeTI9JzI2NS44NzUnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzEyMCwyNTUuODc1LDEyNCwyNjUuODc1LDEyOCwyNTUuODc1LDEyNCwyNTkuODc1JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnLz48L2c+PC9zdmc+" alt="generated manage your kubernetes deployments pipeline project" width="400px" height="298">
-</div>
-<div class="title">Figure 2. Build pipeline</div>
-</div>
-<div class="paragraph">
-<p>And finally another one in the deployment project (we tend to use another project where permissions are reduced for security reasons):</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnIHN0YW5kYWxvbmU9J25vJz8+PHN2ZyBjb250ZW50U3R5bGVUeXBlPSd0ZXh0L2NzcycgaGVpZ2h0PScyNDRweCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgc3R5bGU9J3dpZHRoOjM0MXB4O2hlaWdodDoyNDRweDtiYWNrZ3JvdW5kOiNGRkZGRkY7JyB2ZXJzaW9uPScxLjEnIHZpZXdCb3g9JzAgMCAzNDEgMjQ0JyB3aWR0aD0nMzQxcHgnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHpvb21BbmRQYW49J21hZ25pZnknPjxkZWZzLz48Zz48ZWxsaXBzZSBjeD0nMTcwLjUnIGN5PScyMCcgZmlsbD0nIzIyMjIyMicgcng9JzEwJyByeT0nMTAnIHN0eWxlPSdzdHJva2U6IzIyMjIyMjtzdHJva2Utd2lkdGg6MS4wOycvPjxyZWN0IGZpbGw9JyNGMUYxRjEnIGhlaWdodD0nMzMuOTY4OCcgcng9JzEyLjUnIHJ5PScxMi41JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsnIHdpZHRoPScxNDcnIHg9Jzk3JyB5PSc1MCcvPjx0ZXh0IGZpbGw9JyMwMDAwMDAnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzEyJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzEyNycgeD0nMTA3JyB5PSc3MS4xMzg3Jz5DbG9uZSB0aGUgcmVwb3NpdG9yeTwvdGV4dD48cmVjdCBmaWxsPScjRjFGMUYxJyBoZWlnaHQ9JzMzLjk2ODgnIHJ4PScxMi41JyByeT0nMTIuNScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7JyB3aWR0aD0nMzE5JyB4PScxMScgeT0nMTAzLjk2ODgnLz48dGV4dCBmaWxsPScjMDAwMDAwJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxMicgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScyOTknIHg9JzIxJyB5PScxMjUuMTA3NCc+Q29tcGFyZSBjbHVzdGVyIHN0YXRlIGFuZCBsYXN0IGRlcGxveWVkIHJlY2lwZTwvdGV4dD48cmVjdCBmaWxsPScjRjFGMUYxJyBoZWlnaHQ9JzMzLjk2ODgnIHJ4PScxMi41JyByeT0nMTIuNScgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7JyB3aWR0aD0nMTkxJyB4PSc3NScgeT0nMTU3LjkzNzUnLz48dGV4dCBmaWxsPScjMDAwMDAwJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxMicgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScxNzEnIHg9Jzg1JyB5PScxNzkuMDc2Mic+RGVwbG95IGRlcGxveW1lbnQgbWluaXNpdGU8L3RleHQ+PGVsbGlwc2UgY3g9JzE3MC41JyBjeT0nMjIyLjkwNjMnIHJ4PScxMScgcnk9JzExJyBzdHlsZT0nc3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjEuMDtmaWxsOm5vbmU7Jy8+PGVsbGlwc2UgY3g9JzE3MC41JyBjeT0nMjIyLjkwNjMnIGZpbGw9JyMyMjIyMjInIHJ4PSc2JyByeT0nNicgc3R5bGU9J3N0cm9rZTojMTExMTExO3N0cm9rZS13aWR0aDoxLjA7Jy8+PGxpbmUgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7JyB4MT0nMTcwLjUnIHgyPScxNzAuNScgeTE9JzMwJyB5Mj0nNTAnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzE2Ni41LDQwLDE3MC41LDUwLDE3NC41LDQwLDE3MC41LDQ0JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnLz48bGluZSBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnIHgxPScxNzAuNScgeDI9JzE3MC41JyB5MT0nODMuOTY4OCcgeTI9JzEwMy45Njg4Jy8+PHBvbHlnb24gZmlsbD0nIzE4MTgxOCcgcG9pbnRzPScxNjYuNSw5My45Njg4LDE3MC41LDEwMy45Njg4LDE3NC41LDkzLjk2ODgsMTcwLjUsOTcuOTY4OCcgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7Jy8+PGxpbmUgc3R5bGU9J3N0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxLjA7JyB4MT0nMTcwLjUnIHgyPScxNzAuNScgeTE9JzEzNy45Mzc1JyB5Mj0nMTU3LjkzNzUnLz48cG9seWdvbiBmaWxsPScjMTgxODE4JyBwb2ludHM9JzE2Ni41LDE0Ny45Mzc1LDE3MC41LDE1Ny45Mzc1LDE3NC41LDE0Ny45Mzc1LDE3MC41LDE1MS45Mzc1JyBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnLz48bGluZSBzdHlsZT0nc3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjEuMDsnIHgxPScxNzAuNScgeDI9JzE3MC41JyB5MT0nMTkxLjkwNjMnIHkyPScyMTEuOTA2MycvPjxwb2x5Z29uIGZpbGw9JyMxODE4MTgnIHBvaW50cz0nMTY2LjUsMjAxLjkwNjMsMTcwLjUsMjExLjkwNjMsMTc0LjUsMjAxLjkwNjMsMTcwLjUsMjA1LjkwNjMnIHN0eWxlPSdzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MS4wOycvPjwvZz48L3N2Zz4=" alt="generated manage your kubernetes deployments pipeline deploy cron" width="500px" height="244">
-</div>
-<div class="title">Figure 3. Deployment cron each hour pipeline</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion">Conclusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There are a lot of trend and tutorials, good will and examples about how to deploy today.
-However, a lot is either full marketing content or more about promoting a technical aspect.
-As usual, the best is to step back and see what is really needed for you and pick your own trade-off.</p>
-</div>
-<div class="paragraph">
-<p>In this post, we saw that there is no free lunch and that a well thought CI/CD pipeline can be worth any operator or runtime.
-As we saw people moving away from WordPress to embrace static website generation 10 years ago, the same will hopefully slow happen on infrastructure as code for the good.</p>
-</div>
-<div class="paragraph">
-<p>BundleBee is a really worth it solution on that aspect which can help you to use the same recipe from dev to production with a high quality validation pipeline (linting, testing, reporting).</p>
-</div>
-<div class="paragraph">
-<p>Stay tuned for more information on how to make it happening in the coming blog posts!</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-This post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
+ <div class="sectionbody">
+ <div class="paragraph metadata">
+ <p><span class="mr-2 category-infrastructure"><span class="icon"><i class="fas fa-network-wired"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
+, <span class="metadata-published">2024-01-31</span>, <span class="metadata-readingtime">7 min read</span></p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1">
+ <div class="quoteblock abstract">
+  <blockquote>
+Deploying to Kubernetes requires some understanding of the underlying concepts but is not by itself difficult but setting up the right tools to do it can be fastidious. Let see what we tend to recommend at Yupiik and why we preferred it over some well advertised tools.  </blockquote>
+ </div> </div>
+ <div class="sect1" id="_the_operator_or_chickenegg_issue">
+  <h2>The operator or chicken-egg issue</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The first myth to understand and kill is that Kubernetes operators are not intended to help with the deployment. They are great tools to enable a specific DSL and abstract some details in some cases, they are awesome for insanely complicated and dynamic deployments, but they are by design not very welcomed in most of the case because they are required to keep watching or querying Kubernetes API plus being up in the cluster.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>What does it mean? Assume you have a cluster of two nodes of 4 CPU and 4Gi of RAM - let's ignore the OS/kubelet daemon resources for the exercise, then your operator will need some resource since it &quot;runs&quot;. Reviewing some common operators it is often something like <code>[requests=200m;limits=500m]</code> for the CPU and <code>[requests=250Mi;limits=500Mi]</code> for the RAM - when using a single instance. A common example is that ArgoCD &quot;default&quot; configuration will consume <code>[requests=1.250m+1.(50m+10m)+1.10m+1.100m+1.100m;limits=1.500m+5.(100m+50m)+5.50m+1.100m+1.100m]</code>(controller+server with ui option+repo+applicationSet+notifications) which makes <code>[requests=520m;limits=1700m]</code>. Now keep in mind you need at least the most consuming instance to be able to rollout a pod (if you have 4 CPU and that 3.1 are taken you can't deploy a new instance needing 1 CPU), then it means you need at least <code>250m</code> of margin to rollout ArgoCD so overall ArgoCD will require 2CPU in your cluster.</p>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+as always setting the requests a limits value for resources is not always good in Kubernetes, in particular, the CPU limits should rarely be set because it preallocate it and prevents it to be used even when idle, this will make your server requiring way more CPU - but it is often the recommended configuration for operators even if default tends to not set resources (which is worse because you can end up with your operator just not running and keep failing to boot).    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="admonitionblock note">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">NOTE</div>
+       </td>
+      <td class="content">
+you can do the same kind of reasoning for the memory, but we'll not in this post for brevity.    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="paragraph">
+ <p>
+To rephrase it in a trivial way: from a cluster of 8 available CPU (two nodes with 4 CPU) you now just have a cluster of 6 CPU for your applications. What is important to keep in mind is that any resource is paid in a cluster. It is quite obvious in the cloud but on premise, even if you abstract it with a virtual machines solution like VMWare, it is still resources you have to pre-allocate and not allocate to business applications.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+So yes operators make it looks like it is easy but:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+It abstracts even more what you do and can make you loose control on what you deploy,
+ </p>
+  </li>
+  <li>
+ <p>
+It needs to be installed before you can rely on it - only assumption which is fair is &quot;Kubernetes is running&quot; - if you use ArgoCD you can't deploy before having deployed it for example,
+ </p>
+  </li>
+  <li>
+ <p>
+It consumes resources by design you can prefer to reallocate to applications,
+ </p>
+  </li>
+  <li>
+ <p>
+It is something more to manage in time (security issues, version rollouts, ...) so more work for your ops team in terms of testing and deployment work.
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p>
+Considering all the above mentioned and the effect-consequences, at Yupiik, we tend to prefer client-only deployment solution rather than..... (add a benchmark) The main big advantage is that you don't need to add any resource pressure on the cluster (which is not its primary scope), CPU, memory but also image garbage collection or storage.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_infrastructure_as_code_iac">
+  <h2>Infrastructure as code (IaC)</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Since day-0 we thought that infrastructure as code is a key part of any project.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+The statement:
+ </p>
+ </div>
+ <div>
+  <blockquote>
+It worked on my machine!  </blockquote>
+ </div> <div class="paragraph">
+ <p>Is not something acceptable and therefore being able to bundle the application <b>AND</b> its deployment is a key part to ensure the developers and ops can work <b>together</b> toward a better application for end user with smoother deployments for everybody.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+We ear a lot about GitOps but without entering inside a solution first it is important to understand the key aspects behind it.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+Seeing the infrastructure as code aims at enabling to use code tools which are advanced and automated on the ops side of our work.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+In other words, IaC means you can:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+(optionally) generate your deployment,
+ </p>
+  </li>
+  <li>
+ <p>
+(optionally) test your deployment,
+ </p>
+  </li>
+  <li>
+ <p>
+put your deployment in a CI/CD pipeline,
+ </p>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>execute your deployment automatically based on triggers/conditions (from a manual trigger - a human being clicks on a button, to a rule like <i>production branch was updated</i>),</p>
+ </div>
+  </li>
+  <li>
+ <p>
+(optionally) audit your deployment (CVE for example).
+ </p>
+  </li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_bundlebee_the_enterprise_kubernetes_deployer">
+  <h2>BundleBee: the enterprise Kubernetes deployer!</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Yupiik  <a href="https://yupiik.io/bundlebee/">BundleBee</a>
+ is a light Java package manager for Kubernetes applications and was designed with the principles of Infrastructure as Code in mind:</p>
+ </div>
+ <div>
+  <blockquote>
+Generate the same deployment easily and automatically without the risk of manually execution errors.  </blockquote>
+ </div> <div class="paragraph">
+ <p>
+Like the same binary is the result of the same source code, the same infrastructure is the result of the same configuration or definition file.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+It is a way to:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p>package a Kubernetes deployment recipe (called <i>alveolus</i> in BundleBee semantic),</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>to make the deployment dynamic using <i>placeholders</i> - and here no need to learn <i>Go</i> language like with Helm charts,</p>
+ </div>
+  </li>
+  <li>
+ <p>
+to validate the deployment with Junit5 - or any other solution,
+ </p>
+  </li>
+  <li>
+ <p>
+to compare the state of your cluster with the recipe - to identify the differences made manually if any (&quot;quick fixes&quot;) and ensure both converge to the same state.
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p>
+Recently we used Bundlebee for a customer in the Bank industry to bootstrap from scratch a devops stack and a full Kubernetes cluster from dev to production:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+Environment management with configuration tuning per env
+ </p>
+  </li>
+  <li>
+ <p>
+Integration in a standard Apache Maven pipeline
+ </p>
+  </li>
+  <li>
+ <p>
+Secrets injections based on crypto
+ </p>
+  </li>
+  <li>
+ <p>
+~100 apps (cronjobs, deployments, jobs - without cron)
+ </p>
+  </li>
+  <li>
+ <p>
+Dev factory setup in 1 command (Gitea, Drone, Mattermost, Gitea-pages)
+ </p>
+  </li>
+  <li>
+ <p>
+Placeholders extraction for an easier interaction with ops
+ </p>
+  </li>
+  <li>
+ <p>
+Living documentation of the available configuration
+ </p>
+  </li>
+  <li>
+ <p>
+Auto redeployment and easy rollbacks on need
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p>We often combine BundleBee with our generic Maven Plugin (a.k.a. <code>yupiik-tools-maven-plugin</code>) which contains two little gems:</p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p>a properties (de)ciphering solution we use to store the placeholder values in our sources (often a <code>git</code> repository) in a secured manner,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>a static site generator (a.k.a. <i>minisite</i>) we use to integrate the documentation of our alveoli (recipes), ie the available placeholders but also the diff with the cluster per environment.</p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ <div class="admonitionblock note">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">NOTE</div>
+       </td>
+      <td class="content">
+this post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="paragraph">
+ <p>
+Here is a diagram showing this kind of pipeline:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="null hljs">start
+:Clone the repository;
+:Retrieve the recipe;
+:Decipher the placeholders;
+:Deploy to kubernetes cluster;
+stop</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+In parallel two other pipelines are generally used. The first one is in the build of the alveolus/recipe itself:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="null hljs">start
+:Clone the repository;
+:Run deployment tests;
+:Generate project documentation;
+:Deploy project minisite;
+stop</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+And finally another one in the deployment project (we tend to use another project where permissions are reduced for security reasons):
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="null hljs">start
+:Clone the repository;
+:Compare cluster state and last deployed recipe;
+:Deploy deployment minisite;
+stop</code></pre>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_conclusion">
+  <h2>Conclusion</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+There are a lot of trend and tutorials, good will and examples about how to deploy today. However, a lot is either full marketing content or more about promoting a technical aspect. As usual, the best is to step back and see what is really needed for you and pick your own trade-off.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+In this post, we saw that there is no free lunch and that a well thought CI/CD pipeline can be worth any operator or runtime. As we saw people moving away from WordPress to embrace static website generation 10 years ago, the same will hopefully slow happen on infrastructure as code for the good.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+BundleBee is a really worth it solution on that aspect which can help you to use the same recipe from dev to production with a high quality validation pipeline (linting, testing, reporting).
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+Stay tuned for more information on how to make it happening in the coming blog posts!
+ </p>
+ </div>
+ <div class="admonitionblock note">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">NOTE</div>
+       </td>
+      <td class="content">
+This post is not about how to make it into practise but more the pillar of our deployment solution, another blog post will come soon to enter more into the technical details of such a pipeline.    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
                 
 
 

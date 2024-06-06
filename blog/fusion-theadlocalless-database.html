@@ -152,215 +152,260 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph metadata">
-<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2023-07-30</span>, <span class="metadata-readingtime">4 min and 24 sec read</span></p>
-</div>
-<div class="quoteblock abstract">
-<blockquote>
-Java is welcoming <a href="https://openjdk.org/jeps/444">virtual threads</a> - coroutines in most languages - but due to technical limitations, <code>ThreadLocal</code> will be too costly for them even if they work.
-To solve that, Java is creating <a href="https://openjdk.org/jeps/428">structured concurrency</a> but is it always the best solution?
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_reminder">Reminder</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_virtual_threads">Virtual Threads</h3>
-<div class="paragraph">
-<p><code>ThreadLocal</code> are a way to store a data in the context of the thread and get it back in a nested call even if the value was not passed as a parameter.
-A common example is to get the request:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void myMethod() {
+ <div class="sectionbody">
+ <div class="paragraph metadata">
+ <p><span class="mr-2 category-technology"><span class="icon"><i class="fas fa-microchip"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
+, <span class="metadata-published">2023-07-30</span>, <span class="metadata-readingtime">4 min and 24 sec read</span></p>
+ </div>
+ </div>
+ </div>
+ <div class="paragraph abstract">
+ <p>Java is welcoming  <a href="https://openjdk.org/jeps/444">virtual threads</a>
+ - coroutines in most languages - but due to technical limitations, <code>ThreadLocal</code> will be too costly for them even if they work. To solve that, Java is creating  <a href="https://openjdk.org/jeps/428">structured concurrency</a>
+ but is it always the best solution?</p>
+ </div>
+ <div class="sect1" id="_reminder">
+  <h2>Reminder</h2>
+ <div class="sectionbody">
+ <div class="sect2" id="_virtual_threads">
+  <h3>Virtual Threads</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p><code>ThreadLocal</code> are a way to store a data in the context of the thread and get it back in a nested call even if the value was not passed as a parameter. A common example is to get the request:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void myMethod() {
     final var httpRequest = MY_THREAD_LOCAL.get();
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As you can see, the HTTP request is not a parameter but the value is read from the method.
-Technically it is often set from a servlet <code>Filter</code> or equivalent.</p>
-</div>
-<div class="paragraph">
-<p>The issue with virtual threads is that you can get way more threads than with common threads - indeed since they are not threads but tasks in a shared executor service, it is literally like using yourself an executor service with tasks which can be suspended/restored so memory is the limit instead of the OS number of threads.</p>
-</div>
-<div class="paragraph">
-<p><code>ThreadLocal</code> being a bit costly so java created <code>ScopedValue</code>. The underlying idea is close but the API is different:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ScopedValue.where(REQUEST, httpRequest) <i class="conum" data-value="1"></i><b>(1)</b>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>As you can see, the HTTP request is not a parameter but the value is read from the method. Technically it is often set from a servlet <code>Filter</code> or equivalent.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+The issue with virtual threads is that you can get way more threads than with common threads - indeed since they are not threads but tasks in a shared executor service, it is literally like using yourself an executor service with tasks which can be suspended/restored so memory is the limit instead of the OS number of threads.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p><code>ThreadLocal</code> being a bit costly so java created <code>ScopedValue</code>. The underlying idea is close but the API is different:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ScopedValue.where(REQUEST, httpRequest) <b class="conum">(1)</b>
  .call(() -&gt; {
    try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-    final var result = scope.fork(() -&gt; myMethod()); <i class="conum" data-value="2"></i><b>(2)</b>
+    final var result = scope.fork(() -&gt; myMethod()); <b class="conum">(2)</b>
     scope.join();
     scope.throwIfFailed();
     return result;
    }
  });</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Binds the request in the scope <code>REQUEST</code> - created with <code>ScopedValue.newInstance()</code> and can be a static instance,</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>In sub tasks, including <code>fork`ed ones, `REQUEST</code> will be readable.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In this example, <code>myMethod</code> can call <code>REQUEST.get()</code>, similarly to <code>ThreadLocal</code> code.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-we can envision a future JDK where <code>ThreadLocal</code> are backed with limitations to <code>ScopedValues</code> a bit like <code>java.io</code> got reimplemented with <code>java.nio</code> recently to make virtual threads more widely usable and efficient as in other languages.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jdbc_and_threadlocal">JDBC and ThreadLocal</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Strictly speaking there is no <code>ThreadLocal</code> in JDBC but they are used in most applications due to transaction management.
-A good example is the Spring <a href="https://github.com/spring-projects/spring-framework/blob/main/spring-jdbc/src/main/java/org/springframework/jdbc/datasource/DataSourceTransactionManager.java"><code>DataSourceTransactionManager</code></a> - or any other JTA/JakartaEE based manager.
-It uses a <code>ConnectionHolder</code> which is bound in a <code>TransactionSynchronizationManager</code> resource which ends in a <a href="https://github.com/spring-projects/spring-framework/blob/main/spring-test/src/main/java/org/springframework/test/context/transaction/TransactionContextHolder.java#L30"><code>TransactionContextHolder</code></a> which is just a wrapper for a <code>ThreadLocal</code>.</p>
-</div>
-<div class="paragraph">
-<p>High level, the need is to be able to wrap multiple calls and use the same transactions, however deep the calls are.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_java_8_was_a_game_changer">Java 8 was a game changer</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Java always supported message passing pattern but Java 8 with lambdas, and a lighter syntax, enables to make it a first citizen of our code.</p>
-</div>
-<div class="paragraph">
-<p>Concretely, it is very common now to replace interceptors with a method wrapper taking a lambda.</p>
-</div>
-<div class="paragraph">
-<p>For example to make a method transactional, we went from:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@TransactionRequired
+ </div>
+ </div>
+ <div class="colist arabic">
+  <ol>
+   <li>
+ <span>
+Binds the request in the scope 
+ </span>
+<code>REQUEST</code> <span>
+ - created with 
+ </span>
+<code>ScopedValue.newInstance()</code> <span>
+ and can be a static instance,
+ </span>
+   </li>
+   <li>
+ <span>
+In sub tasks, including 
+ </span>
+<code>fork</code> <span>
+ed ones, 
+ </span>
+<code>REQUEST</code> <span>
+ will be readable.
+ </span>
+   </li>
+  </ol>
+ </div>
+ <div class="paragraph">
+ <p>In this example, <code>myMethod</code> can call <code>REQUEST.get()</code>, similarly to <code>ThreadLocal</code> code.</p>
+ </div>
+ <div class="admonitionblock note">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">NOTE</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>we can envision a future JDK where <code>ThreadLocal</code> are backed with limitations to <code>ScopedValues</code> a bit like <code>java.io</code> got reimplemented with <code>java.nio</code> recently to make virtual threads more widely usable and efficient as in other languages.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_jdbc_and_threadlocal">
+  <h2>JDBC and ThreadLocal</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Strictly speaking there is no <code>ThreadLocal</code> in JDBC but they are used in most applications due to transaction management. A good example is the Spring  <a href="https://github.com/spring-projects/spring-framework/blob/main/spring-jdbc/src/main/java/org/springframework/jdbc/datasource/DataSourceTransactionManager.java">`DataSourceTransactionManager`</a>
+ - or any other JTA/JakartaEE based manager. It uses a <code>ConnectionHolder</code> which is bound in a <code>TransactionSynchronizationManager</code> resource which ends in a  <a href="https://github.com/spring-projects/spring-framework/blob/main/spring-test/src/main/java/org/springframework/test/context/transaction/TransactionContextHolder.java#L30">`TransactionContextHolder`</a>
+ which is just a wrapper for a <code>ThreadLocal</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+High level, the need is to be able to wrap multiple calls and use the same transactions, however deep the calls are.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_java_8_was_a_game_changer">
+  <h2>Java 8 was a game changer</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Java always supported message passing pattern but Java 8 with lambdas, and a lighter syntax, enables to make it a first citizen of our code.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+Concretely, it is very common now to replace interceptors with a method wrapper taking a lambda.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+For example to make a method transactional, we went from:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@TransactionRequired
 public void myMethodWithTx() {
     // ...
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>to</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void myMethodWithTx() {
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+to
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public void myMethodWithTx() {
     withTransaction(() -&gt; {
         // ...
     });
 }</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fusion_threadlocal_less_database">Fusion ThreadLocal-less Database</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>As a quick reminder, <a href="https://www.yupiik.io/fusion/fusion/persistence.html">Fusion persistence</a> module is a light mapper on top of JDBC.
-You can see it as a light JPA without any relationship support, just bind <code>ResultSet</code> to Java <code>records</code> or the <code>records</code> to statements.
-This feature is encapsulated in a class called <code>Database</code>.</p>
-</div>
-<div class="paragraph">
-<p>The first implementation inherited from our dozens of years of experience in JDBC support and reused the <code>ThreadLocal</code> API but since it was lambda based we were very easily able to modify the pattern to add to most methods the JDBC <code>Connection</code>.</p>
-</div>
-<div class="paragraph">
-<p>So concretely we went from:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">database.xxxx(...);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>to</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">database.xxxx(jdbcConnection, ...);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As it was evangelized something like 8 years ago when Akka or reactive programming popped up,
-message passing - fact to use method parameters - enables to always have the context to use in the call.</p>
-</div>
-<div class="paragraph">
-<p>Thanks to lambdas, it becomes easier to do since you can orchestrate calls more easily.</p>
-</div>
-<div class="paragraph">
-<p>The impact is to add the context to methods, or said otherwise, ensure they have all their dependencies as parameters.</p>
-</div>
-<div class="paragraph">
-<p>Using these patterns we now have in Fusion persistence method wrapping <code>DataSource.getConnection</code> and <code>Connection.close</code> in read/write mode.
-We wrapped it in a <code>TransactionManager</code> but this one does ont use any <code>ThreadLocal</code>, just plain lambdas:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">transactionManager.read((Connection c) -&gt; { /* ... */});</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now it becomes quite easy to pass the connection to the JDBC wrapping methods:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">transactionManager.read(connection -&gt;
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_fusion_threadlocalless_database">
+  <h2>Fusion ThreadLocal-less Database</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>As a quick reminder,  <a href="https://www.yupiik.io/fusion/fusion/persistence.html">Fusion persistence</a>
+ module is a light mapper on top of JDBC. You can see it as a light JPA without any relationship support, just bind <code>ResultSet</code> to Java <code>records</code> or the <code>records</code> to statements. This feature is encapsulated in a class called <code>Database</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>The first implementation inherited from our dozens of years of experience in JDBC support and reused the <code>ThreadLocal</code> API but since it was lambda based we were very easily able to modify the pattern to add to most methods the JDBC <code>Connection</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+So concretely we went from:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">database.xxxx(...);</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+to
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">database.xxxx(jdbcConnection, ...);</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+As it was evangelized something like 8 years ago when Akka or reactive programming popped up, message passing - fact to use method parameters - enables to always have the context to use in the call.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+Thanks to lambdas, it becomes easier to do since you can orchestrate calls more easily.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+The impact is to add the context to methods, or said otherwise, ensure they have all their dependencies as parameters.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>Using these patterns we now have in Fusion persistence method wrapping <code>DataSource.getConnection</code> and <code>Connection.close</code> in read/write mode. We wrapped it in a <code>TransactionManager</code> but this one does ont use any <code>ThreadLocal</code>, just plain lambdas:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">transactionManager.read((Connection c) -&gt; { /* ... */});</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Now it becomes quite easy to pass the connection to the JDBC wrapping methods:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">transactionManager.read(connection -&gt;
   database.query(
     connection, // the current connection
     MyModel.class, // bound record/model
-    "select .....", // SQL query
-    b -&gt; b.bind("xxxx"))); // bound parameters (? valuesin the statement)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>With that, if your JDBC driver does not pin threads (does not use <code>synchronized</code> for example), it will be virtual thread friendly and optimize the throughput of your application.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion">Conclusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This post shows that, even if technically you can always implement complex solutions, getting back to the basics and the generic patterns adapted to your coding style enables to keep things simple and efficient.</p>
-</div>
-<div class="paragraph">
-<p>As a generic mindset, it is always preferrable to use message passing when possible and really when not desired wrap it with <code>ScopedValue</code> if you know you will run in virtual threads or in <code>ThreadLocal</code> if in generic threads - see how things become more complex if you write a generic lib ;).</p>
-</div>
-<div class="paragraph">
-<p>To learn more, you can check the <a href="https://www.yupiik.io/fusion/">online documentation</a> and the <a href="https://github.com/yupiik/fusion">source code repository</a>.</p>
-</div>
-<div class="paragraph">
-<p>Enjoy!</p>
-</div>
-</div>
-</div>
+    &quot;select .....&quot;, // SQL query
+    b -&gt; b.bind(&quot;xxxx&quot;))); // bound parameters (? valuesin the statement)</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>With that, if your JDBC driver does not pin threads (does not use <code>synchronized</code> for example), it will be virtual thread friendly and optimize the throughput of your application.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_conclusion">
+  <h2>Conclusion</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+This post shows that, even if technically you can always implement complex solutions, getting back to the basics and the generic patterns adapted to your coding style enables to keep things simple and efficient.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>As a generic mindset, it is always preferrable to use message passing when possible and really when not desired wrap it with <code>ScopedValue</code> if you know you will run in virtual threads or in <code>ThreadLocal</code> if in generic threads - see how things become more complex if you write a generic lib ;).</p>
+ </div>
+ <div class="paragraph">
+ <p>To learn more, you can check the  <a href="https://www.yupiik.io/fusion/">online documentation</a>
+ and the  <a href="https://github.com/yupiik/fusion">source code repository</a>
+.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Enjoy!
+ </p>
+ </div>
+ </div>
+ </div>
                 
 
 

@@ -152,123 +152,178 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph metadata">
-<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/francois-papon/page-1.html">Francois Papon</a></span>, <span class="metadata-published">2023-04-05</span>, <span class="metadata-readingtime">4 min and 7 sec read</span></p>
-</div>
-<div class="quoteblock abstract">
-<blockquote>
-Since about 2021 all JavaEE specifications moved from javax to jakarta packages which broke basically the full Java ecosystem. In the mean time, the industry became more cloud and Kubernetes focus which triggers new challenges like being native/GraalVM friendly.
-From the two strong statements, being vendor agnostic and light, Yupiik created <a href="https://yupiik.github.io/fusion/">Fusion</a>!
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_why_yupiik_fusion">Why Yupiik Fusion?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>At Yupiik, we created an api platform and decided to open source the kernel of our product and share it with the community because we are heavily involved
-in open source projects.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_what_is_yupiik_fusion">What is Yupiik Fusion?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Yupiik Fusion is a very light weight and powerful framework to build cloud native microservices.
-It means that you have all your need to build the most common use cases in an efficient way by using your favorite programming language (Java).</p>
-</div>
-<div class="paragraph">
-<p>For cloud applications, being the most reactive possible is a key criteria so Fusion chose to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Be build time oriented</strong>: only delegate to runtime the bean resolution (to enable dynamic module aggregation) and not the bean and model discovery nor proxy generation,</p>
-</li>
-<li>
-<p><strong>Stay flexible</strong>: even if the model is generated at build time you can generally still customize it by removing a bean and adding your own one,</p>
-</li>
-<li>
-<p><strong>Be native friendly</strong>: some applications need to be native to start very fast and bypass the classloading and a bunch of JVM init, for that purpose we ensure the framework is GraalVM friendly - using Apache Geronimo Arthur or not.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The framework come with the most common features and extension such as:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Reflection less IoC processor,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/examples.html#_listen_to_an_event">Event</a> bus to help beans to communicate between them,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/http-server.html">HTTP server</a> which is an abstraction of the Apache Tomcat web server,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/http-client.html">HTTP client</a> based on the <code>java.net.httpClient</code> with an extended configuration,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/examples.html#_define_a_json_rpc_endpoint">JsonRPC</a> endpoint server,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/json.html">Json</a> support mapper for serialization/deserialization,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/cli.html">CLI</a> helper to easily build command line application,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/examples.html#configuration_model">Configuration model</a> with environment variables abstraction mapping designed for the cloud,</p>
-</li>
-<li>
-<p>Full Java Record integration,</p>
-</li>
-<li>
-<p>Simple <a href="https://www.yupiik.io/fusion//fusion/persistence.html">Persistence</a> layer based on common jdbc prepare statement and Record binding,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/observability.html">Observability</a> module to publish logs, metrics, healthchecks and tracing,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/handlebars.html">Handlebar</a> templating helper,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/examples.html#_test_with_junit_5">JUnit5</a> support for writing tests,</p>
-</li>
-<li>
-<p><a href="https://www.yupiik.io/fusion//fusion/graalvm.html">GraalVM</a> friendly and easy build</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_get_started">Get started</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The magic of Fusion is on the processor part that has the responsibility to build the runtime, so you just need to depend on the <code>fusion-api</code> in compile
-scope (which is the default with Apache Maven) to be included to the application.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-you can learn more on the <a href="https://www.yupiik.io/fusion//fusion/setup.html">Setup</a> page.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+ <div class="sectionbody">
+ <div class="paragraph metadata">
+ <p><span class="mr-2 category-technology"><span class="icon"><i class="fas fa-microchip"></i></span></span>,  <a href="/blog/author/francois-papon/page-1.html" class="metadata-authors">Francois Papon</a>
+, <span class="metadata-published">2023-04-05</span>, <span class="metadata-readingtime">4 min and 7 sec read</span></p>
+ </div>
+ </div>
+ </div>
+ <div class="paragraph abstract">
+ <p>Since about 2021 all JavaEE specifications moved from javax to jakarta packages which broke basically the full Java ecosystem. In the mean time, the industry became more cloud and Kubernetes focus which triggers new challenges like being native/GraalVM friendly. From the two strong statements, being vendor agnostic and light, Yupiik created  <a href="https://yupiik.github.io/fusion/">Fusion</a>
+!</p>
+ </div>
+ <div class="sect1" id="_why_yupiik_fusion">
+  <h2>Why Yupiik Fusion?</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+At Yupiik, we created an api platform and decided to open source the kernel of our product and share it with the community because we are heavily involved in open source projects.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_what_is_yupiik_fusion">
+  <h2>What is Yupiik Fusion?</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Yupiik Fusion is a very light weight and powerful framework to build cloud native microservices. It means that you have all your need to build the most common use cases in an efficient way by using your favorite programming language (Java).
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+For cloud applications, being the most reactive possible is a key criteria so Fusion chose to:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+Be build time oriented : only delegate to runtime the bean resolution (to enable dynamic module aggregation) and not the bean and model discovery nor proxy generation,
+ </p>
+  </li>
+  <li>
+ <p>
+Stay flexible : even if the model is generated at build time you can generally still customize it by removing a bean and adding your own one,
+ </p>
+  </li>
+  <li>
+ <p>
+Be native friendly : some applications need to be native to start very fast and bypass the classloading and a bunch of JVM init, for that purpose we ensure the framework is GraalVM friendly - using Apache Geronimo Arthur or not.
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p>
+The framework come with the most common features and extension such as:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+Reflection less IoC processor,
+ </p>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/examples.html#_listen_to_an_event">Event</a>
+ bus to help beans to communicate between them,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/http-server.html">HTTP server</a>
+ which is an abstraction of the Apache Tomcat web server,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/http-client.html">HTTP client</a>
+ based on the <code>java.net.httpClient</code> with an extended configuration,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/examples.html#_define_a_json_rpc_endpoint">JsonRPC</a>
+ endpoint server,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/json.html">Json</a>
+ support mapper for serialization/deserialization,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/cli.html">CLI</a>
+ helper to easily build command line application,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/examples.html#configuration_model">Configuration model</a>
+ with environment variables abstraction mapping designed for the cloud,</p>
+ </div>
+  </li>
+  <li>
+ <p>
+Full Java Record integration,
+ </p>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>Simple  <a href="https://www.yupiik.io/fusion//fusion/persistence.html">Persistence</a>
+ layer based on common jdbc prepare statement and Record binding,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/observability.html">Observability</a>
+ module to publish logs, metrics, healthchecks and tracing,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/handlebars.html">Handlebar</a>
+ templating helper,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/examples.html#_test_with_junit_5">JUnit5</a>
+ support for writing tests,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p> <a href="https://www.yupiik.io/fusion//fusion/graalvm.html">GraalVM</a>
+ friendly and easy build</p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_get_started">
+  <h2>Get started</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>The magic of Fusion is on the processor part that has the responsibility to build the runtime, so you just need to depend on the <code>fusion-api</code> in compile scope (which is the default with Apache Maven) to be included to the application.</p>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>you can learn more on the  <a href="https://www.yupiik.io/fusion//fusion/setup.html">Setup</a>
+ page.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.yupiik.fusion&lt;/groupId&gt;
     &lt;artifactId&gt;fusion-api&lt;/artifactId&gt;
     &lt;version&gt;${fusion.version}&lt;/version&gt;
@@ -286,72 +341,86 @@ you can learn more on the <a href="https://www.yupiik.io/fusion//fusion/setup.ht
     &lt;version&gt;${fusion.version}&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note the provided scope which enables to bring automatically the build time generator without having to deliver it at runtime so your deliverable stays light!</p>
-</div>
-<div class="paragraph">
-<p>That&#8217;s all!</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_example_with_jsonrpc_endpoint">Example with JsonRPC endpoint</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To implement a simple JsonRPC endpoint, you just need to add these dependencies into your pom.xml:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Note the provided scope which enables to bring automatically the build time generator without having to deliver it at runtime so your deliverable stays light!
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+That's all!
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_example_with_jsonrpc_endpoint">
+  <h2>Example with JsonRPC endpoint</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+To implement a simple JsonRPC endpoint, you just need to add these dependencies into your pom.xml:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.yupiik.fusion&lt;/groupId&gt;
     &lt;artifactId&gt;fusion-jsonrpc&lt;/artifactId&gt;
     &lt;version&gt;${fusion.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-the <code>fusion-jsonrpc</code> module depend on the <code>fusion-http-server</code> and the <code>fusion-json</code>, so you can configure and use them without adding them to the dependencies
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class CustomerEndpoint {
-    @JsonRpc(value = "createCustomer", documentation = "Creates a new customer")
+ </div>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>the <code>fusion-jsonrpc</code> module depend on the <code>fusion-http-server</code> and the <code>fusion-json</code>, so you can configure and use them without adding them to the dependencies</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class CustomerEndpoint {
+    @JsonRpc(value = &quot;createCustomer&quot;, documentation = &quot;Creates a new customer&quot;)
     public Customer createCustomer(final Request request) {
         // ...
     }
 
-    @JsonRpc(value = "retrieveCustomer", documentation = "Retrieve an existing customer")
+    @JsonRpc(value = &quot;retrieveCustomer&quot;, documentation = &quot;Retrieve an existing customer&quot;)
     public Customer retrieveCustomer(final Request request) {
         // ...
     }
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Build the application:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn clean install</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then add the Apache Maven exec plugin to test the execution:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;build&gt;
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Build the application:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn clean install</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Then add the Apache Maven exec plugin to test the execution:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;build&gt;
     &lt;plugins&gt;
         &lt;plugin&gt;&lt;!-- mvn exec:java --&gt;
             &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
@@ -361,55 +430,65 @@ the <code>fusion-jsonrpc</code> module depend on the <code>fusion-http-server</c
             &lt;/configuration&gt;
         &lt;/plugin&gt;
 ...</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-we are using the ready to use Fusion launcher but user can create a custom main method
-to <a href="https://www.yupiik.io/fusion//fusion/examples.html#_start_the_container">start the application container</a>.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Once executed, you can call your endpoint:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+ </div>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>we are using the ready to use Fusion launcher but user can create a custom main method to  <a href="https://www.yupiik.io/fusion//fusion/examples.html#_start_the_container">start the application container</a>
+.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="paragraph">
+ <p>
+Once executed, you can call your endpoint:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
   http://localhost:8080/jsonrpc \
-  -d '{"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"John", "lastname":"Doe"}}'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Thanks to JSON-RPC, if you have multiple customer to create in one time, you can use the bulk option:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+  -d '{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;createCustomer&quot;,&quot;params&quot;:{&quot;firstname&quot;:&quot;John&quot;, &quot;lastname&quot;:&quot;Doe&quot;}}'</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Thanks to JSON-RPC, if you have multiple customer to create in one time, you can use the bulk option:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
   http://localhost:8080/jsonrpc \
   -d '[ \
-    {"id":1,"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"John", "lastname":"Doe"}}, \
-    {"id":2,"jsonrpc":"2.0","method":"createCustomer","params":{"firstname":"James", "lastname":"Bond"}} \
+    {&quot;id&quot;:1,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;createCustomer&quot;,&quot;params&quot;:{&quot;firstname&quot;:&quot;John&quot;, &quot;lastname&quot;:&quot;Doe&quot;}}, \
+    {&quot;id&quot;:2,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;createCustomer&quot;,&quot;params&quot;:{&quot;firstname&quot;:&quot;James&quot;, &quot;lastname&quot;:&quot;Bond&quot;}} \
   ]'</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_graalvm_friendly">GraalVM friendly</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Thanks to Apache Geronimo Arthur project, it&#8217;s very easy to build your application in native just by adding the maven plugin dependency:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;build&gt;
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_graalvm_friendly">
+  <h2>GraalVM friendly</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Thanks to Apache Geronimo Arthur project, it's very easy to build your application in native just by adding the maven plugin dependency:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;build&gt;
     &lt;plugins&gt;
         &lt;plugin&gt;
             &lt;!--
@@ -425,44 +504,55 @@ to <a href="https://www.yupiik.io/fusion//fusion/examples.html#_start_the_contai
             &lt;/configuration&gt;
         &lt;/plugin&gt;
 ...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can build the binary of your application:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn arthur:native-image for binaries</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Or build a docker image with the binary include:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn arthur:native-image arthur:docker</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Sorry to disappoint you if you are thinking that it will be hard to build a native app!</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion">Conclusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This post is the announcement of the new Yupiik Fusion project with a short startup presentation, and we will add new blog posts
-about another examples to show how to use the full power Fusion.</p>
-</div>
-<div class="paragraph">
-<p>To learn more, you can check the <a href="https://www.yupiik.io/fusion/">online documentation</a> and the <a href="https://github.com/yupiik/fusion">source code repository</a>.</p>
-</div>
-<div class="paragraph">
-<p>Enjoy!</p>
-</div>
-</div>
-</div>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Then you can build the binary of your application:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn arthur:native-image for binaries</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Or build a docker image with the binary include:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn arthur:native-image arthur:docker</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+Sorry to disappoint you if you are thinking that it will be hard to build a native app!
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_conclusion">
+  <h2>Conclusion</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+This post is the announcement of the new Yupiik Fusion project with a short startup presentation, and we will add new blog posts about another examples to show how to use the full power Fusion.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>To learn more, you can check the  <a href="https://www.yupiik.io/fusion/">online documentation</a>
+ and the  <a href="https://github.com/yupiik/fusion">source code repository</a>
+.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Enjoy!
+ </p>
+ </div>
+ </div>
+ </div>
                 
 
 

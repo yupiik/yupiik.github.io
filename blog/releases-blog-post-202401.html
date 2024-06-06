@@ -152,239 +152,332 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph metadata">
-<p><span class="mr-2 category-release"><span class="icon"><i class="fa fa-fas fa-gift"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/francois-papon/page-1.html">Francois Papon</a></span>, <span class="metadata-published">2024-01-10</span>, <span class="metadata-readingtime">1 min and 54 sec read</span></p>
-</div>
-<div class="quoteblock abstract">
-<blockquote>
-On behalf the Yupiik OSS team and other contributors, I&#8217;m happy to talk about the latest release from December 2023 to
-January 2024: Bundlebee, Tool-Maven-Plugin, Batch, Fusion.
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_bundlebee">Bundlebee</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Some great improvements has been done, especially:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>ArgoCD basic integration (as an alternative to helm/kustomize)</p>
-</li>
-<li>
-<p>Diff command support (between alveolus and Kubernetes state)</p>
-</li>
-<li>
-<p>Simple ciphering support in placeholders</p>
-</li>
-<li>
-<p>HTTP proxy configuration support</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Highlight</strong>: one more step to demo that BundleBee is GitOps friendly (but not limited to) and automation friendly.</p>
-</div>
-<div class="sect2">
-<h3 id="_bundlebee_1_0_24">bundlebee-1.0.24</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24" class="bare">https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 08/01/2024</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_bundlebee_1_0_25">bundlebee-1.0.25</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.25" class="bare">https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.25</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 08/01/2024</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_documentation">Documentation</h3>
-<div class="paragraph">
-<p>The documentation is up-to-date here:</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.yupiik.io/bundlebee/" class="bare">https://www.yupiik.io/bundlebee/</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_start">How to start?</h3>
-<div class="paragraph">
-<p>You can start be reading the <a href="https://www.yupiik.io/bundlebee/getting-started.html">Getting Started page</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feedback_are_welcome">Feedback are welcome</h3>
-<div class="paragraph">
-<p>You can contribute, report bug or ask for improvement in the <a href="https://github.com/yupiik/bundlebee/issues">GitHub issue page</a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_yupiik_tools_maven_plugin">Yupiik-Tools-Maven-Plugin</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>New great improvements around asciidoc integration:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Implement a java native asciidoc parser + renderer</p>
-</li>
-<li>
-<p>Implement <strong>ascii2svg</strong> in plain java for git friendly diagrams</p>
-</li>
-<li>
-<p>Add copy button to code snippets in <strong>Minisite</strong></p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_yupiik_tools_maven_plugin_parent_1_2_0">yupiik-tools-maven-plugin-parent-1.2.0</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0" class="bare">https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 08/01/2024</p>
-</div>
-<div class="paragraph">
-<p>Release 1.2.0</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_documentation_2">Documentation</h3>
-<div class="paragraph">
-<p>The documentation is up-to-date here:</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.yupiik.io/tools-maven-plugin/" class="bare">https://www.yupiik.io/tools-maven-plugin/</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_start_2">How to start?</h3>
-<div class="paragraph">
-<p>You can start be reading the <a href="https://www.yupiik.io/tools-maven-plugin">Getting Started page</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feedback_are_welcome_2">Feedback are welcome</h3>
-<div class="paragraph">
-<p>You can contribute, report bug or ask for improvement in the <a href="https://github.com/yupiik/tools-maven-plugin/issues">GitHub issue page</a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_yupiik_batch">Yupiik-Batch</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The main improvement is the new Metric Relay module <a href="https://www.yupiik.io/yupiik-batch/metrics-relay.html">link</a>.</p>
-</div>
-<div class="sect2">
-<h3 id="_yupiik_batch_1_0_4">yupiik-batch-1.0.4</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.4" class="bare">https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.4</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 07/12/2023</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_yupiik_batch_1_0_5">yupiik-batch-1.0.5</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.5" class="bare">https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.5</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 21/12/2023</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_documentation_3">Documentation</h3>
-<div class="paragraph">
-<p>The documentation is up-to-date here:</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.yupiik.io/yupiik-batch/" class="bare">https://www.yupiik.io/yupiik-batch/</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_start_3">How to start?</h3>
-<div class="paragraph">
-<p>You can start be reading the <a href="https://www.yupiik.io/yupiik-batch/getting-started.html">Getting Started page</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feedback_are_welcome_3">Feedback are welcome</h3>
-<div class="paragraph">
-<p>You can contribute, report bug or ask for improvement in the <a href="https://github.com/yupiik/yupiik-batch/issues">GitHub issue page</a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fusion">Fusion</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Fusion project continue to grow and the latest major improvements are related to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>[living doc] openrpc 2 asciidoc support</p>
-</li>
-<li>
-<p>[httpclient] RoutingHttpClient to switch between different client configuration based on a custom rule</p>
-</li>
-<li>
-<p>[doc] explain how to avoid warnings with Java &gt;= 21</p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_fusion_1_0_13">fusion-1.0.13</h3>
-<div class="paragraph">
-<p>URL: <a href="https://github.com/yupiik/fusion/releases/tag/fusion-1.0.13" class="bare">https://github.com/yupiik/fusion/releases/tag/fusion-1.0.13</a></p>
-</div>
-<div class="paragraph">
-<p>Published at: 08/01/2024</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_documentation_4">Documentation</h3>
-<div class="paragraph">
-<p>The documentation is up-to-date here:</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.yupiik.io/fusion/" class="bare">https://www.yupiik.io/fusion/</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_start_4">How to start?</h3>
-<div class="paragraph">
-<p>You can start be reading the <a href="https://www.yupiik.io/fusion/fusion/index.html">Getting Started page</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feedback_are_welcome_4">Feedback are welcome</h3>
-<div class="paragraph">
-<p>You can contribute, report bug or ask for improvement in the <a href="https://github.com/yupiik/fusion/issues">GitHub issue page</a>.</p>
-</div>
-<div class="paragraph">
-<p>Enjoy!</p>
-</div>
-</div>
-</div>
-</div>
+ <div class="sectionbody">
+ <div class="paragraph metadata">
+ <p><span class="mr-2 category-release"><span class="icon"><i class="fas fa-gift"></i></span></span>,  <a href="/blog/author/francois-papon/page-1.html" class="metadata-authors">Francois Papon</a>
+, <span class="metadata-published">2024-01-10</span>, <span class="metadata-readingtime">1 min and 54 sec read</span></p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1">
+ <div class="quoteblock abstract">
+  <blockquote>
+On behalf the Yupiik OSS team and other contributors, I'm happy to talk about the latest release from December 2023 to January 2024: Bundlebee, Tool-Maven-Plugin, Batch, Fusion.  </blockquote>
+ </div> </div>
+ <div class="sect1" id="_bundlebee">
+  <h2>Bundlebee</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Some great improvements has been done, especially:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+ArgoCD basic integration (as an alternative to helm/kustomize)
+ </p>
+  </li>
+  <li>
+ <p>
+Diff command support (between alveolus and Kubernetes state)
+ </p>
+  </li>
+  <li>
+ <p>
+Simple ciphering support in placeholders
+ </p>
+  </li>
+  <li>
+ <p>
+HTTP proxy configuration support
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p><b>Highlight</b>: one more step to demo that BundleBee is GitOps friendly (but not limited to) and automation friendly.</p>
+ </div>
+ <div class="sect2" id="_bundlebee1024">
+  <h3>bundlebee-1.0.24</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24">https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.24</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 08/01/2024
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_bundlebee1025">
+  <h3>bundlebee-1.0.25</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.25">https://github.com/yupiik/bundlebee/releases/tag/bundlebee-1.0.25</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 08/01/2024
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_documentation">
+  <h3>Documentation</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The documentation is up-to-date here:
+ </p>
+ </div>
+ <a href="https://www.yupiik.io/bundlebee/">https://www.yupiik.io/bundlebee/</a>
+ </div>
+ </div>
+ <div class="sect2" id="_how_to_start">
+  <h3>How to start?</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can start be reading the  <a href="https://www.yupiik.io/bundlebee/getting-started.html">Getting Started page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_feedback_are_welcome">
+  <h3>Feedback are welcome</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can contribute, report bug or ask for improvement in the  <a href="https://github.com/yupiik/bundlebee/issues">GitHub issue page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_yupiiktoolsmavenplugin">
+  <h2>Yupiik-Tools-Maven-Plugin</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+New great improvements around asciidoc integration:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+Implement a java native asciidoc parser + renderer
+ </p>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>Implement <b>ascii2svg</b> in plain java for git friendly diagrams</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>Add copy button to code snippets in <b>Minisite</b></p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ <div class="sect2" id="_yupiiktoolsmavenpluginparent120">
+  <h3>yupiik-tools-maven-plugin-parent-1.2.0</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0">https://github.com/yupiik/tools-maven-plugin/releases/tag/yupiik-tools-maven-plugin-parent-1.2.0</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 08/01/2024
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+Release 1.2.0
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_documentation">
+  <h3>Documentation</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The documentation is up-to-date here:
+ </p>
+ </div>
+ <a href="https://www.yupiik.io/tools-maven-plugin/">https://www.yupiik.io/tools-maven-plugin/</a>
+ </div>
+ </div>
+ <div class="sect2" id="_how_to_start">
+  <h3>How to start?</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can start be reading the  <a href="https://www.yupiik.io/tools-maven-plugin">Getting Started page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_feedback_are_welcome">
+  <h3>Feedback are welcome</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can contribute, report bug or ask for improvement in the  <a href="https://github.com/yupiik/tools-maven-plugin/issues">GitHub issue page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_yupiikbatch">
+  <h2>Yupiik-Batch</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>The main improvement is the new Metric Relay module  <a href="https://www.yupiik.io/yupiik-batch/metrics-relay.html">link</a>
+.</p>
+ </div>
+ <div class="sect2" id="_yupiikbatch104">
+  <h3>yupiik-batch-1.0.4</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.4">https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.4</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 07/12/2023
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_yupiikbatch105">
+  <h3>yupiik-batch-1.0.5</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.5">https://github.com/yupiik/yupiik-batch/releases/tag/yupiik-batch-1.0.5</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 21/12/2023
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_documentation">
+  <h3>Documentation</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The documentation is up-to-date here:
+ </p>
+ </div>
+ <a href="https://www.yupiik.io/yupiik-batch/">https://www.yupiik.io/yupiik-batch/</a>
+ </div>
+ </div>
+ <div class="sect2" id="_how_to_start">
+  <h3>How to start?</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can start be reading the  <a href="https://www.yupiik.io/yupiik-batch/getting-started.html">Getting Started page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_feedback_are_welcome">
+  <h3>Feedback are welcome</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can contribute, report bug or ask for improvement in the  <a href="https://github.com/yupiik/yupiik-batch/issues">GitHub issue page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_fusion">
+  <h2>Fusion</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The Fusion project continue to grow and the latest major improvements are related to:
+ </p>
+ </div>
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+[living doc] openrpc 2 asciidoc support
+ </p>
+  </li>
+  <li>
+ <p>
+[httpclient] RoutingHttpClient to switch between different client configuration based on a custom rule
+ </p>
+  </li>
+  <li>
+ <p>
+[doc] explain how to avoid warnings with Java &gt;= 21
+ </p>
+  </li>
+ </ul>
+ </div>
+ <div class="sect2" id="_fusion1013">
+  <h3>fusion-1.0.13</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>URL:  <a href="https://github.com/yupiik/fusion/releases/tag/fusion-1.0.13">https://github.com/yupiik/fusion/releases/tag/fusion-1.0.13</a>
+</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Published at: 08/01/2024
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_documentation">
+  <h3>Documentation</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The documentation is up-to-date here:
+ </p>
+ </div>
+ <a href="https://www.yupiik.io/fusion/">https://www.yupiik.io/fusion/</a>
+ </div>
+ </div>
+ <div class="sect2" id="_how_to_start">
+  <h3>How to start?</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can start be reading the  <a href="https://www.yupiik.io/fusion/fusion/index.html">Getting Started page</a>
+.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_feedback_are_welcome">
+  <h3>Feedback are welcome</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>You can contribute, report bug or ask for improvement in the  <a href="https://github.com/yupiik/fusion/issues">GitHub issue page</a>
+.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Enjoy!
+ </p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
                 
 
 

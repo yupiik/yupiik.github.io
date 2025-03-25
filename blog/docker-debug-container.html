@@ -152,149 +152,124 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
- <div class="sectionbody">
- <div class="paragraph metadata">
- <p> <a href="/blog/author/gorhan-hudebine/page-1.html" class="metadata-authors">Gorhan Hudebine</a>
-, <span class="metadata-published">2022-04-29</span>, <span class="metadata-readingtime">1 min and 45 sec read</span></p>
- </div>
- </div>
- </div>
- <div class="paragraph abstract">
- <p> <a href="https://www.docker.com/">Docker</a>
- let you run applications or webapps under containers.</p>
- </div>
- <div class="paragraph">
- <p>When working with automating deployment like  <a href="https://kubernetes.io/">Kubernetes</a>
-, some bug or undesired behaviour can happen on a java application inside a container, but not reproducible outside the container.</p>
- </div>
- <div class="sect1" id="_debug_a_container__in_ide">
-  <h2>Debug a container  in IDE</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-It is quite easy to pass on debug mode when launching a container, by adding to the &quot;docker run&quot; command :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e \ <b class="conum">(1)</b>
-&quot;_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005&quot; \ <b class="conum">(2)</b>
--p 5005:5005 \ <b class="conum">(3)</b>
-image-name:image-version <b class="conum">(4)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-Launches a container, using environment variable (`-e)
- </span>
-   </li>
-   <li>
- <span>
-Permits remote java debugging, on port 5005 inside the created container, and waits for listener on this port before starting.
- </span>
-   </li>
-   <li>
- <span>
-Binds port 5005 inside the container on port 5005 on the host.
- </span>
-   </li>
-   <li>
- <span>
-Container will use the image 
- </span>
-<code>image-name</code> <span>
-, and version 
- </span>
-<code>image-version</code> <span>
-.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-After executing the command, the container will be running, waiting for a listener on port 5005 to start. Take your favourite IDE and listen or attach process on port 5005, you're on debug inside of your container.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_basic_example">
-  <h2>Basic Example</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-Create a TestDebugMain.java in package &quot;test&quot;, and put a breakpoint on the &quot;System.out.println()&quot; line :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package test;
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="metadata-authors"><a href="/blog/author/gorhan-hudebine/page-1.html">Gorhan Hudebine</a></span>, <span class="metadata-published">2022-04-29</span>, <span class="metadata-readingtime">1 min and 45 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+<a href="https://www.docker.com/">Docker</a> let you run applications or webapps under containers.
+</blockquote>
+</div>
+<div class="paragraph">
+<p>When working with automating deployment like <a href="https://kubernetes.io/">Kubernetes</a>, some bug or undesired behaviour can happen on a java application inside a container, but not reproducible outside the container.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_debug_a_container_in_ide">Debug a container  in IDE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is quite easy to pass on debug mode when launching a container, by adding to the "docker run" command :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run -e \ <i class="conum" data-value="1"></i><b>(1)</b>
+"_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \ <i class="conum" data-value="2"></i><b>(2)</b>
+-p 5005:5005 \ <i class="conum" data-value="3"></i><b>(3)</b>
+image-name:image-version <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Launches a container, using environment variable (`-e)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Permits remote java debugging, on port 5005 inside the created container, and waits for listener on this port before starting.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Binds port 5005 inside the container on port 5005 on the host.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Container will use the image <code>image-name</code>, and version <code>image-version</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After executing the command, the container will be running, waiting for a listener on port 5005 to start.
+Take your favourite IDE and listen or attach process on port 5005, you&#8217;re on debug inside of your container.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_example">Basic Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a TestDebugMain.java in package "test", and put a breakpoint on the "System.out.println()" line :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package test;
 
 public class TestDebugMain {
 
     public static void main(String[] args) {
-        System.out.println(&quot;HelloWorld from Java Application running in Docker.&quot;);
+        System.out.println("HelloWorld from Java Application running in Docker.");
     }
 }</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-Create a folder &quot;debug-test&quot;, put the TestDebugMain.java under &quot;debug-test/test/&quot;. Create a Dockerfile under &quot;debug-test&quot; :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">FROM java:8
+</div>
+</div>
+<div class="paragraph">
+<p>Create a folder "debug-test", put the TestDebugMain.java under "debug-test/test/".
+Create a Dockerfile under "debug-test" :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">FROM java:8
 COPY test/TestDebugMain.java /test/TestDebugMain.java
 RUN javac test/TestDebugMain.java
-CMD [&quot;java&quot;, &quot;test/TestDebugMain&quot;]</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-Here is the final tree :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">test-debug
+CMD ["java", "test/TestDebugMain"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the final tree :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">test-debug
 ├── Dockerfile
 └── test
     └── TestDebugMain.java</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-With the terminal, go under &quot;test-debug&quot; folder, and build the docker image &quot;test-debug&quot;, :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker build -t test-debug .</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-finally, let's launch a container with that image, and the debug mode, as explained at the begin of this topic (don't forget to add the breakpoint in your IDE) :
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run \
--e &quot;_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005&quot; \
+</div>
+</div>
+<div class="paragraph">
+<p>With the terminal, go under "test-debug" folder, and build the docker image "test-debug", :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker build -t test-debug .</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>finally, let&#8217;s launch a container with that image, and the debug mode, as explained at the begin of this topic (don&#8217;t forget to add the breakpoint in your IDE) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">docker run \
+-e "_JAVA_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005" \
 -p 5005:5005 test-debug:latest</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-Go to your IDE, and attach to process at port 5005, and that's it !
- </p>
- </div>
- </div>
- </div>
+</div>
+</div>
+<div class="paragraph">
+<p>Go to your IDE, and attach to process at port 5005, and that&#8217;s it !</p>
+</div>
+</div>
+</div>
                 
 
 

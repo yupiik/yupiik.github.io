@@ -152,243 +152,191 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
- <div class="sectionbody">
- <div class="paragraph metadata">
- <p><span class="mr-2 category-technology"><span class="icon"><i class="fas fa-microchip"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
-, <span class="metadata-published">2022-05-11</span>, <span class="metadata-readingtime">4 min and 17 sec read</span></p>
- </div>
- </div>
- </div>
- <div class="paragraph abstract">
- <p>You get a new need, you do a new REST API...but does it scale? Is it maintainable? <a href="https://yupiik.github.io/uship/">UShip</a>
- intends to make it future ready and more customizable.</p>
- </div>
- <div class="sect1" id="_what_is_yupiik_uship">
-  <h2>What is Yupiik UShip</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>Yupiik UShip (&micro;Ship) is a light service framework. What does it mean? It means that it will enable you to expose a <i>feature</i> over HTTP - by default at least.</p>
- </div>
- <div class="paragraph">
- <p>
-Concretely the stack is pretty common and straight forward:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-A web server - Servlet and even a Tomcat by default,
- </p>
-  </li>
-  <li>
- <p>
-An IoC - CDI and OpenWebBeans for the implementation,
- </p>
-  </li>
-  <li>
- <p>
-A (de)serialization format - JSON with JSON-P/JSON-B for the API and Johnzon for the implementation,
- </p>
-  </li>
-  <li>
- <p>
-A command API - JSON-RPC.
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-That is it.
- </p>
- </div>
- <div class="paragraph">
- <p>
-The highlights on these choices are:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-The stack relies on standards and are portables - i.e. you can switch Tomcat for Jetty if you want, OpenWebBeans for Weld and Johnzon for Yasson for example. So no vendor lock-in there and future proof choices.
- </p>
-  </li>
-  <li>
- <p>
-The business is develop as JSON-RPC commands.
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>The last point hides a lot of goodness, and without rewriting  <a href="/blog/jsonrpc-protocol-presentation.html">JSON RPC</a>
- post, it enables to:</p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-Think about commands and not HTTP requests,
- </p>
-  </li>
-  <li>
- <div class="paragraph">
- <p>Enrich easily the protocol with custom features since it is JSON based and not with a custom grammar like GraphQL (like enabling to propagate some response to the next request in a bulk, see  <a href="/blog/jsonrpc-protocol-presentation.html#_going_further">JSON RPC</a>
- for an example),</p>
- </div>
-  </li>
-  <li>
- <p>
-Drop HTTP in favor of another transport like Kafka messages without changing your business code/JSON-RPC methods,
- </p>
-  </li>
-  <li>
- <p>
-Integrate with any other service in any language (JSON is well supported in all languages with a lot of libraries),
- </p>
-  </li>
-  <li>
- <div class="paragraph">
- <p>Well document your API with no investment (UShip provides a <code>AsciidoctorJsonRpcDocumentationGenerator</code> which can generate an asciidoc documentation for your endpoint which can be rendered as HTML/PDF and even integrated with  <a href="https://github.com/yupiik/tools-maven-plugin#minisite">Yupiik Minisite</a>
-) or in a very fancy and customized fashion,</p>
- </div>
-  </li>
-  <li>
- <p>
-Well share your specification thanks to OpenRPC format (equivalent to OpenAPI for JSON-RPC).
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-UShip also covers all the layers of the development since:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
- <p>It is compatible with <code>openwebbeans-junit5</code> for the testing (more on the  <a href="https://yupiik.github.io/uship/testing.html">testing</a>
- documentation),</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p>It runs as a plain standalone Java application (<code>java -cp ... CDILauncher</code>) so is compatible with an assembly packaging and JIB to create docker images (more on the  <a href="https://yupiik.github.io/uship/packaging.html">packaging</a>
- documentation). Indeed you can also do a fat jar but as for any application it is not really recommended - but for unrelated reasons to UShip.</p>
- </div>
-  </li>
- </ul>
- </div>
- </div>
- </div>
- <div class="sect1" id="_get_started">
-  <h2>Get started</h2>
- <div class="sectionbody">
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
- <div class="paragraph">
- <p>this part is a very light overview of  <a href="https://yupiik.github.io/uship/development-stack.html">getting started</a>
- page.</p>
- </div>
-    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- <div class="paragraph">
- <p>The first step to start writing a UShip service is to import <code>jsonrpc-core</code> module:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2022-05-11</span>, <span class="metadata-readingtime">4 min and 17 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+You get a new need, you do a new REST API&#8230;&#8203;but does it scale? Is it maintainable?
+<a href="https://yupiik.github.io/uship/">UShip</a> intends to make it future ready and more customizable.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_yupiik_uship">What is Yupiik UShip</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Yupiik UShip (µShip) is a light service framework.
+What does it mean? It means that it will enable you to expose a <em>feature</em> over HTTP - by default at least.</p>
+</div>
+<div class="paragraph">
+<p>Concretely the stack is pretty common and straight forward:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A web server - Servlet and even a Tomcat by default,</p>
+</li>
+<li>
+<p>An IoC - CDI and OpenWebBeans for the implementation,</p>
+</li>
+<li>
+<p>A (de)serialization format - JSON with JSON-P/JSON-B for the API and Johnzon for the implementation,</p>
+</li>
+<li>
+<p>A command API - JSON-RPC.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That is it.</p>
+</div>
+<div class="paragraph">
+<p>The highlights on these choices are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The stack relies on standards and are portables - i.e. you can switch Tomcat for Jetty if you want, OpenWebBeans for Weld and Johnzon for Yasson for example. So no vendor lock-in there and future proof choices.</p>
+</li>
+<li>
+<p>The business is develop as JSON-RPC commands.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The last point hides a lot of goodness, and without rewriting <a href="/blog/jsonrpc-protocol-presentation.html">JSON RPC</a> post, it enables to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Think about commands and not HTTP requests,</p>
+</li>
+<li>
+<p>Enrich easily the protocol with custom features since it is JSON based and not with a custom grammar like GraphQL (like enabling to propagate some response to the next request in a bulk, see <a href="/blog/jsonrpc-protocol-presentation.html#_going_further">JSON RPC</a> for an example),</p>
+</li>
+<li>
+<p>Drop HTTP in favor of another transport like Kafka messages without changing your business code/JSON-RPC methods,</p>
+</li>
+<li>
+<p>Integrate with any other service in any language (JSON is well supported in all languages with a lot of libraries),</p>
+</li>
+<li>
+<p>Well document your API with no investment (UShip provides a <code>AsciidoctorJsonRpcDocumentationGenerator</code> which can generate an asciidoc documentation for your endpoint which can be rendered as HTML/PDF and even integrated with <a href="https://github.com/yupiik/tools-maven-plugin#minisite">Yupiik Minisite</a>) or in a very fancy and customized fashion,</p>
+</li>
+<li>
+<p>Well share your specification thanks to OpenRPC format (equivalent to OpenAPI for JSON-RPC).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>UShip also covers all the layers of the development since:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It is compatible with <code>openwebbeans-junit5</code> for the testing (more on the <a href="https://yupiik.github.io/uship/testing.html">testing</a> documentation),</p>
+</li>
+<li>
+<p>It runs as a plain standalone Java application (<code>java -cp &#8230;&#8203; CDILauncher</code>) so is compatible with an assembly packaging and JIB to create docker images (more on the <a href="https://yupiik.github.io/uship/packaging.html">packaging</a> documentation). Indeed you can also do a fat jar but as for any application it is not really recommended - but for unrelated reasons to UShip.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_get_started">Get started</h2>
+<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+this part is a very light overview of <a href="https://yupiik.github.io/uship/development-stack.html">getting started</a> page.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first step to start writing a UShip service is to import <code>jsonrpc-core</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;io.yupiik.uship&lt;/groupId&gt;
   &lt;artifactId&gt;jsonrpc-core&lt;/artifactId&gt;
   &lt;version&gt;${uship.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>Then you can create a <code>META-INF/beans.xml</code> file in your resources (can be empty or <code>&lt;trim/&gt;</code> depending what you prefer for your CDI scanning) to enable CDI and write a JSON-RPC endpoint:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@JsonRpc
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create a <code>META-INF/beans.xml</code> file in your resources (can be empty or <code>&lt;trim/&gt;</code> depending what you prefer for your CDI scanning) to enable CDI and write a JSON-RPC endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@JsonRpc
 @ApplicationScoped
 public class MyCommands {
-    @JsonRpcMethod(name = &quot;my-command&quot;, documentation = &quot;Creates a foo from a name&quot;)
+    @JsonRpcMethod(name = "my-command", documentation = "Creates a foo from a name")
     public Foo myCommand(
-        @JsonRpcParam(documentation = &quot;The name&quot;) final String in) {
+        @JsonRpcParam(documentation = "The name") final String in) {
         // ...
     }
 }</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>To start the application, you can write your own main using CDI SE API or use the default one of <code>openwebbeans-se</code>: <code>org.apache.openwebbeans.se.CDILauncher</code>. By default the container will start and stop but to await tomcat you can specify this arg: <code>--openwebbeans.main uShipTomcatAwait</code>. So overall you command will look like: <code>java -cp .... org.apache.openwebbeans.se.CDILauncher --openwebbeans.main uShipTomcatAwait</code>.</p>
- </div>
- <div class="paragraph">
- <p>
-Once executed, you can call your endpoint:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+</div>
+</div>
+<div class="paragraph">
+<p>To start the application, you can write your own main using CDI SE API or use the default one of <code>openwebbeans-se</code>: <code>org.apache.openwebbeans.se.CDILauncher</code>.
+By default the container will start and stop but to await tomcat you can specify this arg: <code>--openwebbeans.main uShipTomcatAwait</code>.
+So overall you command will look like: <code>java -cp &#8230;&#8203;. org.apache.openwebbeans.se.CDILauncher --openwebbeans.main uShipTomcatAwait</code>.</p>
+</div>
+<div class="paragraph">
+<p>Once executed, you can call your endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
   http://localhost:8080/jsonrpc \
-  -d '{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;my-command&quot;,&quot;params&quot;:{&quot;in&quot;:&quot;me&quot;}}'</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-If you have multiple commands and want to call multiple ones at the same time, you can use the bulk option of JSON-RPC:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
+  -d '{"jsonrpc":"2.0","method":"my-command","params":{"in":"me"}}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have multiple commands and want to call multiple ones at the same time, you can use the bulk option of JSON-RPC:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl \
   http://localhost:8080/jsonrpc \
   -d '[ \
-    {&quot;id&quot;:1,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;my-command&quot;,&quot;params&quot;:{&quot;in&quot;:&quot;me&quot;}}, \
-    {&quot;id&quot;:2,&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;method&quot;:&quot;my-command&quot;,&quot;params&quot;:{&quot;in&quot;:&quot;too&quot;}} \
+    {"id":1,"jsonrpc":"2.0","method":"my-command","params":{"in":"me"}}, \
+    {"id":2,"jsonrpc":"2.0","method":"my-command","params":{"in":"too"}} \
   ]'</code></pre>
- </div>
- </div>
- </div>
- </div>
- <div class="sect1" id="_conclusion">
-  <h2>Conclusion</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-This post just covers the basic steps to use UShip but the benefits are quite high (don't hesitate to read the previous links to understand them if you didn't already do).
- </p>
- </div>
- <div class="paragraph">
- <p>
-Customizing the JSON-RPC bulk behavior is really worth it, it enables to control the size of the payload (making the network transfer faster), to compose commands in a flexible ways (giving clients more control about what they fetch and &quot;bulk&quot;) and avoid to code a lot of new REST endpoints each time a new consumer/front has a new need making your API more atomic and focused.
- </p>
- </div>
- <div class="paragraph">
- <p>
-By default it is still HTTP/Servlet based so you can still reuse all the goodness you are used to like HTTP headers for security, JWT validation etc... Being command based does not mean you throw away all the rest, just that your business code is command oriented and in case of migration to another transport you will keep your command and likely just replace the injected beans representing your security context thanks to CDI if you need such a bean in your business code (for a fine resource based security for example).
- </p>
- </div>
- <div class="paragraph">
- <p>The last note is that  <a href="https://yupiik.github.io/yupiik-logging/jul-integration.html">Yupiik Logging</a>
- is a nice companion for UShip making it even more cloud and Kubernetes friendly so don't hesitate to use both at the same time.</p>
- </div>
- </div>
- </div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This post just covers the basic steps to use UShip but the benefits are quite high (don&#8217;t hesitate to read the previous links to understand them if you didn&#8217;t already do).</p>
+</div>
+<div class="paragraph">
+<p>Customizing the JSON-RPC bulk behavior is really worth it, it enables to control the size of the payload (making the network transfer faster), to compose commands in a flexible ways (giving clients more control about what they fetch and "bulk") and avoid to code a lot of new REST endpoints each time a new consumer/front has a new need making your API more atomic and focused.</p>
+</div>
+<div class="paragraph">
+<p>By default it is still HTTP/Servlet based so you can still reuse all the goodness you are used to like HTTP headers for security, JWT validation etc&#8230;&#8203;
+Being command based does not mean you throw away all the rest, just that your business code is command oriented and in case of migration to another transport you will keep your command and likely just replace the injected beans representing your security context thanks to CDI if you need such a bean in your business code (for a fine resource based security for example).</p>
+</div>
+<div class="paragraph">
+<p>The last note is that <a href="https://yupiik.github.io/yupiik-logging/jul-integration.html">Yupiik Logging</a> is a nice companion for UShip making it even more cloud and Kubernetes friendly so don&#8217;t hesitate to use both at the same time.</p>
+</div>
+</div>
+</div>
                 
 
 

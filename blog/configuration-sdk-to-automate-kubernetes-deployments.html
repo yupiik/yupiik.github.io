@@ -152,86 +152,93 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
- <div class="sectionbody">
- <div class="paragraph metadata">
- <p><span class="mr-2 category-infrastructure"><span class="icon"><i class="fas fa-network-wired"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
-, <span class="metadata-published">2021-06-15</span>, <span class="metadata-readingtime">10 min and 59 sec read</span></p>
- </div>
- </div>
- </div>
- <div class="sect1">
- <div class="quoteblock abstract">
-  <blockquote>
-A configuration SDK is basically a SDK enabling to work with a tool configuration. Let see how to integrate with modern CI/CD and why using such a solution instead of doing its configuration manually.  </blockquote>
- </div> </div>
- <div class="sect1" id="_configuration_sdk_what_is_it">
-  <h2>Configuration SDK, what is it?</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-SDK can have various forms and we get the same kind of packaging for configuration oriented SDK:
- </p>
- </div>
- <div class="paragraph">
- <p>
-- A library you integrate with your &quot;application&quot;/deployment code providing Application Programming Interface entry points (API), - A distribution bringing tools (Command Line Interface oriented or UI oriented) and documentation, - A full software suite (i.e. the library but also a testing toolkit), - A docker image prebundling one or multiple of the previous images, - And much more flavor.
- </p>
- </div>
- <div class="paragraph">
- <p>
-At the end the goal is to share some existing code to enable consumers (users) to integrate the underlying software faster.
- </p>
- </div>
- <div class="paragraph">
- <p>
-In the case of configuration it is exactly the same but the provided API enables to generate configuration files or their content.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_configuration_sdk_a_first_typescript_example">
-  <h2>Configuration SDK: a first (typescript) example</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-To illustrate this concept, let's take a simple example:
- </p>
- </div>
- <div class="paragraph">
- <p>- Assume we have a software which is configured thanks to a <code>com.yupiik.demo.json</code> configuration file - The previous JSON generally looks like: +</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;com.yupiik.demo&quot;: {
-        &quot;workDir&quot;: &quot;/opt/app/work&quot;,
-        &quot;database:&quot;: {
-            &quot;url&quot;: &quot;jdbc:mysql://localhost:3306/demo&quot;,
-            &quot;username&quot;: &quot;demo&quot;,
-            &quot;password&quot;: &quot;d$m0&quot;
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="mr-2 category-infrastructure"><span class="icon"><i class="fa fa-fas fa-network-wired"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2021-06-15</span>, <span class="metadata-readingtime">10 min and 59 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+A configuration SDK is basically a SDK enabling to work with a tool configuration.
+Let see how to integrate with modern CI/CD and why using such a solution instead of doing its configuration manually.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_sdk_what_is_it">Configuration SDK, what is it?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SDK can have various forms and we get the same kind of packaging for configuration oriented SDK:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A library you integrate with your "application"/deployment code providing Application Programming Interface entry points (API),</p>
+</li>
+<li>
+<p>A distribution bringing tools (Command Line Interface oriented or UI oriented) and documentation,</p>
+</li>
+<li>
+<p>A full software suite (i.e. the library but also a testing toolkit),</p>
+</li>
+<li>
+<p>A docker image prebundling one or multiple of the previous images,</p>
+</li>
+<li>
+<p>And much more flavor.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At the end the goal is to share some existing code to enable consumers (users) to integrate the underlying software faster.</p>
+</div>
+<div class="paragraph">
+<p>In the case of configuration it is exactly the same but the provided API enables to generate configuration files or their content.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_sdk_a_first_typescript_example">Configuration SDK: a first (typescript) example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To illustrate this concept, let&#8217;s take a simple example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Assume we have a software which is configured thanks to a <code>com.yupiik.demo.json</code> configuration file</p>
+</li>
+<li>
+<p>The previous JSON generally looks like:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "com.yupiik.demo": {
+        "workDir": "/opt/app/work",
+        "database:": {
+            "url": "jdbc:mysql://localhost:3306/demo",
+            "username": "demo",
+            "password": "d$m0"
         }
     }
 }</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-Quite quickly, we can envision the a binding for this configuration.
- </p>
- </div>
- <div class="paragraph">
- <p>
-We will use typescript to illustrate this example but Python, ruby, PHP, Java, ..., and even JSON with its JSON-Schema would have worked too.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Here is what a library can provide as configuration binding:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export interface DemoDatabase {
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Quite quickly, we can envision the a binding for this configuration.</p>
+</div>
+<div class="paragraph">
+<p>We will use typescript to illustrate this example but Python, ruby, PHP, Java, &#8230;&#8203;, and even JSON with its JSON-Schema would have worked too.</p>
+</div>
+<div class="paragraph">
+<p>Here is what a library can provide as configuration binding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export interface DemoDatabase {
     url: string;
     username: string;
     password: string;
@@ -241,21 +248,19 @@ export interface DemoConfiguration {
     workDir?: string;
     database: DemoDatabase;
 }</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-Nothing crazy but it then enables to generate the configuration from this model:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { <b class="conum">(1)</b>
+</div>
+</div>
+<div class="paragraph">
+<p>Nothing crazy but it then enables to generate the configuration from this model:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { <i class="conum" data-value="1"></i><b>(1)</b>
     DemoDatabase,
     DemoConfiguration
 } from '@yupiik/demo-configuration';
 
-const configuration: DemoConfiguration = { <b class="conum">(2)</b>
+const configuration: DemoConfiguration = { <i class="conum" data-value="2"></i><b>(2)</b>
     workDir: '/opt/app/work',
     database: {
         url: 'jdbc:postgresql://demo.yupiik.io/demo',
@@ -264,92 +269,68 @@ const configuration: DemoConfiguration = { <b class="conum">(2)</b>
     },
 };
 
-console.log( <b class="conum">(3)</b>
+console.log( <i class="conum" data-value="3"></i><b>(3)</b>
     JSON.stringify(configuration, null, 2)
 )</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We 
- </span>
-<b>import</b> <span>
- our configuration SDK/library,
- </span>
-   </li>
-   <li>
- <span>
-We force our 
- </span>
-<code>configuration</code> <span>
- variable to be of type 
- </span>
-<code>DemoConfiguration</code> <span>
-,
- </span>
-   </li>
-   <li>
- <span>
-Once configuration is complete we can log it as here or write it to a file.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-This does not look way better than before but it is actually quite better than writing the JSON manually:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
-If you have a typescript editor you reduce a lot the potential source of errors: <div class="ulist">
- <ul>
-  <li>
- <p>
-the required fields will be enforced and compilation will fail if not respected,
- </p>
-  </li>
-  <li>
- <p>
-you get completion on the attributes
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <p>
-Configuration can be injected anywhere (console, file, nested in another configuration file, enterprise storage, git, ...),
- </p>
-  </li>
-  <li>
- <p>
-We can generate multiple configurations at onces (for ex: one per environment using the same code).
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-The next immediate benefit from such SDK is to be able to &quot;code&quot;. Since now we are in code land, we can replace some static parts by code with logic:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export function newDatabase(env: string): DemoDatabase { <b class="conum">(1)</b>
-    switch (env.toLocaleLowerCase()) { <b class="conum">(2)</b>
-        case &quot;preprod&quot;:
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We <strong>import</strong> our configuration SDK/library,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We force our <code>configuration</code> variable to be of type <code>DemoConfiguration</code>,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Once configuration is complete we can log it as here or write it to a file.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This does not look way better than before but it is actually quite better than writing the JSON manually:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you have a typescript editor you reduce a lot the potential source of errors:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the required fields will be enforced and compilation will fail if not respected,</p>
+</li>
+<li>
+<p>you get completion on the attributes</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configuration can be injected anywhere (console, file, nested in another configuration file, enterprise storage, git, &#8230;&#8203;),</p>
+</li>
+<li>
+<p>We can generate multiple configurations at onces (for ex: one per environment using the same code).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The next immediate benefit from such SDK is to be able to "code".
+Since now we are in code land, we can replace some static parts by code with logic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export function newDatabase(env: string): DemoDatabase { <i class="conum" data-value="1"></i><b>(1)</b>
+    switch (env.toLocaleLowerCase()) { <i class="conum" data-value="2"></i><b>(2)</b>
+        case "preprod":
             return {
                 url: 'jdbc:postgresql://pre-demo.yupiik.io/demo',
                 username: 'pdemo',
                 password: 'p_d3m0'
             };
-        case &quot;prod&quot;:
+        case "prod":
             return {
                 url: 'jdbc:postgresql://demo.yupiik.io/demo',
                 username: 'demo',
@@ -362,238 +343,196 @@ The next immediate benefit from such SDK is to be able to &quot;code&quot;. Sinc
 
 const configuration: DemoConfiguration = {
     workDir: '/opt/app/work',
-    database: newDatabase(process.env.TARGET_ENV || 'preprod'), <b class="conum">(3)</b>
+    database: newDatabase(process.env.TARGET_ENV || 'preprod'), <i class="conum" data-value="3"></i><b>(3)</b>
 };</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We create a function to generate a 
- </span>
-<code>DemoDatabase</code> <span>
- configuration,
- </span>
-   </li>
-   <li>
- <span>
-Depending the environment we generate the related configuration,
- </span>
-   </li>
-   <li>
- <span>
-We call our database function passing the environment read from the process environment (
- </span>
-<code>TARGET_ENV</code> <span>
- variable here).
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-The goal of this example is to make you feel what a configuration SDK can give you as power. Common next steps are:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-Read the environment configuration from a &quot;deployment repository&quot; (it can be a git repository per environment/application with the related permission management or a database-like storage),
- </p>
-  </li>
-  <li>
- <p>
-If the configuration has arrays/lists, you can make it way easier,
- </p>
-  </li>
-  <li>
- <p>
-If the configuration is more complex than the number of inputs (quite common in proxies/gateways cases where input is the target proxy host and rest is quite static), it becomes easy to do a function to hide the complexity and just manipulate the ops data.
- </p>
-  </li>
- </ul>
- </div>
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
-it is important to have an infrastructure storage which enables auditing (who did what).    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- <div class="paragraph">
- <p>
-Some configuration SDK come with a specific DSL but it is generally worth doing a company/team DSL which encapsulates the software specificities to make it company oriented: you always better know what you do than what others do:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configuration: DemoConfiguration = newDemoConfiguration() <b class="conum">(1)</b>
-    .withDatabase(process.env.TARGET_ENV || 'preprod'); <b class="conum">(2)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
-<code>newDemoConfiguration</code> <span>
- creates a &quot;fluent&quot; builder which hides from the script all the defaults (
- </span>
-<code>workDir</code> <span>
- for example),
- </span>
-   </li>
-   <li>
-<code>withDatabase</code> <span>
- is equivalent to 
- </span>
-<code>newDatabase</code> <span>
- but is chainable with 
- </span>
-<code>newDemoConfiguration</code> <span>
- builder.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-With such a DSL - you can publish yourself too as a library on your enterprise NPM registry for example, you increase a lot the sharing between teams/teammates will reduces a lot the entrycost when one of your workers move from one application to another. It also limits a lot the errors or forgotten points (like forgetting to configure the logs in JSON for example).
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_kubernetes_case_with_cdk8s">
-  <h2>Kubernetes case with CDK8S</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>Kubernetes uses the phylosophy presented in this post with its Cloud Development Kit ). It supports the main ops languages except ruby which tends to be less popular these days: Typescript, JavaScript, Python, and Java.</p>
- </div>
- <div class="paragraph">
- <p>
-A simple example of CDK usage is to create a ConfigMap hosting the generated configuration and injecting it into a deployment.
- </p>
- </div>
- <div class="paragraph">
- <p>
-The first step to do it is to import the needed dependencies:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { Construct } from 'constructs';
-import { App, Chart } from 'cdk8s'; <b class="conum">(1)</b>
-import { KubeConfigMap, KubeDeployment } from './imports/k8s'; <b class="conum">(2)</b>
-import generateDemoConfiguration from './configuration.generator'; <b class="conum">(3)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We import CDK8S (Kubernetes CDK),
- </span>
-   </li>
-   <li>
- <span>
-We import the CDK8S model (it is generated post-installation with a dedicated command),
- </span>
-   </li>
-   <li>
- <span>
-We import our configuration generator (assuming we exported it properly in another file)
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>Then we define our <code>Chart</code> which aggregates the different components of our deployment:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export class DemoKube extends Chart {
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We create a function to generate a <code>DemoDatabase</code> configuration,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Depending the environment we generate the related configuration,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We call our database function passing the environment read from the process environment (<code>TARGET_ENV</code> variable here).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The goal of this example is to make you feel what a configuration SDK can give you as power.
+Common next steps are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Read the environment configuration from a "deployment repository" (it can be a git repository per environment/application with the related permission management or a database-like storage),</p>
+</li>
+<li>
+<p>If the configuration has arrays/lists, you can make it way easier,</p>
+</li>
+<li>
+<p>If the configuration is more complex than the number of inputs (quite common in proxies/gateways cases where input is the target proxy host and rest is quite static), it becomes easy to do a function to hide the complexity and just manipulate the ops data.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+it is important to have an infrastructure storage which enables auditing (who did what).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Some configuration SDK come with a specific DSL but it is generally worth doing a company/team DSL which encapsulates the software specificities to make it company oriented: you always better know what you do than what others do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configuration: DemoConfiguration = newDemoConfiguration() <i class="conum" data-value="1"></i><b>(1)</b>
+    .withDatabase(process.env.TARGET_ENV || 'preprod'); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>newDemoConfiguration</code> creates a "fluent" builder which hides from the script all the defaults (<code>workDir</code> for example),</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>withDatabase</code> is equivalent to <code>newDatabase</code> but is chainable with <code>newDemoConfiguration</code> builder.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With such a DSL - you can publish yourself too as a library on your enterprise NPM registry for example, you increase a lot the sharing between teams/teammates will reduces a lot the entrycost when one of your workers move from one application to another.
+It also limits a lot the errors or forgotten points (like forgetting to configure the logs in JSON for example).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kubernetes_case_with_cdk8s">Kubernetes case with CDK8S</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kubernetes uses the phylosophy presented in this post with its Cloud Development Kit (<a href="https://cdk8s.io/" target="_blank" rel="noopener">CDK</a>).
+It supports the main ops languages except ruby which tends to be less popular these days: Typescript, JavaScript, Python, and Java.</p>
+</div>
+<div class="paragraph">
+<p>A simple example of CDK usage is to create a ConfigMap hosting the generated configuration and injecting it into a deployment.</p>
+</div>
+<div class="paragraph">
+<p>The first step to do it is to import the needed dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">import { Construct } from 'constructs';
+import { App, Chart } from 'cdk8s'; <i class="conum" data-value="1"></i><b>(1)</b>
+import { KubeConfigMap, KubeDeployment } from './imports/k8s'; <i class="conum" data-value="2"></i><b>(2)</b>
+import generateDemoConfiguration from './configuration.generator'; <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We import CDK8S (Kubernetes CDK),</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We import the CDK8S model (it is generated post-installation with a dedicated command),</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We import our configuration generator (assuming we exported it properly in another file)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then we define our <code>Chart</code> which aggregates the different components of our deployment:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">export class DemoKube extends Chart {
     constructor(scope: Construct, id: string) {
         super(scope, id);
 
-        const configuration: DemoConfiguration = generateDemoConfiguration(); <b class="conum">(1)</b>
+        const configuration: DemoConfiguration = generateDemoConfiguration(); <i class="conum" data-value="1"></i><b>(1)</b>
 
-        const name = 'demo'; <b class="conum">(2)</b>
-        const labels = { <b class="conum">(2)</b>
+        const name = 'demo'; <i class="conum" data-value="2"></i><b>(2)</b>
+        const labels = { <i class="conum" data-value="2"></i><b>(2)</b>
             app: 'generated-config',
         };
-        const configMapName = `${name}-config`; <b class="conum">(2)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We call our configuration generator and get our configuration as a string,
- </span>
-   </li>
-   <li>
- <span>
-We create some reused variables for kubernetes component metadata labels, base name to enforce consistency in the naming
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>From there, still in the <code>Chart</code> constructor, we can define our components (they are attached thanks the first paramter which is the chart itself).</p>
- </div>
- <div class="paragraph">
- <p>The first one is a <code>ConfigMap</code>:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">new KubeConfigMap(this, 'configmap', { <b class="conum">(1)</b>
-    metadata: { <b class="conum">(2)</b>
+        const configMapName = `${name}-config`; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We call our configuration generator and get our configuration as a string,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We create some reused variables for kubernetes component metadata labels, base name to enforce consistency in the naming</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>From there, still in the <code>Chart</code> constructor, we can define our components (they are attached thanks the first paramter which is the chart itself).</p>
+</div>
+<div class="paragraph">
+<p>The first one is a <code>ConfigMap</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">new KubeConfigMap(this, 'configmap', { <i class="conum" data-value="1"></i><b>(1)</b>
+    metadata: { <i class="conum" data-value="2"></i><b>(2)</b>
         name: configMapName,
         labels: labels,
     },
     data: {
-        'demo.json': configuration, <b class="conum">(3)</b>
+        'demo.json': configuration, <i class="conum" data-value="3"></i><b>(3)</b>
     },
 });</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We create a ConfigMap containing our configuration,
- </span>
-   </li>
-   <li>
- <span>
-We inject into our ConfigMap the name and labels we expect from the variables previously created,
- </span>
-   </li>
-   <li>
- <span>
-We bind our generated configuration into our ConfigMap
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>Then we create a deployment which is, in this case, nothing more than the aggregation of a <code>Volume</code> - with our <code>ConfigMap</code> mounted inside - and a <code>Container</code>:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configMapVolume: Volume = { <b class="conum">(1)</b>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We create a ConfigMap containing our configuration,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We inject into our ConfigMap the name and labels we expect from the variables previously created,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We bind our generated configuration into our ConfigMap</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then we create a deployment which is, in this case, nothing more than the aggregation of a <code>Volume</code> - with our <code>ConfigMap</code> mounted inside - and a <code>Container</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const configMapVolume: Volume = { <i class="conum" data-value="1"></i><b>(1)</b>
     name: 'demo-config-volume',
     configMap: {
-        name: configMapName, <b class="conum">(2)</b>
+        name: configMapName, <i class="conum" data-value="2"></i><b>(2)</b>
     },
 };
-const container: Container = { <b class="conum">(3)</b>
+const container: Container = { <i class="conum" data-value="3"></i><b>(3)</b>
     name: 'demo',
     image: 'yupiik/demo',
     ports: [
@@ -601,13 +540,13 @@ const container: Container = { <b class="conum">(3)</b>
             containerPort: 8080
         },
     ],
-    volumeMounts: [{ <b class="conum">(4)</b>
+    volumeMounts: [{ <i class="conum" data-value="4"></i><b>(4)</b>
         name: configMapVolume.name,
         mountPath: '/opt/app/demo/conf',
     }]
 };
 
-new KubeDeployment(this, 'deployment', { <b class="conum">(5)</b>
+new KubeDeployment(this, 'deployment', { <i class="conum" data-value="5"></i><b>(5)</b>
     spec: {
         replicas: 1,
         selector: {
@@ -616,7 +555,7 @@ new KubeDeployment(this, 'deployment', { <b class="conum">(5)</b>
         template: {
             metadata: { labels },
             spec: {
-                volumes: [ <b class="conum">(6)</b>
+                volumes: [ <i class="conum" data-value="6"></i><b>(6)</b>
                     configMapVolume,
                 ],
                 containers: [
@@ -626,229 +565,184 @@ new KubeDeployment(this, 'deployment', { <b class="conum">(5)</b>
         },
     }
 });</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We create a volume we'll be able to mount in containers with our ConfigMap content,
- </span>
-   </li>
-   <li>
- <span>
-We reference our ConfigMap name directly from the variable containing the ConfigMap name avoiding errors,
- </span>
-   </li>
-   <li>
- <span>
-We create a container which will run our demo application,
- </span>
-   </li>
-   <li>
- <span>
-We mount the volume into the container to let it access the ConfigMap content as files in 
- </span>
-<code>/opt/app/demo/conf</code> <span>
- - it will let the application read its configuration from 
- </span>
-<code>/opt/app/demo/conf/demo.json</code> <span>
- assuming it is its default configuration location,
- </span>
-   </li>
-   <li>
- <span>
-We create a Deployment for our application,
- </span>
-   </li>
-   <li>
- <span>
-The deployment defines the volume containing our ConfigMap for the Pod we will deploy our container on which will manage the content for the container properly.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>Finally, when we fully defined our model we can create an application - <code>App</code> - containing our specifications and dump it on the disk as YAML a file:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const app = new App();
-new DemoKube(app, 'demo'); <b class="conum">(1)</b>
-app.synth(); <b class="conum">(2)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We bind all this specification to 
- </span>
-<code>demo</code> <span>
- name,
- </span>
-   </li>
-   <li>
- <span>
-We generate the corresponding YAML.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>Now our YAML generator is fully coded and integrated with our configuration generator, we can run the program and we will get a <code>dist/demo.k8s.yaml</code> file with this content:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
-kind: ConfigMap <b class="conum">(1)</b>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We create a volume we&#8217;ll be able to mount in containers with our ConfigMap content,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We reference our ConfigMap name directly from the variable containing the ConfigMap name avoiding errors,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We create a container which will run our demo application,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>We mount the volume into the container to let it access the ConfigMap content as files in <code>/opt/app/demo/conf</code> - it will let the application read its configuration from <code>/opt/app/demo/conf/demo.json</code> assuming it is its default configuration location,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>We create a Deployment for our application,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The deployment defines the volume containing our ConfigMap for the Pod we will deploy our container on which will manage the content for the container properly.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finally, when we fully defined our model we can create an application - <code>App</code> - containing our specifications and dump it on the disk as YAML a file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const app = new App();
+new DemoKube(app, 'demo'); <i class="conum" data-value="1"></i><b>(1)</b>
+app.synth(); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We bind all this specification to <code>demo</code> name,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We generate the corresponding YAML.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now our YAML generator is fully coded and integrated with our configuration generator, we can run the program and we will get a <code>dist/demo.k8s.yaml</code> file with this content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: ConfigMap <i class="conum" data-value="1"></i><b>(1)</b>
 metadata:
   labels:
-    app: generated-config <b class="conum">(2)</b>
-  name: demo-config <b class="conum">(2)</b>
+    app: generated-config <i class="conum" data-value="2"></i><b>(2)</b>
+  name: demo-config <i class="conum" data-value="2"></i><b>(2)</b>
 data:
-  <b class="conum">(3)</b>
-  demo.json: |- 
+  <i class="conum" data-value="3"></i><b>(3)</b>
+  demo.json: |-
     {
-      &quot;workDir&quot;: &quot;/opt/app/work&quot;,
-      &quot;database&quot;: {
-        &quot;url&quot;: &quot;jdbc:postgresql://pre-demo.yupiik.io/demo&quot;,
-        &quot;username&quot;: &quot;demo&quot;,
-        &quot;password&quot;: &quot;d3m0&quot;
+      "workDir": "/opt/app/work",
+      "database": {
+        "url": "jdbc:postgresql://pre-demo.yupiik.io/demo",
+        "username": "demo",
+        "password": "d3m0"
       }
     }
 ---
 apiVersion: apps/v1
-kind: Deployment <b class="conum">(4)</b>
+kind: Deployment <i class="conum" data-value="4"></i><b>(4)</b>
 metadata:
   name: demo-deployment-c864fc1b
   spec:
-    containers: <b class="conum">(5)</b>
+    containers: <i class="conum" data-value="5"></i><b>(5)</b>
         image: yupiik/demo
         name: demo
         ports:
           - containerPort: 8080
-        volumeMounts: <b class="conum">(5)</b>
+        volumeMounts: <i class="conum" data-value="5"></i><b>(5)</b>
           - mountPath: /opt/app/demo/conf
             name: demo-config-volume
-    volumes: <b class="conum">(5)</b>
+    volumes: <i class="conum" data-value="5"></i><b>(5)</b>
       - configMap:
           name: demo-config
         name: demo-config-volume</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We find back our ConfigMap,
- </span>
-   </li>
-   <li>
- <span>
-The generated ConfigMap YAML contains the expected name and labels,
- </span>
-   </li>
-   <li>
- <span>
-And the ConfigMap contains the generated configuration.
- </span>
-   </li>
-   <li>
- <span>
-Our 
- </span>
-<code>DemoKube</code> <span>
- also had a 
- </span>
-<code>Deployment</code> <span>
- we can find in the generated YAML too,
- </span>
-   </li>
-   <li>
- <span>
-The deployment contains the expected container with the mounted volume which contains the ConfigMap data.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>At that stage the last remaning task is to run <code>kubectl</code> or  <a href="https://yupiik.github.io/bundlebee/" target="_blank" rel="noopener">bundlebee</a>
- on the generated YAML: <code>kubectl apply -f dist/demo.k8s.yaml</code>.</p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_integration_with_a_cicd_pipeline">
-  <h2>Integration with a CI/CD pipeline</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-There are a lot of strategies to automate previous process execution and it would make this post way too long to detail it all here but note that once previous project is coded, it is quite trivial to integrate it with any CI.
- </p>
- </div>
- <div class="paragraph">
- <p>The rules are generally something along this rule: when a push/merge is done on branch X (branch name can be environment name or a single branch name like <code>master</code> or <code>main</code> depending how you structure your source repository) execute the deployment.</p>
- </div>
- <div class="paragraph">
- <p>
-The build steps are generally:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-Clone the project
- </p>
-  </li>
-  <li>
- <p>
-Build the project
- </p>
-  </li>
-  <li>
- <p>
-Run the generation
- </p>
-  </li>
-  <li>
- <p>
-(optional) Test the generated files or code
- </p>
-  </li>
-  <li>
- <p>
-Execute the deployment
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-Here is a skeleton of Github Actions workflow file using CDK8s:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: Build and Deploy
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We find back our ConfigMap,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The generated ConfigMap YAML contains the expected name and labels,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>And the ConfigMap contains the generated configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Our <code>DemoKube</code> also had a <code>Deployment</code> we can find in the generated YAML too,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The deployment contains the expected container with the mounted volume which contains the ConfigMap data.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>At that stage the last remaning task is to run <code>kubectl</code> or <a href="https://yupiik.github.io/bundlebee/" target="_blank" rel="noopener">bundlebee</a> on the generated YAML: <code>kubectl apply -f dist/demo.k8s.yaml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_integration_with_a_cicd_pipeline">Integration with a CI/CD pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are a lot of strategies to automate previous process execution and it would make this post way too long to detail it all here but note that once previous project is coded, it is quite trivial to integrate it with any CI.</p>
+</div>
+<div class="paragraph">
+<p>The rules are generally something along this rule: when a push/merge is done on branch X (branch name can be environment name or a single branch name like <code>master</code> or <code>main</code> depending how you structure your source repository) execute the deployment.</p>
+</div>
+<div class="paragraph">
+<p>The build steps are generally:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone the project</p>
+</li>
+<li>
+<p>Build the project</p>
+</li>
+<li>
+<p>Run the generation</p>
+</li>
+<li>
+<p>(optional) Test the generated files or code</p>
+</li>
+<li>
+<p>Execute the deployment</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a skeleton of Github Actions workflow file using CDK8s:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: Build and Deploy
 
-on: <b class="conum">(1)</b>
+on: <i class="conum" data-value="1"></i><b>(1)</b>
   push:
     branches: [ master ]
 
 jobs:
-  deploy: <b class="conum">(2)</b>
+  deploy: <i class="conum" data-value="2"></i><b>(2)</b>
     name: Deploy
     runs-on: ubuntu-20.04
     steps:
-    - name: Checkout <b class="conum">(3)</b>
+    - name: Checkout <i class="conum" data-value="3"></i><b>(3)</b>
       uses: actions/checkout@v2
-    - name: Build <b class="conum">(4)</b>
+    - name: Build <i class="conum" data-value="4"></i><b>(4)</b>
       run: |
         npm install
         npm build
         npm run synth
-    - name: Deploy <b class="conum">(5)</b>
+    - name: Deploy <i class="conum" data-value="5"></i><b>(5)</b>
       uses: actions-hub/kubectl@master
       env:
         KUBE_HOST: ${{ secrets.KUBE_HOST }}
@@ -856,118 +750,93 @@ jobs:
         KUBE_PASSWORD: ${{ secrets.KUBE_PASSWORD }}
         KUBE_CERTIFICATE: ${{ secrets.KUBE_CERTIFICATE }}
       with:
-        args: apply -f ./dist/demo.k8s.yaml <b class="conum">(6)</b></code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We run the workflow only when code is pushed to master,
- </span>
-   </li>
-   <li>
- <span>
-We define the deploy workflow steps,
- </span>
-   </li>
-   <li>
- <span>
-First step is to clone the repository,
- </span>
-   </li>
-   <li>
- <span>
-Second step is to build and run the project (
- </span>
-<code>synth</code> <span>
- script generates the YAML),
- </span>
-   </li>
-   <li>
- <span>
-Last command executes a 
- </span>
-<code>kubectl</code> <span>
- command with the Kubernetes configuration passed as Github secrets,
- </span>
-   </li>
-   <li>
- <span>
-We use the generated YAML to deploy the application.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
-in practise, the last step is a bit more complicated and can even be generated from second step in case you want to uninstall some Kubernetes components.    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- <div class="paragraph">
- <p>
-Last important point is that this workflow is to setup on the configuration repository in general since it is the one with changes which are impacting the production. The generation code can be hosted in the same repository or not - it is really up to you - but it is recommended to either use a library for the generation - limiting a lot the hosted code in the configuration repository - or custom github action which will run the generation properly. If you don't do it on the configuration repository, you will deploy each time you modify your generation code. It will work in some cases but as soon as your deployment code will be stable it will not be what you want since deployment will never be triggered on configuration changes.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_configuration_sdk_and_migrations">
-  <h2>Configuration SDK and migrations</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-When migrating from one version to another one, in particular when the new version is a new major, it can be hard to not loose configuration or be perfectly aware of the changes.
- </p>
- </div>
- <div class="paragraph">
- <p>
-With a configuration SDK and coded configuration as we saw previously, this task becomes a standard coding task which will be able to leverage all the well known related tools:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-SCM to identify the differences (git for example),
- </p>
-  </li>
-  <li>
- <p>
-The SDK will enable to validate the new configuration automatically,
- </p>
-  </li>
-  <li>
- <p>
-Thanks to the &quot;function&quot; you can create to share code for parts of the configuration, you can migrate faster (no need to do it per environment if you already managed it with functions for example),
- </p>
-  </li>
-  <li>
- <p>
-It is less error prone if you code your configuration value lookups from a data repository (values not being hardcoded, no risk to wrongly copy/paste them for example).
- </p>
-  </li>
- </ul>
- </div>
- </div>
- </div>
- <div class="sect1" id="_conclusion">
-  <h2>Conclusion</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-In this post we saw that being able to &quot;code&quot; its configuration is a key feature to integrate with CI/CD. It enables to reduce the errors, validate quickly its configuration and do migrations was easier since the &quot;new&quot; configuration will be revalidated once the SDK upgraded.
- </p>
- </div>
- </div>
- </div>
+        args: apply -f ./dist/demo.k8s.yaml <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We run the workflow only when code is pushed to master,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We define the deploy workflow steps,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>First step is to clone the repository,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Second step is to build and run the project (<code>synth</code> script generates the YAML),</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Last command executes a <code>kubectl</code> command with the Kubernetes configuration passed as Github secrets,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>We use the generated YAML to deploy the application.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+in practise, the last step is a bit more complicated and can even be generated from second step in case you want to uninstall some Kubernetes components.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Last important point is that this workflow is to setup on the configuration repository in general since it is the one with changes which are impacting the production.
+The generation code can be hosted in the same repository or not - it is really up to you - but it is recommended to either use a library for the generation - limiting a lot the hosted code in the configuration repository - or custom github action which will run the generation properly.
+If you don&#8217;t do it on the configuration repository, you will deploy each time you modify your generation code.
+It will work in some cases but as soon as your deployment code will be stable it will not be what you want since deployment will never be triggered on configuration changes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_sdk_and_migrations">Configuration SDK and migrations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When migrating from one version to another one, in particular when the new version is a new major, it can be hard to not loose configuration or be perfectly aware of the changes.</p>
+</div>
+<div class="paragraph">
+<p>With a configuration SDK and coded configuration as we saw previously, this task becomes a standard coding task which will be able to leverage all the well known related tools:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SCM to identify the differences (git for example),</p>
+</li>
+<li>
+<p>The SDK will enable to validate the new configuration automatically,</p>
+</li>
+<li>
+<p>Thanks to the "function" you can create to share code for parts of the configuration, you can migrate faster (no need to do it per environment if you already managed it with functions for example),</p>
+</li>
+<li>
+<p>It is less error prone if you code your configuration value lookups from a data repository (values not being hardcoded, no risk to wrongly copy/paste them for example).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this post we saw that being able to "code" its configuration is a key feature to integrate with CI/CD.
+It enables to reduce the errors, validate quickly its configuration and do migrations was easier since the "new" configuration will be revalidated once the SDK upgraded.</p>
+</div>
+</div>
+</div>
                 
 
 

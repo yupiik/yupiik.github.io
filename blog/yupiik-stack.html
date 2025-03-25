@@ -152,327 +152,211 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
- <div class="sectionbody">
- <div class="paragraph metadata">
- <p><span class="mr-2 category-technology"><span class="icon"><i class="fas fa-microchip"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
-, <span class="metadata-published">2023-01-24</span>, <span class="metadata-readingtime">4 min and 45 sec read</span></p>
- </div>
- </div>
- </div>
- <div class="sect1">
- <div class="quoteblock abstract">
-  <blockquote>
-Yupiik open-sourced a set of tools targeting application development and deployment. It aims at simplifying the all the aspect of development focusing on productivity and efficiency. Let's have a look at the bricks it is composed of.  </blockquote>
- </div> </div>
- <div class="sect1" id="_the_challenge">
-  <h2>The challenge</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-Today's the backend development evolved enough to join the frontend in terms of velocity requirement. It means that you should be able to develop and deploy a backend services in a few days and not weeks or months.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Another challenge is the fact the consumers multiply the requests done to the backends. This means that the resources consumption is rarely optimised and it often adds a lot of latency (if you use REST model for example).
- </p>
- </div>
- <div class="paragraph">
- <p>
-On another side, the cloud showed that security is a key requirement of any application.
- </p>
- </div>
- <div class="paragraph">
- <p>
-To solve these challenges, it is important to simplify the development stack to ensure:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-You control it
- </p>
-  </li>
-  <li>
- <p>
-Any developer can work with it very quickly - simplicity is often more important than other criteria for the velocity to stay high in time
- </p>
-  </li>
-  <li>
- <p>
-BUT you can still optimize and improve it when needed for very high throughput applications for example
- </p>
-  </li>
- </ul>
- </div>
- </div>
- </div>
- <div class="sect1" id="_the_stack">
-  <h2>The stack</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-To answer modern needs, Yupiik developed these bricks:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
- <a href="https://yupiik.io/yupiik-logging">Yupiik Logging^</a>
-: a simple but efficient and flexible Java Util Logging binding, it is cloud oriented (docker/Kubernetes) but works well in standalone application, <div class="ulist">
- <ul>
-  <li>
- <p>
-And the cherry on the cake is that it is GraalVM friendly so you can make your application native and logging configured at runtime!
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <a href="https://www.yupiik.io/yupiik-batch/write-your-first-batch.html#_define_your_batch_configuration">Yupiik Simple Configuration^</a>
-: a simple POJO based configuration binding <div class="ulist">
- <ul>
-  <li>
- <p>
-Keeps the configuration light and documentation friendly
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <a href="https://www.yupiik.io/uship/development-stack.html#_create_json_rpc_endpoints">Yupiik UShip^</a>
-: a light backend stack based on Apache Tomcat and providing a JSON-RPC programming model, <div class="ulist">
- <ul>
-  <li>
- <p>
-JSON-RPC enables to develop &quot;commands&quot; and optionally to bulk them, this stack allows to optimize bulk requests very easily with any custom push-down logic (execution plan)
- </p>
-  </li>
-  <li>
- <p>
-Since it is command oriented, it is compatible with CLI application (reuse, reuse, reuse) and messaging (JMS, Kafka) applications.
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <a href="https://www.yupiik.io/bundlebee/getting-started.html#_create_your_first_alveolus">Yupiik BundleBee^</a>
-: a light deployment manager for Kubernetes <div class="ulist">
- <ul>
-  <li>
- <p>
-It allows to test locally very easily with minikube, microk8s, ... but also to deploy to production directly with the same recipe!
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <a href="https://github.com/yupiik/tools-maven-plugin#minisite">Yupiik Tools Minisite^</a>
-: a maven plugin which enables to create a &quot;mini-site&quot; holding the documentation of your project. <div class="ulist">
- <ul>
-  <li>
- <p>
-It is generation friendly - so you can generate the configuration documentation or API documentation from plain code. Living documentation - the fact to generate all you can to ensure it is up to date - is a key target of this module/
- </p>
-  </li>
-  <li>
- <p>
-It is also github pages or gitlab pages friendly and handles the deployment for you.
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
-For frontend applications we tend to use  <a href="https://reactjs.org/">React^</a>
- or  <a href="https://preactjs.com/">Preact^</a>
- and esbuild. <div class="ulist">
- <ul>
-  <li>
- <p>
-React/Preact are light, way less complex, unstable and are more javascript friendly than recent angular or Vue.JS versions (even if this last one tend to copy others version after version)
- </p>
-  </li>
-  <li>
- <p>
-Esbuild is insanely fast, easy to integrate with a backend mock if needed an totally defeats webpack as of today when you start from scratch.
- </p>
-  </li>
- </ul>
- </div>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p>Finally, even if all the stack works with any Java compatible base OCI image, we also provide our own  <a href="https://www.azul.com/">Azul</a>
-  <a href="https://hub.docker.com/r/ossyupiik/java/tags">image</a>
- based on alpine and a bit lighter than default one.</p>
- </div>
-  </li>
- </ul>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="null hljs">@startuml
-skinparam handwritten true
-skinparam linetype ortho
-skinparam packageBorderColor LightGrey
-skinparam ComponentBackgroundColor White
-
-package Dev #1845AA {
-    [Git]
-    [Java 17]
-    [Apache Maven]
-    [Yupiik Logging]
-    [Yupiik Configuration]
-    [Yupiik UShip]
-    [Yupiik BundleBee]
-}
-
-package CI #05BEFC {
-    package Package {
-        [Package Registry] &lt;&lt;maven-deploy-plugin&gt;&gt;
-        [Container Registry] &lt;&lt;jib&gt;&gt;
-        [Pages] &lt;&lt;minisite&gt;&gt;
-    }
-
-    package Test {
-        [Deployment Tests]
-        [Application Tests]
-    }
-
-    package Build {
-        [mvn]
-    }
-}
-
-package Environments {
-    node &quot;Minikube&quot; {
-        [Kubernetes (dev)]
-    }
-
-    node Preprod {
-        [Kubernetes (preprod)]
-    }
-
-    node Prod {
-        [Kubernetes (prod)]
-    }
-}
-
-Dev -r-&gt; CI
-CI -r-&gt; Environments
-
-Build -d-&gt; Test
-Test -d-&gt; Package
-
-
-@enduml</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-The application flow is as follow:
- </p>
- </div>
- <ol>
-  <li>
- <p>
-The application is developed with Apache Maven and Java using Yupiik Stack
- </p>
-  </li>
-  <li>
- <p>
-The CI takes any incoming changes and validate them (with tests for the application code but also the deployment)
- </p>
-  </li>
-  <li>
- <p>
-Once validated, the changes are snapshoted in a binary (artifact + OCI/docker image) pushed on CI repositories
- </p>
-  </li>
-  <li>
- <div class="paragraph">
-Finally, the changes are deployed on the related environments (depending on the building branch) <ol>
-  <li>
- <p>
-It can be dev environment + Github Pages (doc) or directly production
- </p>
-  </li>
- </ol>
- </div>
-  </li>
- </ol>
- </div>
- </div>
- <div class="sect1" id="_rational_of_the_stack">
-  <h2>Rational of the stack</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-Being JSON-RPC focused enables to have to focus on the &quot;commands&quot; which literally means your own business and not any technical concerns. Concretely it means that if you need to add a feature you just do by adding a command. It also encourages atomic commands and the caller/consumer to orchestrate the commands thanks to default or an advanced bulk endpoint. This is a big difference with REST: you do not need to do any custom hack to have an &quot;N application requests over 1 HTTP request&quot;, it is built in and works with any language: C, Java, Javascript, Go...
- </p>
- </div>
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
-it does not prevent you to optimise some bulk pattern when needed by replacing the multiple atomic calls by a single one if relevant later.    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- <div class="paragraph">
- <p>
-Being based on HTTP and JSON it is quite easy to integrate with any technology, and it is quite optimised as of today.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Using living documentation, you always have an up-to-date view of your deployment, configuration (environment variables for example), etc... No more &quot;but in the documentation is not this name&quot;.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Finally, everything is testable, even the deployment, avoiding most of the surprises you can get at any stage of the pipeline.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_get_started">
-  <h2>Get started</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>If you are lost you can get started with a small  <a href="https://www.yupiik.io/project-starter">generator^</a>
-.</p>
- </div>
- <div class="paragraph">
- <p>
-You pick the features you want to it will generate you a ZIP you can download and run.
- </p>
- </div>
- </div>
- </div>
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2023-01-24</span>, <span class="metadata-readingtime">4 min and 45 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+Yupiik open-sourced a set of tools targeting application development and deployment.
+It aims at simplifying the all the aspect of development focusing on productivity and efficiency.
+Let&#8217;s have a look at the bricks it is composed of.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_challenge">The challenge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Today&#8217;s the backend development evolved enough to join the frontend in terms of velocity requirement.
+It means that you should be able to develop and deploy a backend services in a few days and not weeks or months.</p>
+</div>
+<div class="paragraph">
+<p>Another challenge is the fact the consumers multiply the requests done to the backends.
+This means that the resources consumption is rarely optimised and it often adds a lot of latency (if you use REST model for example).</p>
+</div>
+<div class="paragraph">
+<p>On another side, the cloud showed that security is a key requirement of any application.</p>
+</div>
+<div class="paragraph">
+<p>To solve these challenges, it is important to simplify the development stack to ensure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You control it</p>
+</li>
+<li>
+<p>Any developer can work with it very quickly - simplicity is often more important than other criteria for the velocity to stay high in time</p>
+</li>
+<li>
+<p>BUT you can still optimize and improve it when needed for very high throughput applications for example</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_stack">The stack</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To answer modern needs, Yupiik developed these bricks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://yupiik.io/yupiik-logging" target="_blank" rel="noopener">Yupiik Logging</a>: a simple but efficient and flexible Java Util Logging binding, it is cloud oriented (docker/Kubernetes) but works well in standalone application,</p>
+<div class="ulist">
+<ul>
+<li>
+<p>And the cherry on the cake is that it is GraalVM friendly so you can make your application native and logging configured at runtime!</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://www.yupiik.io/yupiik-batch/write-your-first-batch.html#_define_your_batch_configuration" target="_blank" rel="noopener">Yupiik Simple Configuration</a>: a simple POJO based configuration binding</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Keeps the configuration light and documentation friendly</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://www.yupiik.io/uship/development-stack.html#_create_json_rpc_endpoints" target="_blank" rel="noopener">Yupiik UShip</a>: a light backend stack based on Apache Tomcat and providing a JSON-RPC programming model,</p>
+<div class="ulist">
+<ul>
+<li>
+<p>JSON-RPC enables to develop "commands" and optionally to bulk them, this stack allows to optimize bulk requests very easily with any custom push-down logic (execution plan)</p>
+</li>
+<li>
+<p>Since it is command oriented, it is compatible with CLI application (reuse, reuse, reuse) and messaging (JMS, Kafka) applications.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://www.yupiik.io/bundlebee/getting-started.html#_create_your_first_alveolus" target="_blank" rel="noopener">Yupiik BundleBee</a>: a light deployment manager for Kubernetes</p>
+<div class="ulist">
+<ul>
+<li>
+<p>It allows to test locally very easily with minikube, microk8s, &#8230;&#8203; but also to deploy to production directly with the same recipe!</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/yupiik/tools-maven-plugin#minisite" target="_blank" rel="noopener">Yupiik Tools Minisite</a>: a maven plugin which enables to create a "mini-site" holding the documentation of your project.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>It is generation friendly - so you can generate the configuration documentation or API documentation from plain code.
+Living documentation - the fact to generate all you can to ensure it is up to date - is a key target of this module/</p>
+</li>
+<li>
+<p>It is also github pages or gitlab pages friendly and handles the deployment for you.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>For frontend applications we tend to use <a href="https://reactjs.org/" target="_blank" rel="noopener">React</a> or <a href="https://preactjs.com/" target="_blank" rel="noopener">Preact</a> and esbuild.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>React/Preact are light, way less complex, unstable and are more javascript friendly than recent angular or Vue.JS versions (even if this last one tend to copy others version after version)</p>
+</li>
+<li>
+<p>Esbuild is insanely fast, easy to integrate with a backend mock if needed an totally defeats webpack as of today when you start from scratch.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Finally, even if all the stack works with any Java compatible base OCI image, we also provide our own <a href="https://www.azul.com/">Azul</a> <a href="https://hub.docker.com/r/ossyupiik/java/tags">image</a> based on alpine and a bit lighter than default one.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0nVVRGLTgnIHN0YW5kYWxvbmU9J25vJz8+PHN2ZyBjb250ZW50U3R5bGVUeXBlPSd0ZXh0L2NzcycgaGVpZ2h0PScyMDZweCcgcHJlc2VydmVBc3BlY3RSYXRpbz0nbm9uZScgc3R5bGU9J3dpZHRoOjMwM3B4O2hlaWdodDoyMDZweDtiYWNrZ3JvdW5kOiNGRkZGRkY7JyB2ZXJzaW9uPScxLjEnIHZpZXdCb3g9JzAgMCAzMDMgMjA2JyB3aWR0aD0nMzAzcHgnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHpvb21BbmRQYW49J21hZ25pZnknPjxkZWZzLz48Zz48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nMjYxJyB4PSc1JyB5PScxOSc+RG90IEV4ZWN1dGFibGU6IC9vcHQvbG9jYWwvYmluL2RvdDwvdGV4dD48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nMTQ1JyB4PSc1JyB5PSczNS4yOTY5Jz5GaWxlIGRvZXMgbm90IGV4aXN0PC90ZXh0Pjx0ZXh0IGZpbGw9JyMzM0ZGMDInIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzE0JyBmb250LXdlaWdodD0nYm9sZCcgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPScyOTEnIHg9JzUnIHk9JzUxLjU5MzgnPkNhbm5vdCBmaW5kIEdyYXBodml6LiBZb3Ugc2hvdWxkIHRyeTwvdGV4dD48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nNScgeD0nNScgeT0nNjcuODkwNic+wqA8L3RleHQ+PHRleHQgZmlsbD0nIzMzRkYwMicgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSdib2xkJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9Jzc5JyB4PSc1JyB5PSc4NC4xODc1Jz5Ac3RhcnR1bWw8L3RleHQ+PHRleHQgZmlsbD0nIzMzRkYwMicgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSdib2xkJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzU3JyB4PSc1JyB5PScxMDAuNDg0NCc+dGVzdGRvdDwvdGV4dD48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nNzInIHg9JzUnIHk9JzExNi43ODEzJz5AZW5kdW1sPC90ZXh0Pjx0ZXh0IGZpbGw9JyMzM0ZGMDInIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmb250LXNpemU9JzE0JyBmb250LXdlaWdodD0nYm9sZCcgbGVuZ3RoQWRqdXN0PSdzcGFjaW5nJyB0ZXh0TGVuZ3RoPSc1JyB4PSc1JyB5PScxMzMuMDc4MSc+wqA8L3RleHQ+PHRleHQgZmlsbD0nIzMzRkYwMicgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSdib2xkJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzE3JyB4PScxMCcgeT0nMTQ5LjM3NSc+b3I8L3RleHQ+PHRleHQgZmlsbD0nIzMzRkYwMicgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMTQnIGZvbnQtd2VpZ2h0PSdib2xkJyBsZW5ndGhBZGp1c3Q9J3NwYWNpbmcnIHRleHRMZW5ndGg9JzUnIHg9JzUnIHk9JzE2NS42NzE5Jz7CoDwvdGV4dD48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nMjI3JyB4PSc1JyB5PScxODEuOTY4OCc+amF2YSAtamFyIHBsYW50dW1sLmphciAtdGVzdGRvdDwvdGV4dD48dGV4dCBmaWxsPScjMzNGRjAyJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZicgZm9udC1zaXplPScxNCcgZm9udC13ZWlnaHQ9J2JvbGQnIGxlbmd0aEFkanVzdD0nc3BhY2luZycgdGV4dExlbmd0aD0nNScgeD0nNScgeT0nMTk4LjI2NTYnPsKgPC90ZXh0PjwvZz48L3N2Zz4=" alt="generated yupiik batch 1" width="303" height="206">
+</div>
+</div>
+<div class="paragraph">
+<p>The application flow is as follow:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The application is developed with Apache Maven and Java using Yupiik Stack</p>
+</li>
+<li>
+<p>The CI takes any incoming changes and validate them (with tests for the application code but also the deployment)</p>
+</li>
+<li>
+<p>Once validated, the changes are snapshoted in a binary (artifact + OCI/docker image) pushed on CI repositories</p>
+</li>
+<li>
+<p>Finally, the changes are deployed on the related environments (depending on the building branch)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>It can be dev environment + Github Pages (doc) or directly production</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rational_of_the_stack">Rational of the stack</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Being JSON-RPC focused enables to have to focus on the "commands" which literally means your own business and not any technical concerns.
+Concretely it means that if you need to add a feature you just do by adding a command.
+It also encourages atomic commands and the caller/consumer to orchestrate the commands thanks to default or an advanced bulk endpoint.
+This is a big difference with REST: you do not need to do any custom hack to have an "N application requests over 1 HTTP request", it is built in and works with any language: C, Java, Javascript, Go&#8230;&#8203;</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+it does not prevent you to optimise some bulk pattern when needed by replacing the multiple atomic calls by a single one if relevant later.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Being based on HTTP and JSON it is quite easy to integrate with any technology, and it is quite optimised as of today.</p>
+</div>
+<div class="paragraph">
+<p>Using living documentation, you always have an up-to-date view of your deployment, configuration (environment variables for example), etc&#8230;&#8203;
+No more "but in the documentation is not this name".</p>
+</div>
+<div class="paragraph">
+<p>Finally, everything is testable, even the deployment, avoiding most of the surprises you can get at any stage of the pipeline.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_get_started">Get started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are lost you can get started with a small <a href="https://www.yupiik.io/project-starter" target="_blank" rel="noopener">generator</a>.</p>
+</div>
+<div class="paragraph">
+<p>You pick the features you want to it will generate you a ZIP you can download and run.</p>
+</div>
+</div>
+</div>
                 
 
 

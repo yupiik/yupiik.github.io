@@ -152,564 +152,452 @@
             </div>
             <div class="page-content-body">
                 <div id="preamble">
- <div class="sectionbody">
- <div class="paragraph metadata">
- <p><span class="mr-2 category-technology"><span class="icon"><i class="fas fa-microchip"></i></span></span>,  <a href="/blog/author/romain-manni-bucau/page-1.html" class="metadata-authors">Romain Manni-Bucau</a>
-, <span class="metadata-published">2021-06-14</span>, <span class="metadata-readingtime">8 min and 18 sec read</span></p>
- </div>
- </div>
- </div>
- <div class="paragraph abstract">
- <p> <a href="https://www.jsonrpc.org/specification">JSON-RPC</a>
- defines a protocol. It enables to unify the business logic under a single pattern with a standard stucture accross the whole system.</p>
- </div>
- <div class="sect1" id="_jsonrpc_scope">
-  <h2>JSON-RPC scope</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-JSON-RPC defines a lightweight RPC protocol. In other words, it defines the way to do a request and the way the response will be sent back to the caller.
- </p>
- </div>
- <div class="paragraph">
- <p>
-As a high level RPC (Remote Procedure Call) solution, it is transport agnostic which means it can be used over HTTP (the most common), websocket, plain socket or even a messaging system like Kafka or ActiveMQ.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Its format is, as the name suggests, plain JSON.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_anatomy_of_a_jsonrpc_exchange">
-  <h2>Anatomy of a JSON-RPC exchange</h2>
- <div class="sectionbody">
- <div class="sect2" id="_jsonrpc_request">
-  <h3>JSON-RPC Request</h3>
- <div class="sectionbody">
- <div class="paragraph">
- <p>The <b>request</b> shape is defined as a JSON with the following list of attributes:</p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
- <p><code>jsonrpc</code>: protocol version, as of today it must be <code>2.0</code>,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>method</code>: the &quot;endpoint&quot;/operation to call, business names must not start with <code>rpc.</code> (it is reserved for internal RPC methods),</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>params</code> (optional): it is the method parameters, they can be a list, in such a case the <code>params</code> type is an array and parameters are ordered - it is called <code>by-position</code> - or an object which means the parameters will be named (root attributes being the name of the parameters) - it is called <code>by-name</code>,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>id</code> (optional): it can be omitted, null, a number - normally only integers - or a string. It is coupled with the response to associate the response to its request (same value) but over most connected transports it can be omitted even if not recommended. This is more important for bulk calls (we'll see it later).</p>
- </div>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-Here is an example of simple, no parameter request:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;id&quot;: &quot;aszdz-dzdek-79263&quot;, <b class="conum">(1)</b>
-    &quot;jsonrpc&quot;: &quot;2.0&quot;, <b class="conum">(2)</b>
-    &quot;method&quot;: &quot;list-users&quot; <b class="conum">(3)</b>
+<div class="sectionbody">
+<div class="paragraph metadata">
+<p><span class="mr-2 category-technology"><span class="icon"><i class="fa fa-fas fa-microchip"></i></span></span>, <span class="metadata-authors"><a href="/blog/author/romain-manni-bucau/page-1.html">Romain Manni-Bucau</a></span>, <span class="metadata-published">2021-06-14</span>, <span class="metadata-readingtime">8 min and 18 sec read</span></p>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+<a href="https://www.jsonrpc.org/specification">JSON-RPC</a> defines a protocol.
+It enables to unify the business logic under a single pattern with a standard stucture accross the whole system.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_json_rpc_scope">JSON-RPC scope</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>JSON-RPC defines a lightweight RPC protocol.
+In other words, it defines the way to do a request and the way the response will be sent back to the caller.</p>
+</div>
+<div class="paragraph">
+<p>As a high level RPC (Remote Procedure Call) solution, it is transport agnostic which means it can be used over HTTP (the most common), websocket, plain socket or even a messaging system like Kafka or ActiveMQ.</p>
+</div>
+<div class="paragraph">
+<p>Its format is, as the name suggests, plain JSON.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_anatomy_of_a_json_rpc_exchange">Anatomy of a JSON-RPC exchange</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_json_rpc_request">JSON-RPC Request</h3>
+<div class="paragraph">
+<p>The <strong>request</strong> shape is defined as a JSON with the following list of attributes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jsonrpc</code>: protocol version, as of today it must be <code>2.0</code>,</p>
+</li>
+<li>
+<p><code>method</code>: the "endpoint"/operation to call, business names must not start with <code>rpc.</code> (it is reserved for internal RPC methods),</p>
+</li>
+<li>
+<p><code>params</code> (optional): it is the method parameters, they can be a list, in such a case the <code>params</code> type is an array and parameters are ordered - it is called <code>by-position</code> - or an object which means the parameters will be named (root attributes being the name of the parameters) - it is called <code>by-name</code>,</p>
+</li>
+<li>
+<p><code>id</code> (optional): it can be omitted, null, a number - normally only integers - or a string. It is coupled with the response to associate the response to its request (same value) but over most connected transports it can be omitted even if not recommended. This is more important for bulk calls (we&#8217;ll see it later).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is an example of simple, no parameter request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "id": "aszdz-dzdek-79263", <i class="conum" data-value="1"></i><b>(1)</b>
+    "jsonrpc": "2.0", <i class="conum" data-value="2"></i><b>(2)</b>
+    "method": "list-users" <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-The identifier of the request,
- </span>
-   </li>
-   <li>
- <span>
-The 
- </span>
-<code>jsonrpc</code> <span>
- version as required by the specification,
- </span>
-   </li>
-   <li>
- <span>
-The method &quot;id&quot; to call.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-A parameterized method using ordered parameter(s) can look like this:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;id&quot;: &quot;aszdz-dzdek-79263&quot;,
-    &quot;jsonrpc&quot;: &quot;2.0&quot;,
-    &quot;method&quot;: &quot;save-user&quot;,
-    &quot;params&quot;: [{ <b class="conum">(1)</b>
-        &quot;name&quot;: &quot;John Doe&quot;
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The identifier of the request,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>jsonrpc</code> version as required by the specification,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The method "id" to call.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A parameterized method using ordered parameter(s) can look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "id": "aszdz-dzdek-79263",
+    "jsonrpc": "2.0",
+    "method": "save-user",
+    "params": [{ <i class="conum" data-value="1"></i><b>(1)</b>
+        "name": "John Doe"
     }]
 }</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-The method takes one parameter of type object (representing the user to save)
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-The same method using named parameter will look like:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;id&quot;: &quot;aszdz-dzdek-79263&quot;,
-    &quot;jsonrpc&quot;: &quot;2.0&quot;,
-    &quot;method&quot;: &quot;save-user&quot;,
-    &quot;params&quot;: {
-        &quot;user&quot;: { <b class="conum">(1)</b>
-           &quot;name&quot;: &quot;John Doe&quot;
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The method takes one parameter of type object (representing the user to save)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The same method using named parameter will look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "id": "aszdz-dzdek-79263",
+    "jsonrpc": "2.0",
+    "method": "save-user",
+    "params": {
+        "user": { <i class="conum" data-value="1"></i><b>(1)</b>
+           "name": "John Doe"
         }
     }
 }</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-The method now takes a parameter named 
- </span>
-<code>user</code>   </li>
-  </ol>
- </div>
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
-depending the JSON-RPC framework you use you will be able to use both parameter options or a single one.    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- <div class="sect3" id="_notifications">
-  <h4>Notifications</h4>
- <div class="sectionbody">
- <div class="paragraph">
- <p>Notifications are plain JSON-RPC requests but they never have an <code>id</code> attribute. It is supposed to notify the client does not care about the response (client push the data but does not expect an answer).</p>
- </div>
- <div class="admonitionblock tip">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">TIP</div>
-       </td>
-      <td class="content">
-most JSON-RPC frameworks are very tolerant over this high level concept, ensure to check what yours does/enables.    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- </div>
- </div>
- </div>
- </div>
- <div class="sect2" id="_jsonrpc_response">
-  <h3>JSON-RPC Response</h3>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-JSON-RPC reponses are very similar to JSON-RPC requests and define the following attributes:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
- <p><code>jsonrpc</code>: protocol version, as of today it must be <code>2.0</code>,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>result</code> (only on success): when the call suceeds it contains the response to the request,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>error</code> (only on failures): it is an object (we'll define the structure just after) which is present when the call failed,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>id</code>: same value as the request <code>id</code> to enable to associate the response to the request.</p>
- </div>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>The <code>error</code> field is a JSON object which contains the following fields:</p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <div class="paragraph">
- <p><code>code</code>,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>message</code>: a short description representing the error - a bit like an exception message,</p>
- </div>
-  </li>
-  <li>
- <div class="paragraph">
- <p><code>data</code>: a free JSON value giving context about the error (it can be a string, number, object, array, ...).</p>
- </div>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>Here is a sample success response to previous <code>save-user</code> request:</p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;id&quot;: &quot;aszdz-dzdek-79263&quot;,
-    &quot;jsonrpc&quot;: &quot;2.0&quot;,
-    &quot;result&quot;: {
-        &quot;id&quot;: 1234,
-        &quot;name&quot;: &quot;John Doe&quot;,
-        &quot;created&quot;: &quot;2021-05-05T14:43:00Z&quot;,
-        &quot;updated&quot;: &quot;2021-05-05T14:43:00Z&quot;
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The method now takes a parameter named <code>user</code></td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+depending the JSON-RPC framework you use you will be able to use both parameter options or a single one.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_notifications">Notifications</h4>
+<div class="paragraph">
+<p>Notifications are plain JSON-RPC requests but they never have an <code>id</code> attribute.
+It is supposed to notify the client does not care about the response (client push the data but does not expect an answer).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+most JSON-RPC frameworks are very tolerant over this high level concept, ensure to check what yours does/enables.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_json_rpc_response">JSON-RPC Response</h3>
+<div class="paragraph">
+<p>JSON-RPC reponses are very similar to JSON-RPC requests and define the following attributes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>jsonrpc</code>: protocol version, as of today it must be <code>2.0</code>,</p>
+</li>
+<li>
+<p><code>result</code> (only on success): when the call suceeds it contains the response to the request,</p>
+</li>
+<li>
+<p><code>error</code> (only on failures): it is an object (we&#8217;ll define the structure just after) which is present when the call failed,</p>
+</li>
+<li>
+<p><code>id</code>: same value as the request <code>id</code> to enable to associate the response to the request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>error</code> field is a JSON object which contains the following fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>code</code>: an integer identifying the error which happent. Code from -32768 to -32000 are reserved by the specification and have a special meaning. For example -32600 means the request was invalid. You can find the list on the specification <a href="https://www.jsonrpc.org/specification">page</a>,</p>
+</li>
+<li>
+<p><code>message</code>: a short description representing the error - a bit like an exception message,</p>
+</li>
+<li>
+<p><code>data</code>: a free JSON value giving context about the error (it can be a string, number, object, array, &#8230;&#8203;).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a sample success response to previous <code>save-user</code> request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "id": "aszdz-dzdek-79263",
+    "jsonrpc": "2.0",
+    "result": {
+        "id": 1234,
+        "name": "John Doe",
+        "created": "2021-05-05T14:43:00Z",
+        "updated": "2021-05-05T14:43:00Z"
     }
 }</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-And here is an error response sample:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    &quot;id&quot;: &quot;aszdz-dzdek-79263&quot;,
-    &quot;jsonrpc&quot;: &quot;2.0&quot;,
-    &quot;error&quot;: {
-        &quot;code&quot;: 1001,
-        &quot;message&quot;: &quot;User already exists.&quot;,
-        &quot;data&quot;: {
-            &quot;id&quot;: 1234,
-            &quot;name&quot;: &quot;John Doe&quot;,
-            &quot;created&quot;: &quot;2021-05-05T14:43:00Z&quot;,
-            &quot;updated&quot;: &quot;2021-05-05T14:43:00Z&quot;
+</div>
+</div>
+<div class="paragraph">
+<p>And here is an error response sample:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "id": "aszdz-dzdek-79263",
+    "jsonrpc": "2.0",
+    "error": {
+        "code": 1001,
+        "message": "User already exists.",
+        "data": {
+            "id": 1234,
+            "name": "John Doe",
+            "created": "2021-05-05T14:43:00Z",
+            "updated": "2021-05-05T14:43:00Z"
         }
     }
 }</code></pre>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- <div class="sect1" id="_bulk_handling">
-  <h2>Bulk handling</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>To optimize the network usage, JSON-RPC specification enabled to bulk the requests. This is one of the cases where using <code>id</code> in requests becomes very important because the server can process the requests concurrently in some cases.</p>
- </div>
- <div class="paragraph">
- <p>
-Except when the request is invalid - and the response will be a standard error, the request and response will be an array of request/responses as seen previously. The only trick to keep in mind is to match the response based on the identifier of the request and not the order in the array which is not guaranteed by the specification.
- </p>
- </div>
- <div class="paragraph">
- <p>
-Here is an example of request trying to list users and roles through the same request:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bulk_handling">Bulk handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To optimize the network usage, JSON-RPC specification enabled to bulk the requests.
+This is one of the cases where using <code>id</code> in requests becomes very important because the server can process the requests concurrently in some cases.</p>
+</div>
+<div class="paragraph">
+<p>Except when the request is invalid - and the response will be a standard error, the request and response will be an array of request/responses as seen previously.
+The only trick to keep in mind is to match the response based on the identifier of the request and not the order in the array which is not guaranteed by the specification.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of request trying to list users and roles through the same request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
     {
-        &quot;id&quot;: &quot;1&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;method&quot;: &quot;list-users&quot;
+        "id": "1",
+        "jsonrpc": "2.0",
+        "method": "list-users"
     },
     {
-        &quot;id&quot;: &quot;2&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;method&quot;: &quot;list-roles&quot;
+        "id": "2",
+        "jsonrpc": "2.0",
+        "method": "list-roles"
     }
 ]</code></pre>
- </div>
- </div>
- <div class="paragraph">
- <p>
-And here is a potential response:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
-    { <b class="conum">(1)</b>
-        &quot;id&quot;: &quot;2&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;error&quot;: {
-            &quot;code&quot;: 1101,
-            &quot;message&quot;: &quot;Database connection lost.&quot;
+</div>
+</div>
+<div class="paragraph">
+<p>And here is a potential response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+    { <i class="conum" data-value="1"></i><b>(1)</b>
+        "id": "2",
+        "jsonrpc": "2.0",
+        "error": {
+            "code": 1101,
+            "message": "Database connection lost."
         }
     },
-    { <b class="conum">(2)</b>
-        &quot;id&quot;: &quot;1&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;result&quot;: [
+    { <i class="conum" data-value="2"></i><b>(2)</b>
+        "id": "1",
+        "jsonrpc": "2.0",
+        "result": [
             {
-                &quot;id&quot;: 1234,
-                &quot;name&quot;: &quot;John Doe&quot;,
-                &quot;created&quot;: &quot;2021-05-05T14:43:00Z&quot;,
-                &quot;updated&quot;: &quot;2021-05-05T14:43:00Z&quot;
+                "id": 1234,
+                "name": "John Doe",
+                "created": "2021-05-05T14:43:00Z",
+                "updated": "2021-05-05T14:43:00Z"
             }
         ]
     }
 ]</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-The role listing (
- </span>
-<code>id</code> <span>
-=2) response comes faster than the user listing because it actually failed and we get the related error,
- </span>
-   </li>
-   <li>
- <span>
-The user listing (
- </span>
-<code>id</code> <span>
-=1) suceeded and we get the list of users as 
- </span>
-<code>result</code> <span>
-.
- </span>
-   </li>
-  </ol>
- </div>
- <div class="admonitionblock note">
-  <table>
-    <tbody>
-     <tr>
-      <td class="icon">
-     <div class="title">NOTE</div>
-       </td>
-      <td class="content">
- <div class="paragraph">
- <p>examples stay simple in the context of this post but in real applications the listing would use as usual a pagination structure (<code>{total,items}</code> for example).</p>
- </div>
-    </td>
-   </tr>
-      </tbody>
-  </table>
- </div>
- </div>
- </div>
- <div class="sect1" id="_going_further">
-  <h2>Going further</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>Implementations generally provide a <code>MethodRegistry</code> or whatever API enabling you to do a call based on a request object.</p>
- </div>
- <div class="paragraph">
- <p>
-Coupled with the fact parsing a JSON is quite easy, it enabled you to add enriched methods enabling to do more.
- </p>
- </div>
- <div class="paragraph">
- <p>
-A common example is a bulk like endpoint chaining the calls with a preprocessing of the &quot;next&quot; call. This case is really common these days and enables to give the caller some orchestration capabilities (&agrave; la GraphQL but more powerful and easier in terms of implementation and integration with any framework/stack/language).
- </p>
- </div>
- <div class="paragraph">
- <p>To illustrate this example, let's assume we will enrich the bulk handling by supporting a <code>/$extension/patch</code> additional entry in the request object. The idea is to iterate over each request of the incoming array, executes the JSON-RPC method and stores the response in an object (we can modelize it a JSON with an attribute <code>/responses</code> which is the list/array of the previous responses). Before executing the JSON-RPC method it will apply the JSON-Patch in <code>/$extension/patch</code> to the request and execute the method with the result JSON instead of the raw incoming one.</p>
- </div>
- <div class="paragraph">
- <p>
-Here is an example of request with such a logic:
- </p>
- </div>
- <div class="listingblock">
- <div class="content">
- <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The role listing (<code>id</code>=2) response comes faster than the user listing because it actually failed and we get the related error,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The user listing (<code>id</code>=1) suceeded and we get the list of users as <code>result</code>.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+examples stay simple in the context of this post but in real applications the listing would use as usual a pagination structure (<code>{total,items}</code> for example).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_going_further">Going further</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Implementations generally provide a <code>MethodRegistry</code> or whatever API enabling you to do a call based on a request object.</p>
+</div>
+<div class="paragraph">
+<p>Coupled with the fact parsing a JSON is quite easy, it enabled you to add enriched methods enabling to do more.</p>
+</div>
+<div class="paragraph">
+<p>A common example is a bulk like endpoint chaining the calls with a preprocessing of the "next" call.
+This case is really common these days and enables to give the caller some orchestration capabilities (à la GraphQL but more powerful and easier in terms of implementation and integration with any framework/stack/language).</p>
+</div>
+<div class="paragraph">
+<p>To illustrate this example, let&#8217;s assume we will enrich the bulk handling by supporting a <code>/$extension/patch</code> additional entry in the request object.
+The idea is to iterate over each request of the incoming array, executes the JSON-RPC method and stores the response in an object (we can modelize it a JSON with an attribute <code>/responses</code> which is the list/array of the previous responses).
+Before executing the JSON-RPC method it will apply the JSON-Patch in <code>/$extension/patch</code> to the request and execute the method with the result JSON instead of the raw incoming one.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of request with such a logic:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
     {
-        &quot;id&quot;: &quot;1&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;method&quot;: &quot;list-users&quot;
+        "id": "1",
+        "jsonrpc": "2.0",
+        "method": "list-users"
     },
     {
-        &quot;id&quot;: &quot;2&quot;,
-        &quot;jsonrpc&quot;: &quot;2.0&quot;,
-        &quot;method&quot;: &quot;list-roles-for-user&quot;,
-        &quot;params&quot;: {}, <b class="conum">(1)</b>
-        &quot;$extension&quot;: {
-            &quot;patch&quot;: [ <b class="conum">(2)</b>
+        "id": "2",
+        "jsonrpc": "2.0",
+        "method": "list-roles-for-user",
+        "params": {}, <i class="conum" data-value="1"></i><b>(1)</b>
+        "$extension": {
+            "patch": [ <i class="conum" data-value="2"></i><b>(2)</b>
                 {
-                    &quot;op&quot;: &quot;COPY&quot;,
-                    &quot;from&quot;: &quot;/responses/0/result&quot;,
-                    &quot;path&quot;: &quot;/params/users&quot;
+                    "op": "COPY",
+                    "from": "/responses/0/result",
+                    "path": "/params/users"
                 }
             ]
         }
     }
 ]</code></pre>
- </div>
- </div>
- <div class="colist arabic">
-  <ol>
-   <li>
- <span>
-We assume 
- </span>
-<code>list-roles-for-user</code> <span>
- needs a list of users as input but we set an empty parameter object because we will populate it from the previous call,
- </span>
-   </li>
-   <li>
- <span>
-We request the enriched bulk endpoint to patch 
- </span>
-<code>params</code> <span>
- by injecting in its 
- </span>
-<code>users</code> <span>
- attribute the previous execution result (list of users).
- </span>
-   </li>
-  </ol>
- </div>
- <div class="paragraph">
- <p>
-The response would be exactly the same as in previous example but the big difference and gain of such a technic is that we chained two calls and the second call used the result from the previous call - to filter the roles to list from the list of users.
- </p>
- </div>
- <div class="paragraph">
- <p>
-A more complex case would use exactly the same technic to:
- </p>
- </div>
- <ol>
-  <li>
- <p>
-Persist some entity,
- </p>
-  </li>
-  <li>
- <p>
-Persist some other entity and link it to previous stored entity (by primary key for example),
- </p>
-  </li>
-  <li>
- <p>
-Trigger some action on the last persisted entity.
- </p>
-  </li>
- </ol>
- <div class="paragraph">
- <p>
-All that in a single call and without having to do a specific endpoint, just CRUD for the entities and the action endpoint.
- </p>
- </div>
- <div class="paragraph">
- <p>
-It really opens doors to the client/frontend applications without requiring any investment in terms of backend - no customization of the server but no proxy-like server too to add the missing endpoints for the frontend application.
- </p>
- </div>
- </div>
- </div>
- <div class="sect1" id="_conclusion">
-  <h2>Conclusion</h2>
- <div class="sectionbody">
- <div class="paragraph">
- <p>
-This enriched bulk method is really just a small example of what JSON-RPC enables.
- </p>
- </div>
- <div class="paragraph">
- <p>
-What is important to keep in mind is that it is a very simple protocol which, being based on JSON, can be supported by any server and client. It is really one of the most polyglot solution as of today and outperform GraphQL or alternaitve a lot on that aspect.
- </p>
- </div>
- <div class="paragraph">
- <p>
-The other very nice thing with JSON-RPC is that since it is JSON and just about a command oriented registry (the method implementations), it is very easy to extend it with more advanced features. We saw how to enrich it in terms of orchestration but you can also add field filtering quite easily (most trivial implementation is about filtering a JSON) or even optimize bulk-ed requests by collapsing them (doing pushdown on the bulk request, for example merging two SQL requests in one).
- </p>
- </div>
- <div class="paragraph">
- <p>
-The last point is that it is transport agnostic so you can use it:
- </p>
- </div>
- <div class="ulist">
- <ul>
-  <li>
- <p>
-over HTTP (1, 2, 3) indeed,
- </p>
-  </li>
-  <li>
- <p>
-over websockets,
- </p>
-  </li>
-  <li>
- <div class="paragraph">
- <p>but also over messaging systems (notifications and <code>id</code> usage makes a lot of sense there) including Apache ActiveMQ or Apache Kafka,</p>
- </div>
-  </li>
-  <li>
- <p>
-or even to implement a command line interface (CLI) since the options will be the request attributes but it is a command oriented design - we do it at Yupiik to leverage our existing backend on some products.
- </p>
-  </li>
- </ul>
- </div>
- <div class="paragraph">
- <p>
-So last word is that when you want a very flexible protocol you can invest a bit in your company and be sure it will match any transport, performance and feature, JSON-RPC is a very good bet in today's ecosystem.
- </p>
- </div>
- </div>
- </div>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We assume <code>list-roles-for-user</code> needs a list of users as input but we set an empty parameter object because we will populate it from the previous call,</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We request the enriched bulk endpoint to patch <code>params</code> by injecting in its <code>users</code> attribute the previous execution result (list of users).</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The response would be exactly the same as in previous example but the big difference and gain of such a technic is that we chained two calls and the second call used the result from the previous call - to filter the roles to list from the list of users.</p>
+</div>
+<div class="paragraph">
+<p>A more complex case would use exactly the same technic to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Persist some entity,</p>
+</li>
+<li>
+<p>Persist some other entity and link it to previous stored entity (by primary key for example),</p>
+</li>
+<li>
+<p>Trigger some action on the last persisted entity.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>All that in a single call and without having to do a specific endpoint, just CRUD for the entities and the action endpoint.</p>
+</div>
+<div class="paragraph">
+<p>It really opens doors to the client/frontend applications without requiring any investment in terms of backend - no customization of the server but no proxy-like server too to add the missing endpoints for the frontend application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This enriched bulk method is really just a small example of what JSON-RPC enables.</p>
+</div>
+<div class="paragraph">
+<p>What is important to keep in mind is that it is a very simple protocol which, being based on JSON, can be supported by any server and client.
+It is really one of the most polyglot solution as of today and outperform GraphQL or alternaitve a lot on that aspect.</p>
+</div>
+<div class="paragraph">
+<p>The other very nice thing with JSON-RPC is that since it is JSON and just about a command oriented registry (the method implementations), it is very easy to extend it with more advanced features.
+We saw how to enrich it in terms of orchestration but you can also add field filtering quite easily (most trivial implementation is about filtering a JSON) or even optimize bulk-ed requests by collapsing them (doing pushdown on the bulk request, for example merging two SQL requests in one).</p>
+</div>
+<div class="paragraph">
+<p>The last point is that it is transport agnostic so you can use it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>over HTTP (1, 2, 3) indeed,</p>
+</li>
+<li>
+<p>over websockets,</p>
+</li>
+<li>
+<p>but also over messaging systems (notifications and <code>id</code> usage makes a lot of sense there) including Apache ActiveMQ or Apache Kafka,</p>
+</li>
+<li>
+<p>or even to implement a command line interface (CLI) since the options will be the request attributes but it is a command oriented design - we do it at Yupiik to leverage our existing backend on some products.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So last word is that when you want a very flexible protocol you can invest a bit in your company and be sure it will match any transport, performance and feature, JSON-RPC is a very good bet in today&#8217;s ecosystem.</p>
+</div>
+</div>
+</div>
                 
 
 

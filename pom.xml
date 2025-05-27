@@ -387,6 +387,34 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@metrics-scraper -Psynchronize-github-releases -->
+                <id>metrics-scraper</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/metrics-scraper</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.metrics</groupId>
+                      <artifactId>metrics-scraper</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@kubernetes-java-descriptors -Psynchronize-github-releases -->
                 <id>kubernetes-java-descriptors</id>
                 <phase>initialize</phase>

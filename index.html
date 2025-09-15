@@ -1,258 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>Yupiik OSS</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Yupiik Open Source Portal. Discover all Yupiik Open Source Software and Libraries.">
-    <meta name="author" content="Yupiik Minisite Generator">
-    <meta name="generator" content="Yupiik Minisite Generator">
-    
-    <link rel="shortcut icon" href="/images/favicon.png">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/atom-one-dark.min.css" integrity="sha512-Fcqyubi5qOvl+yCwSJ+r7lli+CO1eHXMaugsZrnxuU4DVpLYWXTVoHy55+mCb4VZpMgy7PBhV7IiymC0yu9tkQ==" crossorigin="anonymous" />
+    <title>Yupiik Open-Source Projects | Fusion, BundleBee, Logging, Tools</title>
+    <meta name="description" content="Explore Yupiik's open-source projects: Fusion (Java APIs & microservices), BundleBee (Kubernetes deployment), Logging (structured logging), and Tools (Java utilities). Optimized for Java, Kubernetes, and GraalVM.">
+    <meta name="keywords" content="Yupiik, open-source, OSS, Java, GraalVM, Kubernetes, logging, APIs, microservices, developer tools">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Yupiik Open-Source Projects">
+    <meta property="og:description" content="Discover Yupiik Fusion, BundleBee, Logging, and Tools — open-source projects for Java, Kubernetes, and GraalVM.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yupiik.io">
+    <meta property="og:image" content="https://yupiik.io/assets/logo-dark.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yupiik Open-Source Projects">
+    <meta name="twitter:description" content="Explore Yupiik Fusion, BundleBee, Logging, and Tools — modern Java & Kubernetes open-source projects.">
+    <meta name="twitter:image" content="https://yupiik.io/assets/logo-dark.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yupiik.io">
+
+    <!-- UI Theme -->
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"></noscript>
+
+    <!-- Avoid theme flash: set before first paint -->
+    <script>
+        (function () {
+            try {
+                const saved = localStorage.getItem('yupiik-theme');
+                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                const isLight = saved ? saved === 'light' : prefersLight;
+                if (isLight) document.documentElement.setAttribute('data-theme', 'light');
+            } catch (_) { /* ignore */ }
+        }());
+    </script>
+
     <style>
-        :root {
-            /* YUPIIK colors (from dark to light) */
-            --yupiik-site-green: #46F72F;
-            --yupiik-site-purple: #D858FF;
-            --yupiik-site-blue-light: #02ABEA;
-            --yupiik-site-blue-dark: #056EBB;
-            --yupiik-site-grey-light: #F4F4F4;
-            --yupiik-site-grey-dark: #212121;
+        :root { --bg:#0b0c0f; --surface:#111318; --surface-2:#1a1d24; --text:#eaeef3; --muted:#9aa4b2; --brand:#3b82f6; --ring:#7aa2ff; }
+        :root[data-theme="light"] { --bg:#ffffff; --surface:transparent; --surface-2:#f7f8fb; --text:#111318; --muted:#596273; }
 
-            --yupiik-blue1: var(--yupiik-site-blue-dark);
-            --yupiik-blue2: var(--yupiik-site-blue-dark);
-            --yupiik-blue3: var(--yupiik-site-blue-dark);
+        * { box-sizing: border-box }
+        html:focus-within { scroll-behavior: smooth }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.6; text-rendering: optimizeLegibility }
+        a { color: inherit; text-decoration: none }
+        a:focus-visible, button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius:.5rem }
 
-            --yupiik-color-white: #fff;
-            --yupiik-color-black: #000;
+        .container { max-width: 1200px; margin-inline: auto; padding: 4rem 1rem }
 
-            --yupiik-color-gray-0: var(--yupiik-color-white);
-            --yupiik-color-gray-100: #f5f6f7;
-            --yupiik-color-gray-200: #ebedf0;
-            --yupiik-color-gray-300: #dadde1;
-            --yupiik-color-gray-400: #ccd0d5;
-            --yupiik-color-gray-500: #bec3c9;
-            --yupiik-color-gray-600: #8d949e;
-            --yupiik-color-gray-700: #606770;
-            --yupiik-color-gray-800: #444950;
-            --yupiik-color-gray-900: #1c1e21;
-            --yupiik-color-gray-1000: var(--yupiik-color-black);
+        .skip-link {
+            position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
+        }
+        .skip-link:focus {
+            position: fixed; inset-inline: 1rem; top: 1rem; width: auto; height: auto;
+            background: var(--surface-2); color: var(--text); padding: .5rem .75rem; border-radius:.5rem; z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0,0,0,.25);
+        }
 
-            --yupiik-color-emphasis-0: var(--yupiik-color-gray-0);
-            --yupiik-color-emphasis-100: var(--yupiik-color-gray-100);
-            --yupiik-color-emphasis-200: var(--yupiik-color-gray-200);
-            --yupiik-color-emphasis-300: var(--yupiik-color-gray-300);
-            --yupiik-color-emphasis-400: var(--yupiik-color-gray-400);
-            --yupiik-color-emphasis-500: var(--yupiik-color-gray-500);
-            --yupiik-color-emphasis-600: var(--yupiik-color-gray-600);
-            --yupiik-color-emphasis-700: var(--yupiik-color-gray-700);
-            --yupiik-color-emphasis-800: var(--yupiik-color-gray-800);
-            --yupiik-color-emphasis-900: var(--yupiik-color-gray-900);
-            --yupiik-color-emphasis-1000: var(--yupiik-color-gray-1000);
-            --yupiik-color-content: var(--yupiik-color-emphasis-900);
+        header { text-align:center; margin-block-end:2rem; position:relative }
+        .theme-toggle-btn {
+            position:absolute; top:1rem; inset-inline-end:1rem;
+            background:var(--surface-2); border:1px solid rgba(128,128,128,.25);
+            border-radius:50%; inline-size:40px; block-size:40px; display:inline-grid; place-items:center;
+            cursor:pointer; color:var(--text)
+        }
+        .theme-toggle-btn svg { inline-size:20px; block-size:20px }
 
-            --yupiik-font-family-base: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-            --yupiik-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-            --yupiik-font-size-base: 100%;
+        h1 { font-weight:800; font-size: clamp(2rem, 3.5vw, 3rem); margin:.75rem 0 .25rem }
+        .subtitle { color:var(--muted); max-width:60ch; margin:0 auto 1.25rem }
 
-            --yupiik-font-weight-light: 300;
-            --yupiik-font-weight-normal: 400;
-            --yupiik-font-weight-semibold: 500;
-            --yupiik-font-weight-bold: 700;
+        /* EXACTLY 2 cards per row (≥640px), 1 per row below */
+        .grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+        }
 
-            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
-            --yupiik-line-height-base: 1.65;
-            --yupiik-font-weight-light: 300;
-            --yupiik-font-weight-normal: 400;
-            --yupiik-font-weight-semibold: 500;
-            --yupiik-font-weight-bold: 700;
+        .card {
+            position:relative; background:var(--surface); border:1px solid rgba(128,128,128,.22); border-radius:1rem;
+            padding:1rem; display:flex; flex-direction:column; justify-content:space-between; min-block-size:100%;
+            color:inherit; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; cursor:pointer
+        }
+        .card:hover { transform: translateY(-4px); box-shadow:0 6px 12px rgba(0,0,0,.2); border-color:var(--brand) }
+        @media (prefers-reduced-motion: reduce) {
+            .card, .card:hover { transform:none; transition:none; box-shadow:none }
+        }
 
-            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
-            --yupiik-line-height-base: 1.65;
+        .card:focus-within {
+            box-shadow: 0 0 0 2px var(--ring);
+            border-color: var(--brand);
+            transform: translateY(-4px);
+        }
 
-            --yupiik-global-spacing: 1rem;
-            --yupiik-spacing-vertical: var(--yupiik-global-spacing);
-            --yupiik-spacing-horizontal: var(--yupiik-global-spacing);
+        .stretched-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: 1rem;
+            outline: none;
+        }
+        .stretched-link:focus-visible {
+            outline: 2px solid var(--ring);
+            outline-offset: 2px;
+        }
 
-            --yupiik-h1-font-size: 2rem;
-            --yupiik-h2-font-size: 1.5rem;
-            --yupiik-h3-font-size: 1.25rem;
-            --yupiik-h4-font-size: 1rem;
-            --yupiik-h5-font-size: 0.875rem;
-            --yupiik-h6-font-size: 0.85rem;
+        .card-arrow { position:absolute; top:.75rem; inset-inline-end:.75rem; color:var(--muted); opacity:.7; transition: color .2s ease, opacity .2s ease }
+        .card-arrow svg { inline-size:18px; block-size:18px }
+        .card:hover .card-arrow { color:var(--brand); opacity:1 }
 
-            --yupiik-heading-color: var(--yupiik-blue1);
-            --yupiik-heading-margin-top: 0;
-            --yupiik-heading-margin-bottom: var(--yupiik-spacing-vertical);
-            --yupiik-heading-font-family: var(--yupiik-font-family-base);
-            --yupiik-heading-font-weight: var(--yupiik-font-weight-bold);
-            --yupiik-heading-line-height: 1.25;
+        h2.title { font-weight:700; font-size:1.1rem; margin:.25rem 1.5rem .25rem 0 }
+        .desc { color:var(--muted); font-size:.95rem }
+
+        .badges { margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.4rem }
+        .badge-sm { font-size:.75rem; padding:.2rem .5rem; border-radius:.5rem; transition: background .3s ease; line-height:1 }
+        .badge-java { background:color-mix(in oklab, #f89820 30%, transparent); border:1px solid #f89820; color:#f89820 }
+        .badge-java:hover { background:#f89820; color:#fff }
+        .badge-kubernetes { background:color-mix(in oklab, #326ce5 30%, transparent); border:1px solid #326ce5; color:#326ce5 }
+        .badge-kubernetes:hover { background:#326ce5; color:#fff }
+        .badge-graalvm { background:color-mix(in oklab, #00a5c9 30%, transparent); border:1px solid #00a5c9; color:#00a5c9 }
+        .badge-graalvm:hover { background:#00a5c9; color:#fff }
+
+        footer { color:var(--muted); text-align:center; margin:3rem 0 1rem; font-size:.9rem }
+
+        /* Ultra-small screens comfort */
+        @media (max-width: 360px) {
+            .container { padding: 3rem .75rem; }
         }
     </style>
-    <link rel="stylesheet" href="/css/yupiik.github.io.css?v=1.0.0-SNAPSHOT">
-            <!-- Matomo -->
-            <script>
-              var _paq = window._paq = window._paq || [];
-              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-              _paq.push(['trackPageView']);
-              _paq.push(['enableLinkTracking']);
-              (function() {
-              var u="https://yupiik.matomo.cloud/";
-              _paq.push(['setTrackerUrl', u+'matomo.php']);
-              _paq.push(['setSiteId', '1']);
-              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-              g.async=true; g.src='//cdn.matomo.cloud/yupiik.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-              })();
-            </script>
-            <!-- End Matomo Code -->
-    <link id="theme-style" rel="stylesheet" href="/css/theme.css?v=1.0.0-SNAPSHOT">
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Yupiik",
+            "url": "https://yupiik.io",
+            "logo": "https://yupiik.io/assets/yupiik-oss-logo.png",
+            "sameAs": ["https://github.com/yupiik"]
+        }
+    </script>
+
+    <!-- Structured Data: ItemList of Projects -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+                {"@type":"ListItem","position":1,"url":"https://yupiik.io/fusion","name":"Yupiik Fusion"},
+                {"@type":"ListItem","position":2,"url":"https://yupiik.io/bundlebee","name":"Yupiik BundleBee"},
+                {"@type":"ListItem","position":3,"url":"https://yupiik.io/logging","name":"Yupiik Logging"},
+                {"@type":"ListItem","position":4,"url":"https://yupiik.io/tools","name":"Yupiik Tools"}
+            ]
+        }
+    </script>
 </head>
 <body>
-    <header class="header fixed-top">
-        <div class="branding docs-branding">
-            <div class="container-fluid position-relative py-2">
-                <div class="docs-logo-wrapper">
-	                <div class="site-logo"><a title="Home" class="navbar-brand" href="/index.html">
-	                <img class="logo-icon mr-2" src="/images/logo.svg" alt="logo">
-	                <span class="logo-text">Open Source <span class="text-alt">Software</span></span></a></div>
-                </div>
-	            <div class="docs-top-utilities d-flex justify-content-end align-items-center">
-					<ul class="header-menu list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex" >
-              <li class="list-inline-item"><a title="Starter" href="/project-starter.html">Starter</a></li>
-              <li class="list-inline-item"><a title="Project" href="/projects.html">Project</a></li>
-              <li class="list-inline-item"><a title="Community" href="/community.html">Community</a></li>
-              <li class="list-inline-item"><a title="Blog" href="/blog/">Blog</a></li>
-            </ul>
-					<li class="list-inline-item"><a title="Search" id="search-button" href="#" data-toggle="modal" data-target="#searchModal"><i data-toggle="tooltip" data-placement="top" title="Search" class="fas fa-search"></i></a></li>
+<a class="skip-link" href="#content">Skip to content</a>
 
-					<ul class="social-list list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex">
-						<li class="list-inline-item"><a title="Blog" href="/blog/"><i class="fa fa-blog fa-fw"></i></a></li>
-						<li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik"><i class="fab fa-github fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Sitemap" target="_blank" href="/sitemap.xml"><i class="fas fa-rss-square fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Yupiik" target="_blank" href="https://www.yupiik.com/"><img class="yupiik-logo" src="/images/yupiik.png"></img></a></li>
-		            </ul>
-	            </div>
-            </div>
-        </div>
-    </header>
-	<div class="page">
-        <div id="index-html-container" class="container page-content index-html ">
-                        <div class="page-header">
-                <h1>Yupiik OSS</h1>
-            </div>
-            <div class="page-content-body">
-                <div class="banner home px-3 px-md-5">
-    <div class="container pt-5">
-        <h2 class="pt-5">Yupiik Open Source Stack</h2>
-        <p class="lead pt-3 text-white">From microservices to cloud deployment, we provide a full stack to simplify all the aspect
-of development focusing on productivity and efficiency.</p>
-        <a class="btn btn-white" href="/blog/yupiik-stack.html">Learn more</a>
-    </div>
-</div>
-<div class="container section px-3 px-md-5 border-bottom">
-    <div class="section-content pt-5 pb-3">
-        <h3>Projects</h3>
-        <p class="lead">List of the Yupiik stack projects.</p>
-        <p>
-            We love Open Source Software, and we are happy to share some of our work.<br><br>
-            <a class="btn btn-primary" href="/projects.html">Learn more</a>
-        </p>
-    </div>
-</div>
-<div class="container section px-3 px-md-5 border-bottom">
-    <div class="section-content pt-5 pb-3">
-        <h3>Blog</h3>
-        <p class="lead">Latest news</p>
-        <p>
-            The latest news and tutorials about technology.<br><br>
-            <a class="btn btn-primary" href="/blog/">Learn more</a>
-        </p>
-    </div>
-</div>
-<div class="container section px-3 px-md-5">
-    <div class="section-content pt-5 pb-3">
-        <h3>Community</h3>
-        <p class="lead">Committed contributor and member</p>
-        <p>
-            Part of our team are the developers and contributors of many well known Open Source projects from world wide organizations.<br><br>
-            <a class="btn btn-primary" href="/community.html">Learn more</a>
-        </p>
-    </div>
-</div>
-                
-                
-            </div>
-        </div>
-    <div class="page-navigation-right">
-        <h3>Navigation</h3>
-        <nav class="generated-nav-menu"></nav>
-    </div>
-    </div>
-    <footer class="footer pb-5">
-	    <div class="text-center">
-		    <ul class="social-list list-unstyled">
-                <li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik"><i class="fab fa-github fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Sitemap" target="_blank" href="/sitemap.xml"><i class="fas fa-rss-square fa-fw"></i></a></li>
-              <li class="list-inline-item"><a title="Yupiik" target="_blank" href="https://www.yupiik.com/"><img class="yupiik-logo" src="/images/yupiik.png"></img></a></li>
-	        </ul>
-            <small class="copyright">© 2024 <strong>Yupiik</strong>. All Rights Reserved</small> | <a href="https://www.yupiik.com/terms-of-use/">Terms of use</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
-	    </div>
-    </footer>
-
-    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="searchModalLabel">Search</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+<div class="container">
+    <header role="banner">
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle color theme">
+            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
         </button>
-      </div>
-      <div class="modal-body">
-        <form onsubmit="return false;" class="form-inline">
-          <div class="form-group">
-            <label for="searchInput"><b>Search: </b></label>
-            <input class="form-control" id="searchInput" placeholder="Enter search text and hit enter...">
-          </div>
-        </form>
-        <div class="search-hits"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
+
+        <!-- Logo that swaps by theme -->
+        <img id="yupiikLogo"
+             src="assets/logo-dark.png"
+             alt="Yupiik OSS logo"
+             loading="eager"
+             decoding="async"
+             style="height:40px; margin-bottom:1rem" />
+
+        <h1>Open-Source Projects</h1>
+        <p class="subtitle">List of Yupiik projects</p>
+    </header>
+
+    <main id="content" role="main">
+        <!-- Div-based, accessible list -->
+        <div id="grid" class="grid" role="list" aria-label="Yupiik projects"></div>
+    </main>
+
+    <footer role="contentinfo">
+        Built with semantic HTML. <br />
+        &copy; 2025 Yupiik. All rights reserved.
+    </footer>
 </div>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js" integrity="sha512-8qmis31OQi6hIRgvkht0s6mCOittjMa9GMqtK9hes5iEQBQE/Ca6yGE5FsW36vyipGoWQswBj/QBm2JR086Rkw==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/highlight.min.js" integrity="sha512-d00ajEME7cZhepRqSIVsQVGDJBdZlfHyQLNC6tZXYKTG7iwcF8nhlFuppanz8hYgXr8VvlfKh4gLC25ud3c90A==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/bash.min.js" integrity="sha512-Hg0ufGEvn0AuzKMU0psJ1iH238iUN6THh7EI0CfA0n1sd3yu6PYet4SaDMpgzN9L1yQHxfB3yc5ezw3PwolIfA==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/bash.min.js" integrity="sha512-Hg0ufGEvn0AuzKMU0psJ1iH238iUN6THh7EI0CfA0n1sd3yu6PYet4SaDMpgzN9L1yQHxfB3yc5ezw3PwolIfA==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/json.min.js" integrity="sha512-37sW1XqaJmseHAGNg4N4Y01u6g2do6LZL8tsziiL5CMXGy04Th65OXROw2jeDeXLo5+4Fsx7pmhEJJw77htBFg==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/dockerfile.min.js" integrity="sha512-eRNl3ty7GOJPBN53nxLgtSSj2rkYj5/W0Vg0MFQBw8xAoILeT6byOogENHHCRRvHil4pKQ/HbgeJ5DOwQK3SJA==" crossorigin="anonymous"></script>
-    <script>if (!(window.minisite || {}).skipHighlightJs) { hljs.highlightAll();
-function addCopyButtons(clipboard) {
-  document.querySelectorAll('pre > code').forEach(function (codeBlock) {
-  var button = document.createElement('button');  button.className = 'copy-code-button';  button.type = 'button';  button.innerText = 'Copy';  button.addEventListener('click', function () {   clipboard.writeText(codeBlock.innerText).then(function () {   button.blur();   button.innerText = 'Copied!';   setTimeout(function () { button.innerText = 'Copy'; }, 2000); }, function (error) { button.innerText = 'Error'; });  });  var pre = codeBlock.parentNode;  if (pre.parentNode.classList.contains('highlight')) {   var highlight = pre.parentNode; highlight.parentNode.insertBefore(button, highlight);  } else { pre.parentNode.insertBefore(button, pre); } });}
-if (navigator && navigator.clipboard) { addCopyButtons(navigator.clipboard);} else { var script = document.createElement('script'); script.src = '//cdnjs.cloudflare.com/ajax/libs/clipboard-polyfill/2.7.0/clipboard-polyfill.promise.js'; script.integrity = 'sha256-waClS2re9NUbXRsryKoof+F9qc1gjjIhc2eT7ZbIv94='; script.crossOrigin = 'anonymous'; script.onload = function() {addCopyButtons(clipboard);}; document.body.appendChild(script);} }</script>
-    <script src="/js/minisite.js?v=1.0.0-SNAPSHOT"></script>
-    <script>$('.page-content-body').generatedNavMenu();</script>
-    <script>$('.is-blog').addClass('container');</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>
+<script>
+    const PROJECTS = [
+        { name: "Yupiik Fusion", description: "Lightweight Java stack for building APIs and microservices.", docsUrl: "https://yupiik.io/fusion", tags:["Java","GraalVM"] },
+        { name: "Yupiik BundleBee", description: "Kubernetes resource bundler and deployment orchestrator.", docsUrl: "https://yupiik.io/bundlebee", tags:["Kubernetes","Java"] },
+        { name: "Yupiik Logging", description: "Structured logging solutions and JSON layouts for Java apps.", docsUrl: "https://yupiik.io/logging", tags:["Java"] },
+        { name: "Yupiik Tools", description: "A set of utilities and helpers for Java development.", docsUrl: "https://yupiik.io/tools", tags:["Java","GraalVM"] }
+    ];
 
+    const grid = document.getElementById('grid');
+    const tagClass = (t) => `badge-sm badge-${t.toLowerCase()}`;
+    const slugify = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$|--+/g,'');
+
+    function render() {
+        grid.innerHTML = PROJECTS.map(p => {
+            const id = slugify(p.name) + "-title";
+            const safeName = p.name.replace(/"/g, '&quot;');
+            return `
+              <div class="card" role="listitem" aria-labelledby="${id}">
+                <div class="card-arrow" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M14 3h7v7m0-7L10 14"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 id="${id}" class="title">${p.name}</h2>
+                  <p class="desc">${p.description}</p>
+                  <div class="badges" aria-label="Technologies">
+                    ${p.tags.map(tag => `<span class="${tagClass(tag)}">${tag}</span>`).join("")}
+                  </div>
+                </div>
+                <!-- Full-card actionable link (accessible) -->
+                <a class="stretched-link" href="${p.docsUrl}" target="_blank" rel="noopener noreferrer"
+                   aria-labelledby="${id}" aria-label="${safeName} documentation"></a>
+              </div>
+            `;
+        }).join('');
+    }
+    render();
+
+    // Theme toggling with persistence + logo swap
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const logo = document.getElementById('yupiikLogo');
+
+    function applyLogo(isLight) {
+        logo.src = isLight ? "assets/logo-light.png" : "assets/logo-dark.png";
+    }
+
+    function setTheme(isLight) {
+        if (isLight) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        themeIcon.innerHTML = isLight
+            ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />'
+            : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        try { localStorage.setItem('yupiik-theme', isLight ? 'light' : 'dark'); } catch(_) {}
+        applyLogo(isLight);
+    }
+
+    (function initThemeToggle(){
+        try {
+            const saved = localStorage.getItem('yupiik-theme');
+            const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+            const initialIsLight = saved ? saved === 'light' : prefersLight.matches;
+            setTheme(initialIsLight);
+            prefersLight.addEventListener?.('change', e => {
+                const savedNow = localStorage.getItem('yupiik-theme');
+                if (!savedNow) setTheme(e.matches);
+            });
+        } catch(_) {
+            const isLightAttr = document.documentElement.getAttribute('data-theme') === 'light';
+            applyLogo(isLightAttr);
+        }
+    }());
+
+    themeBtn.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') !== 'light';
+        setTheme(isLight);
+    });
+</script>
 </body>
 </html>

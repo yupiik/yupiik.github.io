@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Yupiik Open-Source Projects | Fusion, BundleBee, Logging, Tools</title>
+    <meta name="description" content="Explore Yupiik's open-source projects: Fusion (Java APIs & microservices), BundleBee (Kubernetes deployment), Logging (structured logging), and Tools (Java utilities). Optimized for Java, Kubernetes, and GraalVM.">
+    <meta name="keywords" content="Yupiik, open-source, OSS, Java, GraalVM, Kubernetes, logging, APIs, microservices, developer tools">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Yupiik Open-Source Projects">
+    <meta property="og:description" content="Discover Yupiik Fusion, BundleBee, Logging, and Tools — open-source projects for Java, Kubernetes, and GraalVM.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yupiik.io/oss-projects">
+    <meta property="og:image" content="https://yupiik.io/assets/yupiik-oss-logo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yupiik Open-Source Projects">
+    <meta name="twitter:description" content="Explore Yupiik Fusion, BundleBee, Logging, and Tools — modern Java & Kubernetes open-source projects.">
+    <meta name="twitter:image" content="https://yupiik.io/assets/yupiik-oss-logo.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yupiik.io/oss-projects">
+
+    <!-- UI Theme -->
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"></noscript>
+
+    <!-- Avoid theme flash: set before first paint -->
+    <script>
+        (function () {
+            try {
+                const saved = localStorage.getItem('yupiik-theme');
+                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                const isLight = saved ? saved === 'light' : prefersLight;
+                if (isLight) document.documentElement.setAttribute('data-theme', 'light');
+            } catch (_) { /* ignore */ }
+        }());
+    </script>
+
+    <style>
+        :root { --bg:#0b0c0f; --surface:#111318; --surface-2:#1a1d24; --text:#eaeef3; --muted:#9aa4b2; --brand:#3b82f6; --ring:#7aa2ff; }
+        :root[data-theme="light"] { --bg:#ffffff; --surface:transparent; --surface-2:#f7f8fb; --text:#111318; --muted:#596273; }
+
+        * { box-sizing: border-box }
+        html:focus-within { scroll-behavior: smooth }
+        body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.6; text-rendering: optimizeLegibility }
+        a { color: inherit; text-decoration: none }
+        a:focus-visible, button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius:.5rem }
+
+        .container { max-width: 1200px; margin-inline: auto; padding: 4rem 1rem }
+
+        .skip-link {
+            position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
+        }
+        .skip-link:focus {
+            position: fixed; inset-inline: 1rem; top: 1rem; width: auto; height: auto;
+            background: var(--surface-2); color: var(--text); padding: .5rem .75rem; border-radius:.5rem; z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0,0,0,.25);
+        }
+
+        header { text-align:center; margin-block-end:2rem; position:relative }
+        .theme-toggle-btn {
+            position:absolute; top:1rem; inset-inline-end:1rem;
+            background:var(--surface-2); border:1px solid rgba(128,128,128,.25);
+            border-radius:50%; inline-size:40px; block-size:40px; display:inline-grid; place-items:center;
+            cursor:pointer; color:var(--text)
+        }
+        .theme-toggle-btn svg { inline-size:20px; block-size:20px }
+
+        h1 { font-weight:800; font-size: clamp(2rem, 3.5vw, 3rem); margin:.75rem 0 .25rem }
+        .subtitle { color:var(--muted); max-width:60ch; margin:0 auto 1.25rem }
+
+        /* EXACTLY 2 cards per row (≥640px), 1 per row below */
+        .grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            position:relative; background:var(--surface); border:1px solid rgba(128,128,128,.22); border-radius:1rem;
+            padding:1rem; display:flex; flex-direction:column; justify-content:space-between; min-block-size:100%;
+            color:inherit; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; cursor:pointer
+        }
+        .card:hover { transform: translateY(-4px); box-shadow:0 6px 12px rgba(0,0,0,.2); border-color:var(--brand) }
+        @media (prefers-reduced-motion: reduce) {
+            .card, .card:hover { transform:none; transition:none; box-shadow:none }
+        }
+
+        .card:focus-within {
+            box-shadow: 0 0 0 2px var(--ring);
+            border-color: var(--brand);
+            transform: translateY(-4px);
+        }
+
+        .stretched-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: 1rem;
+            outline: none;
+        }
+        .stretched-link:focus-visible {
+            outline: 2px solid var(--ring);
+            outline-offset: 2px;
+        }
+
+        .card-arrow { position:absolute; top:.75rem; inset-inline-end:.75rem; color:var(--muted); opacity:.7; transition: color .2s ease, opacity .2s ease }
+        .card-arrow svg { inline-size:18px; block-size:18px }
+        .card:hover .card-arrow { color:var(--brand); opacity:1 }
+
+        h2.title { font-weight:700; font-size:1.1rem; margin:.25rem 1.5rem .25rem 0 }
+        .desc { color:var(--muted); font-size:.95rem }
+
+        .badges { margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.4rem }
+        .badge-sm { font-size:.75rem; padding:.2rem .5rem; border-radius:.5rem; transition: background .3s ease; line-height:1 }
+        .badge-java { background:color-mix(in oklab, #f89820 30%, transparent); border:1px solid #f89820; color:#f89820 }
+        .badge-java:hover { background:#f89820; color:#fff }
+        .badge-kubernetes { background:color-mix(in oklab, #326ce5 30%, transparent); border:1px solid #326ce5; color:#326ce5 }
+        .badge-kubernetes:hover { background:#326ce5; color:#fff }
+        .badge-graalvm { background:color-mix(in oklab, #00a5c9 30%, transparent); border:1px solid #00a5c9; color:#00a5c9 }
+        .badge-graalvm:hover { background:#00a5c9; color:#fff }
+
+        footer { color:var(--muted); text-align:center; margin:3rem 0 1rem; font-size:.9rem }
+
+        /* Ultra-small screens comfort */
+        @media (max-width: 360px) {
+            .container { padding: 3rem .75rem; }
+        }
+    </style>
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Yupiik",
+            "url": "https://yupiik.io",
+            "logo": "https://yupiik.io/assets/yupiik-oss-logo.png",
+            "sameAs": ["https://github.com/yupiik"]
+        }
+    </script>
+
+    <!-- Structured Data: ItemList of Projects -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+                {"@type":"ListItem","position":1,"url":"https://yupiik.io/fusion","name":"Yupiik Fusion"},
+                {"@type":"ListItem","position":2,"url":"https://yupiik.io/bundlebee","name":"Yupiik BundleBee"},
+                {"@type":"ListItem","position":3,"url":"https://yupiik.io/logging","name":"Yupiik Logging"},
+                {"@type":"ListItem","position":4,"url":"https://yupiik.io/tools","name":"Yupiik Tools"}
+            ]
+        }
+    </script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+
+<div class="container">
+    <header role="banner">
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle color theme">
+            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </button>
+
+        <!-- Logo that swaps by theme -->
+        <img id="yupiikLogo"
+             src="assets/logo-dark.png"
+             alt="Yupiik OSS logo"
+             loading="eager"
+             decoding="async"
+             style="height:40px; margin-bottom:1rem" />
+
+        <h1>Open-Source Projects</h1>
+        <p class="subtitle">List of Yupiik projects</p>
+    </header>
+
+    <main id="content" role="main">
+        <!-- Div-based, accessible list -->
+        <div id="grid" class="grid" role="list" aria-label="Yupiik projects"></div>
+    </main>
+
+    <footer role="contentinfo">
+        Built with semantic HTML. <br />
+        &copy; 2025 Yupiik. All rights reserved.
+    </footer>
+</div>
+
+<script>
+    const PROJECTS = [
+        { name: "Yupiik Fusion", description: "Lightweight Java stack for building APIs and microservices.", docsUrl: "https://yupiik.io/fusion", tags:["Java","GraalVM"] },
+        { name: "Yupiik BundleBee", description: "Kubernetes resource bundler and deployment orchestrator.", docsUrl: "https://yupiik.io/bundlebee", tags:["Kubernetes","Java"] },
+        { name: "Yupiik Logging", description: "Structured logging solutions and JSON layouts for Java apps.", docsUrl: "https://yupiik.io/logging", tags:["Java"] },
+        { name: "Yupiik Tools", description: "A set of utilities and helpers for Java development.", docsUrl: "https://yupiik.io/tools", tags:["Java","GraalVM"] }
+    ];
+
+    const grid = document.getElementById('grid');
+    const tagClass = (t) => `badge-sm badge-${t.toLowerCase()}`;
+    const slugify = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$|--+/g,'');
+
+    function render() {
+        grid.innerHTML = PROJECTS.map(p => {
+            const id = slugify(p.name) + "-title";
+            const safeName = p.name.replace(/"/g, '&quot;');
+            return `
+              <div class="card" role="listitem" aria-labelledby="${id}">
+                <div class="card-arrow" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M14 3h7v7m0-7L10 14"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 id="${id}" class="title">${p.name}</h2>
+                  <p class="desc">${p.description}</p>
+                  <div class="badges" aria-label="Technologies">
+                    ${p.tags.map(tag => `<span class="${tagClass(tag)}">${tag}</span>`).join("")}
+                  </div>
+                </div>
+                <!-- Full-card actionable link (accessible) -->
+                <a class="stretched-link" href="${p.docsUrl}" target="_blank" rel="noopener noreferrer"
+                   aria-labelledby="${id}" aria-label="${safeName} documentation"></a>
+              </div>
+            `;
+        }).join('');
+    }
+    render();
+
+    // Theme toggling with persistence + logo swap
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const logo = document.getElementById('yupiikLogo');
+
+    function applyLogo(isLight) {
+        logo.src = isLight ? "assets/logo-light.png" : "assets/logo-dark.png";
+    }
+
+    function setTheme(isLight) {
+        if (isLight) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        themeIcon.innerHTML = isLight
+            ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />'
+            : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        try { localStorage.setItem('yupiik-theme', isLight ? 'light' : 'dark'); } catch(_) {}
+        applyLogo(isLight);
+    }
+
+    (function initThemeToggle(){
+        try {
+            const saved = localStorage.getItem('yupiik-theme');
+            const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
+            const initialIsLight = saved ? saved === 'light' : prefersLight.matches;
+            setTheme(initialIsLight);
+            prefersLight.addEventListener?.('change', e => {
+                const savedNow = localStorage.getItem('yupiik-theme');
+                if (!savedNow) setTheme(e.matches);
+            });
+        } catch(_) {
+            const isLightAttr = document.documentElement.getAttribute('data-theme') === 'light';
+            applyLogo(isLightAttr);
+        }
+    }());
+
+    themeBtn.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') !== 'light';
+        setTheme(isLight);
+    });
+</script>
+</body>
+</html>

@@ -223,7 +223,7 @@
     </main>
 
     <footer role="contentinfo">
-        &copy; 2025 <a href="https://www.yupiik.com" target="_blank">Yupiik</a>. All rights reserved.
+        &copy; <span id="copyright-year"></span> <a href="https://www.yupiik.com" target="_blank">Yupiik</a>. All rights reserved.
     </footer>
 </div>
 
@@ -302,6 +302,8 @@
         const isLight = document.documentElement.getAttribute('data-theme') !== 'light';
         setTheme(isLight);
     });
+
+    document.getElementById('copyright-year').textContent = new Date().getFullYear().toString();
 </script>
 </body>
 </html>

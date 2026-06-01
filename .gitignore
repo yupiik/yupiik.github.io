@@ -1,24 +1,13 @@
-# maven
 target
-
-# idea
-!.idea/icon.png
 .idea
+!.idea/icon.svg
 *.iws
 *.ipr
 *.iml
-
-# generated content
+.settings
+.classpath
+.project
+ignored.*
 generated
-
-# generated images (asciidoctor-diagram)
-.asciidoctor
-generated_*.svg
-generated_*.png
-
-# node
-.node
-node_modules
-
-# vscode
-.vscode
+generated_*
+.sdkmanrc

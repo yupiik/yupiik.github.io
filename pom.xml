@@ -667,6 +667,34 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@statura -Psynchronize-github-releases -->
+                <id>fusion</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/statura</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.observability</groupId>
+                      <artifactId>statura</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@batch -Psynchronize-github-releases -->
                 <id>batch</id>
                 <phase>initialize</phase>

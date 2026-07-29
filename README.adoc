@@ -12,7 +12,7 @@ image::https://github.com/yupiik/yupiik.github.io/actions/workflows/pages/pages-
 == Mecanism
 
 * An open source repository has a root pom.xml and its groupId is `io.yupiik`.
-* Each open source repository can have a `yupiik.io.json` in its root with metadata for the site generation
+* Each open source repository can have a `oss.json` in its root with metadata for the site generation
 
 == Command
 

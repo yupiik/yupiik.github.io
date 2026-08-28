@@ -668,7 +668,7 @@
                 </configuration>
               </execution>
               <execution> <!-- mvn yupiik-tools:synchronize-github-releases@statura -Psynchronize-github-releases -->
-                <id>satura</id>
+                <id>statura</id>
                 <phase>initialize</phase>
                 <goals>
                   <goal>synchronize-github-releases</goal>

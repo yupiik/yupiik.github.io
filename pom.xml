@@ -913,6 +913,34 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@hop-maven-plugin -Psynchronize-github-releases -->
+                <id>hop-maven-plugin</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/hop-maven-plugin</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.hop</groupId>
+                      <artifactId>hop-maven-plugin</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
             </executions>
             <configuration>
               <!-- for synchronize-github -->

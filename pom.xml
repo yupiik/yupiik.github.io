@@ -941,6 +941,62 @@
                   </artifacts>
                 </configuration>
               </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@hop-junit -Psynchronize-github-releases -->
+                <id>hop-junit</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/hop-junit</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.hop.junit</groupId>
+                      <artifactId>hop-junit-parent</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+              <execution> <!-- mvn yupiik-tools:synchronize-github-releases@fusion-mcp-server -Psynchronize-github-releases -->
+                <id>fusion-mcp-server</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>synchronize-github-releases</goal>
+                </goals>
+                <configuration>
+                  <!-- required configuration -->
+                  <githubRepository>yupiik/fusion-mcp-server</githubRepository>
+                  <tagPattern>{artifactId}-{version}</tagPattern>
+                  <artifacts>
+                    <artifact>
+                      <groupId>io.yupiik.fusion.mcp</groupId>
+                      <artifactId>fusion-mcp-server-parent</artifactId>
+                      <artifacts>
+                        <artifact>
+                          <type>pom</type>
+                          <classifier/>
+                        </artifact>
+                        <artifact>
+                          <type>pom.asc</type>
+                          <classifier/>
+                        </artifact>
+                      </artifacts>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
             </executions>
             <configuration>
               <!-- for synchronize-github -->

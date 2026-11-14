@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yupiik Signal — manual QA</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { max-width: 75ch; margin: 32px auto; padding: 0 20px; font: 1rem/1.7 system-ui, sans-serif; }
+        label { display: block; padding: 10px 0; }
+        input { width: 20px; height: 20px; vertical-align: middle; }
+        a { text-underline-offset: .2em; }
+        :focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+        code { overflow-wrap: anywhere; }
+    </style>
+</head>
+<body>
+    <h1>Yupiik Signal manual QA</h1>
+    <p>Serve the repository root with <code>python3 -m http.server 8080 --bind 127.0.0.1</code>, then open <code>http://127.0.0.1:8080/tests/manual-qa.html</code>.</p>
+    <p><a href="../public/index.html">Open the portal</a>. This checklist is a local review aid outside the deployable directory. Checks below start unchecked and are not saved. Automated results and remaining limitations are in <a href="../docs/portal-modernization/IMPLEMENTATION-STATUS.md">the implementation notes</a>.</p>
+    <h2>Theme and first paint</h2>
+    <label><input type="checkbox"> With OS light mode, clear only <code>yupiik-theme</code> in localStorage. Reload: dark appears immediately; the switch says “Light” and announces “Switch to light theme”.</label>
+    <label><input type="checkbox"> Switch to light using the keyboard. Reload with a slow connection: no dark flash; native controls and the official logo match light mode. Switch says “Dark”.</label>
+    <label><input type="checkbox"> Switch back to dark and reload: dark persists. Changing OS appearance does not change the portal theme.</label>
+    <label><input type="checkbox"> Set the saved value to an invalid string: dark returns. Block storage: page loads dark, theme switch and search still work without errors.</label>
+    <h2>Content and navigation</h2>
+    <label><input type="checkbox"> Disable JavaScript and reload: all nine catalog cards, three featured cards, project links, navigation and official logo remain visible. Inactive search and theme controls are hidden.</label>
+    <label><input type="checkbox"> At 320, 390, 768 and 1280px, every header link is visible and usable by keyboard and touch; there is no horizontal scroll.</label>
+    <label><input type="checkbox"> Tab from the address bar: skip link appears. Enter moves focus to the catalog. Continue through search, category, reset and card links; focus remains visible.</label>
+    <label><input type="checkbox"> Check all nine Documentation/GitHub pairs in the catalog and all featured project destinations. Do not substitute guessed URLs.</label>
+    <h2>Search and category</h2>
+    <label><input type="checkbox"> Search “GraalVM”: two results. Add Cloud Native: no matches and a useful status message. Reset: nine results, focus returns to search.</label>
+    <label><input type="checkbox"> Category counts: AI 1; Java 2; Cloud 2; Data 2; Tools 2. Search “hop workflows”: two results. Case, extra spaces and multiple words work.</label>
+    <label><input type="checkbox"> With a screen reader, verify labels, landmarks, headings, next-theme name and politely announced result counts. Hidden card links must leave the tab order.</label>
+    <h2>Layout and motion</h2>
+    <label><input type="checkbox"> Review desktop, tablet and phone in both themes: three/two/one catalog columns, readable tags and descriptions, no clipped content or image shifts.</label>
+    <label><input type="checkbox"> At 200% text and 400% browser zoom, check reflow, focus and navigation. Repeat with a real mobile device and touch input.</label>
+    <label><input type="checkbox"> Enable reduced motion: card hover movement and smooth scrolling stop; every interaction remains usable.</label>
+    <label><input type="checkbox"> Review in Firefox and Safari, and run a full accessibility/HTML conformance audit before claiming WCAG 2.2 AA compliance.</label>
+    <h2>Publication review</h2>
+    <label><input type="checkbox"> Confirm metadata/canonical URLs and existing documentation routing. Review the retained logo-based social image and whether a separate 1200×630 card should follow.</label>
+    <label><input type="checkbox"> Obtain human approval before push or deployment: the existing Pages workflow deploys on a push to main that changes public/.</label>
+</body>
+</html>

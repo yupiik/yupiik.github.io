@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,115 +27,21 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://www.yupiik.io/">
 
-    <!-- UI Theme -->
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-
-    <!-- Avoid theme flash: set before first paint -->
+    <!-- Apply the existing saved preference before styles or body are parsed. -->
+    <meta name="color-scheme" content="dark light">
+    <meta id="theme-color" name="theme-color" content="#0B1210">
     <script>
         (function () {
+            let theme = 'dark';
             try {
                 const saved = localStorage.getItem('yupiik-theme');
-                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-                const isLight = saved ? saved === 'light' : prefersLight;
-                if (isLight) document.documentElement.setAttribute('data-theme', 'light');
-            } catch (_) { /* ignore */ }
+                if (saved === 'light' || saved === 'dark') theme = saved;
+            } catch (_) { /* Storage is optional; default to dark. */ }
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('theme-color').content = theme === 'light' ? '#F5F8F4' : '#0B1210';
         }());
     </script>
-
-    <style>
-        :root { --bg:#0b0c0f; --surface:#111318; --surface-2:#1a1d24; --text:#eaeef3; --muted:#9aa4b2; --brand:#3b82f6; --ring:#7aa2ff; }
-        :root[data-theme="light"] { --bg:#ffffff; --surface:transparent; --surface-2:#f7f8fb; --text:#111318; --muted:#596273; --ring:#2458a6; }
-
-        * { box-sizing: border-box }
-        [hidden] { display:none !important }
-        html:focus-within { scroll-behavior: smooth }
-        body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--text); background:var(--bg); line-height:1.6; text-rendering: optimizeLegibility }
-        a { color: inherit; text-decoration: none }
-        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, main:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius:.5rem }
-
-        .container { max-width: 1200px; margin-inline: auto; padding: 4rem 1rem }
-
-        .skip-link {
-            position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
-        }
-        .skip-link:focus {
-            position: fixed; inset-inline: 1rem; top: 1rem; width: auto; height: auto;
-            background: var(--surface-2); color: var(--text); padding: .5rem .75rem; border-radius:.5rem; z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0,0,0,.25);
-        }
-
-        header { text-align:center; margin-block-end:3rem; position:relative; padding-top:3.5rem }
-        .theme-toggle-btn {
-            position:absolute; top:1rem; inset-inline-end:1rem;
-            background:var(--surface-2); border:1px solid var(--muted);
-            border-radius:50%; inline-size:40px; block-size:40px; display:inline-grid; place-items:center;
-            cursor:pointer; color:var(--text)
-        }
-        .theme-toggle-btn svg { inline-size:20px; block-size:20px }
-        .theme-toggle-btn[hidden] { display:none }
-
-        h1 { font-weight:800; font-size: clamp(2rem, 3.5vw, 3rem); margin:.75rem 0 .25rem }
-        .subtitle { color:var(--muted); max-width:60ch; margin:0 auto 1.25rem }
-        h1 { max-width:24ch; margin-inline:auto; line-height:1.2; overflow-wrap:anywhere }
-        .subtitle { margin-top:1rem }
-        nav { display:flex; justify-content:center; flex-wrap:wrap; gap:.75rem }
-        nav a, .reset-button { padding:.6rem 1rem; border:1px solid var(--muted); border-radius:.5rem; background:var(--surface-2); color:var(--text); font:inherit }
-        nav a { text-decoration:underline; text-underline-offset:.2em }
-        .project-controls { display:flex; align-items:end; flex-wrap:wrap; gap:1rem }
-        .control { flex:1 1 15rem; min-width:0 }
-        label { display:block; font-weight:600; margin-bottom:.35rem }
-        input, select { width:100%; min-width:0; min-height:44px; padding:.6rem; border:1px solid var(--muted); border-radius:.5rem; background:var(--surface-2); color:var(--text); font:inherit }
-        .reset-button { min-height:44px; cursor:pointer }
-        .search-hint, .results { color:var(--muted) }
-        .search-hint { margin:.5rem 0 1rem; font-size:.9rem }
-        .results { margin:1rem 0 }
-        .results.empty { padding:1.5rem; border:1px solid var(--muted); border-radius:.5rem; background:var(--surface-2); color:var(--text) }
-
-        /* EXACTLY 2 cards per row (≥640px), 1 per row below */
-        .grid {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        @media (max-width: 640px) {
-            .grid { grid-template-columns: minmax(0, 1fr); }
-        }
-
-        .card {
-            position:relative; background:var(--surface); border:1px solid rgba(128,128,128,.22); border-radius:1rem;
-            padding:1rem; display:flex; flex-direction:column; justify-content:space-between; min-block-size:100%;
-            min-width:0; overflow-wrap:anywhere;
-            color:inherit; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease
-        }
-        .card:hover { transform: translateY(-4px); box-shadow:0 6px 12px rgba(0,0,0,.2); border-color:var(--brand) }
-        @media (prefers-reduced-motion: reduce) {
-            html:focus-within { scroll-behavior:auto }
-            .card, .card:hover { transform:none; transition:none; box-shadow:none }
-        }
-
-        .card:focus-within {
-            box-shadow: 0 0 0 2px var(--ring);
-            border-color: var(--brand);
-        }
-
-        .title { font-weight:700; font-size:1.1rem; margin:.25rem 1.5rem .25rem 0 }
-        .desc { color:var(--muted); font-size:.95rem }
-        .category { color:var(--muted); font-size:.85rem; margin:0 }
-        .project-links { display:flex; flex-wrap:wrap; gap:.5rem 1rem; margin-top:1rem }
-        .project-links a { text-decoration:underline; text-underline-offset:.2em; padding:.25rem 0 }
-
-        .badges { margin:.5rem 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:.4rem }
-        .badge-sm { font-size:.75rem; padding:.25rem .5rem; border-radius:.5rem; line-height:1.4; background:var(--surface-2); border:1px solid var(--muted); color:var(--text) }
-
-        footer { color:var(--muted); text-align:center; margin:3rem 0 1rem; font-size:.9rem }
-
-        /* Ultra-small screens comfort */
-        @media (max-width: 360px) {
-            .container { padding: 3rem .75rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/signal.css">
 
     <!-- Structured Data: Organization -->
     <script type="application/ld+json">
@@ -171,199 +77,235 @@
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
 
-<div class="container">
-    <header role="banner">
-        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle color theme" hidden>
-            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="5"/>
-                <line x1="12" y1="1" x2="12" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/>
-                <line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-        </button>
-
-        <!-- Logo that swaps by theme -->
-        <img id="yupiikLogo"
-             src="assets/logo-dark.png"
-             width="544" height="144"
-             alt="Yupiik OSS logo"
-             loading="eager"
-             decoding="async"
-             style="width:auto; height:40px; margin-bottom:1rem" />
-
-        <h1>Open source tools for modern software engineering</h1>
-        <p class="subtitle">Build Java applications, automate Kubernetes deployments, develop AI integrations with MCP, and test Apache Hop data workflows.</p>
+<header class="topbar" id="top">
+    <div class="shell topinner">
+        <a class="brand" href="#top" aria-label="Yupiik open source home">
+            <img id="yupiikLogo" class="logo-dark" src="assets/logo-dark.png" width="544" height="144" alt="Yupiik" decoding="async">
+            <img class="logo-light" src="assets/logo-light.png" width="544" height="144" alt="Yupiik" decoding="async">
+            <span class="brand-sub">Open source</span>
+        </a>
         <nav aria-label="Primary navigation">
-            <a href="#content">Explore projects</a>
-            <a href="https://github.com/yupiik">Yupiik on GitHub</a>
+            <a href="#featured">Featured</a>
+            <a href="#content">Projects</a>
+            <a href="#community">Community</a>
+            <a href="https://github.com/yupiik">GitHub <span aria-hidden="true">↗</span></a>
         </nav>
-    </header>
-
-    <main id="content" tabindex="-1" aria-labelledby="projects-title">
-        <h2 id="projects-title">Explore projects</h2>
-        <div id="project-tools" hidden>
-            <form id="project-controls" class="project-controls" role="search" aria-label="Find projects">
-                <div class="control">
-                    <label for="project-search">Search projects</label>
-                    <input id="project-search" type="search" aria-describedby="search-hint" autocomplete="off">
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Switch to light theme" hidden>
+            <span aria-hidden="true">◐</span> <span id="theme-label">Light</span>
+        </button>
+    </div>
+</header>
+<main>
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="shell hero-inner">
+            <div>
+                <p class="eyebrow">Open source. Built by engineers.</p>
+                <h1 id="hero-title">Build boldly.<br><span class="accent">Ship openly.</span></h1>
+                <p class="subtitle">Pragmatic open source tools for Java, Kubernetes, AI integrations, and data engineering.</p>
+                <div class="cta">
+                    <a class="btn btn-primary" href="#content">Explore the projects <span aria-hidden="true">→</span></a>
+                    <a class="btn btn-secondary" href="#featured">Discover the ecosystem <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="control">
-                    <label for="project-category">Category</label>
-                    <select id="project-category">
-                        <option value="all">All projects</option>
-                        <option value="ai-agents">AI &amp; Agents</option>
-                        <option value="java-frameworks">Java &amp; Frameworks</option>
-                        <option value="cloud-native">Cloud Native</option>
-                        <option value="data-engineering">Data Engineering</option>
-                        <option value="developer-tools">Developer Tools</option>
-                    </select>
-                </div>
-                <button id="reset-filters" class="reset-button" type="button">Reset filters</button>
-            </form>
-            <p id="search-hint" class="search-hint">Search by name, purpose or technology. Search and category work together.</p>
-            <p id="project-results" class="results" role="status" aria-atomic="true"></p>
+                <p class="meta-line">Java / Cloud Native / AI / Data</p>
+            </div>
+            <aside class="visual" aria-label="Explore Yupiik engineering workflows">
+                <p class="visual-head"><span aria-hidden="true">● ● ●</span> yupiik / ecosystem.map</p>
+                <ul class="workflow">
+                    <li><span class="step-no" aria-hidden="true">01</span><div><strong>Build with Fusion</strong><span>Java APIs &amp; microservices</span></div></li>
+                    <li><span class="step-no" aria-hidden="true">02</span><div><strong>Connect via MCP</strong><span>Java methods as AI tools</span></div></li>
+                    <li><span class="step-no" aria-hidden="true">03</span><div><strong>Deliver with BundleBee</strong><span>Reusable Kubernetes bundles</span></div></li>
+                    <li><span class="step-no" aria-hidden="true">04</span><div><strong>Validate with Hop JUnit</strong><span>Data workflow testing</span></div></li>
+                </ul>
+                <p class="endline">// find your next building block</p>
+            </aside>
         </div>
-        <!-- Catalogue source of truth: edit cards here and keep ItemList above aligned. -->
-        <div id="grid" class="grid" role="list" aria-label="Yupiik projects">
-            <article id="fusion" class="card" role="listitem" aria-labelledby="fusion-title" data-category="java-frameworks">
-                <div>
-                    <p class="category">Java &amp; Frameworks</p>
-                    <h3 id="fusion-title" class="title">Yupiik Fusion</h3>
-                    <p class="desc">Build APIs and microservices with a lightweight Java framework, dependency injection and GraalVM support.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">GraalVM</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/fusion/">Documentation</a><a href="https://github.com/yupiik/fusion">GitHub</a></div>
+    </section>
+    <div class="stampbar"><div class="shell stamps"><strong>Made for developers</strong><span>Java</span><span>Kubernetes</span><span>MCP</span><span>Apache Hop</span></div></div>
+    <section id="featured" class="section shell" aria-labelledby="featured-title">
+        <div class="section-head">
+            <div><p class="micro">01 / Projects in focus</p><h2 id="featured-title">Powerful tools.<br>Less complexity.</h2></div>
+            <p>Three starting points for Java services, Kubernetes delivery, and AI integrations.</p>
+        </div>
+        <div class="featured-grid">
+            <article class="feature" aria-labelledby="featured-fusion">
+                <span class="feature-icon" aria-hidden="true">{ }</span>
+                <p class="category">Java &amp; Frameworks</p>
+                <h3 id="featured-fusion">Yupiik Fusion</h3>
+                <p>Build APIs and microservices with a lightweight Java framework, dependency injection and GraalVM support.</p>
+                <a href="https://www.yupiik.io/fusion/">Explore Fusion <span aria-hidden="true">↗</span></a>
             </article>
-            <article id="batch" class="card" role="listitem" aria-labelledby="batch-title" data-category="java-frameworks">
-                <div>
-                    <p class="category">Java &amp; Frameworks</p>
-                    <h3 id="batch-title" class="title">Yupiik Batch</h3>
-                    <p class="desc">Write Java batch jobs with a fluent API for mapping models and computing differences between datasets.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Batch processing</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/yupiik-batch/">Documentation</a><a href="https://github.com/yupiik/yupiik-batch">GitHub</a></div>
+            <article class="feature" aria-labelledby="featured-bundlebee">
+                <span class="feature-icon" aria-hidden="true">&gt;_</span>
+                <p class="category">Cloud Native</p>
+                <h3 id="featured-bundlebee">Yupiik BundleBee</h3>
+                <p>Package Kubernetes resources into reusable bundles and deploy them with a Java command-line tool.</p>
+                <a href="https://www.yupiik.io/bundlebee/">Explore BundleBee <span aria-hidden="true">↗</span></a>
             </article>
-            <article id="bundlebee" class="card" role="listitem" aria-labelledby="bundlebee-title" data-category="cloud-native">
-                <div>
-                    <p class="category">Cloud Native</p>
-                    <h3 id="bundlebee-title" class="title">Yupiik BundleBee</h3>
-                    <p class="desc">Package Kubernetes resources into reusable bundles and deploy them with a Java command-line tool.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Kubernetes</li><li class="badge-sm">Java</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/bundlebee/">Documentation</a><a href="https://github.com/yupiik/bundlebee">GitHub</a></div>
-            </article>
-            <article id="kubernetes-java-descriptors" class="card" role="listitem" aria-labelledby="kubernetes-java-descriptors-title" data-category="cloud-native">
-                <div>
-                    <p class="category">Cloud Native</p>
-                    <h3 id="kubernetes-java-descriptors-title" class="title">Kubernetes Java Descriptors</h3>
-                    <p class="desc">Create Kubernetes manifests with typed Java bindings and fluent builders, and reuse descriptor logic across projects.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Kubernetes</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/kubernetes-java-descriptors/">Documentation</a><a href="https://github.com/yupiik/kubernetes-java-descriptors">GitHub</a></div>
-            </article>
-            <article id="fusion-mcp-server" class="card" role="listitem" aria-labelledby="fusion-mcp-server-title" data-category="ai-agents">
-                <div>
-                    <p class="category">AI &amp; Agents</p>
-                    <h3 id="fusion-mcp-server-title" class="title">Fusion MCP Server</h3>
-                    <p class="desc">Expose Java methods as Model Context Protocol tools using Fusion's JSON-RPC API and MCP annotations.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">MCP</li><li class="badge-sm">JSON-RPC</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/fusion-mcp-server/">Documentation</a><a href="https://github.com/yupiik/fusion-mcp-server">GitHub</a></div>
-            </article>
-            <article id="hop-maven-plugin" class="card" role="listitem" aria-labelledby="hop-maven-plugin-title" data-category="data-engineering">
-                <div>
-                    <p class="category">Data Engineering</p>
-                    <h3 id="hop-maven-plugin-title" class="title">Hop Maven Plugin</h3>
-                    <p class="desc">Run Apache Hop pipelines and workflows, create diagrams and documentation, and assemble Hop distributions from Maven.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Apache Hop</li><li class="badge-sm">Maven</li><li class="badge-sm">Java</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/hop-maven-plugin/">Documentation</a><a href="https://github.com/yupiik/hop-maven-plugin">GitHub</a></div>
-            </article>
-            <article id="hop-junit" class="card" role="listitem" aria-labelledby="hop-junit-title" data-category="data-engineering">
-                <div>
-                    <p class="category">Data Engineering</p>
-                    <h3 id="hop-junit-title" class="title">Hop JUnit</h3>
-                    <p class="desc">Test Apache Hop pipelines and workflows with JUnit 5 extensions, fixtures and database assertions.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Apache Hop</li><li class="badge-sm">JUnit 5</li><li class="badge-sm">Java</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/hop-junit/">Documentation</a><a href="https://github.com/yupiik/hop-junit">GitHub</a></div>
-            </article>
-            <article id="logging" class="card" role="listitem" aria-labelledby="logging-title" data-category="developer-tools">
-                <div>
-                    <p class="category">Developer Tools</p>
-                    <h3 id="logging-title" class="title">Yupiik Logging</h3>
-                    <p class="desc">Configure Java Util Logging with additional formatters and handlers, including runtime reconfiguration with GraalVM.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">JUL</li><li class="badge-sm">GraalVM</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/yupiik-logging/">Documentation</a><a href="https://github.com/yupiik/yupiik-logging">GitHub</a></div>
-            </article>
-            <article id="tools" class="card" role="listitem" aria-labelledby="tools-title" data-category="developer-tools">
-                <div>
-                    <p class="category">Developer Tools</p>
-                    <h3 id="tools-title" class="title">Yupiik Tools</h3>
-                    <p class="desc">Automate developer tasks with Maven goals for documentation, slides and Git reports, plus Java command-line tools.</p>
-                    <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Maven</li></ul>
-                </div>
-                <div class="project-links"><a href="https://www.yupiik.io/tools-maven-plugin/">Documentation</a><a href="https://github.com/yupiik/tools-maven-plugin">GitHub</a></div>
+            <article class="feature" aria-labelledby="featured-mcp">
+                <span class="feature-icon" aria-hidden="true">~</span>
+                <p class="category">AI &amp; Agents</p>
+                <h3 id="featured-mcp">Fusion MCP Server</h3>
+                <p>Expose Java methods as Model Context Protocol tools using Fusion's JSON-RPC API and MCP annotations.</p>
+                <a href="https://www.yupiik.io/fusion-mcp-server/">Explore MCP Server <span aria-hidden="true">↗</span></a>
             </article>
         </div>
-    </main>
-
-    <footer role="contentinfo">
-        Built with semantic HTML. <br />
-        &copy; 2026 Yupiik. All rights reserved.
-    </footer>
-</div>
+    </section>
+    <section id="content" class="catalogue section" tabindex="-1" aria-labelledby="projects-title">
+        <div class="shell">
+            <div class="section-head">
+                <div><p class="micro">02 / The ecosystem</p><h2 id="projects-title">Find your next<br>building block.</h2></div>
+                <p>Explore projects by domain. Every tool links directly to its documentation and source.</p>
+            </div>
+            <div id="project-tools" hidden>
+                <form id="project-controls" class="project-controls" role="search" aria-label="Find projects">
+                    <div class="control">
+                        <label for="project-search">Search projects</label>
+                        <input id="project-search" type="search" aria-describedby="search-hint" autocomplete="off">
+                    </div>
+                    <div class="control">
+                        <label for="project-category">Category</label>
+                        <select id="project-category">
+                            <option value="all">All projects</option>
+                            <option value="ai-agents">AI &amp; Agents</option>
+                            <option value="java-frameworks">Java &amp; Frameworks</option>
+                            <option value="cloud-native">Cloud Native</option>
+                            <option value="data-engineering">Data Engineering</option>
+                            <option value="developer-tools">Developer Tools</option>
+                        </select>
+                    </div>
+                    <button id="reset-filters" class="reset-button" type="button">Reset filters</button>
+                </form>
+                <p id="search-hint" class="search-hint">Search by name, purpose or technology. Search and category work together.</p>
+                <p id="project-results" class="results" role="status" aria-atomic="true"></p>
+            </div>
+            <!-- Catalogue source of truth: edit cards here and keep ItemList above aligned. -->
+            <div id="grid" class="grid" role="list" aria-label="Yupiik projects">
+                <article id="fusion" class="card" role="listitem" aria-labelledby="fusion-title" data-category="java-frameworks">
+                    <div>
+                        <p class="category">Java &amp; Frameworks</p>
+                        <h3 id="fusion-title" class="title">Yupiik Fusion</h3>
+                        <p class="desc">Build APIs and microservices with a lightweight Java framework, dependency injection and GraalVM support.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">GraalVM</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/fusion/">Documentation</a><a href="https://github.com/yupiik/fusion">GitHub</a></div>
+                </article>
+                <article id="batch" class="card" role="listitem" aria-labelledby="batch-title" data-category="java-frameworks">
+                    <div>
+                        <p class="category">Java &amp; Frameworks</p>
+                        <h3 id="batch-title" class="title">Yupiik Batch</h3>
+                        <p class="desc">Write Java batch jobs with a fluent API for mapping models and computing differences between datasets.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Batch processing</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/yupiik-batch/">Documentation</a><a href="https://github.com/yupiik/yupiik-batch">GitHub</a></div>
+                </article>
+                <article id="bundlebee" class="card" role="listitem" aria-labelledby="bundlebee-title" data-category="cloud-native">
+                    <div>
+                        <p class="category">Cloud Native</p>
+                        <h3 id="bundlebee-title" class="title">Yupiik BundleBee</h3>
+                        <p class="desc">Package Kubernetes resources into reusable bundles and deploy them with a Java command-line tool.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Kubernetes</li><li class="badge-sm">Java</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/bundlebee/">Documentation</a><a href="https://github.com/yupiik/bundlebee">GitHub</a></div>
+                </article>
+                <article id="kubernetes-java-descriptors" class="card" role="listitem" aria-labelledby="kubernetes-java-descriptors-title" data-category="cloud-native">
+                    <div>
+                        <p class="category">Cloud Native</p>
+                        <h3 id="kubernetes-java-descriptors-title" class="title">Kubernetes Java Descriptors</h3>
+                        <p class="desc">Create Kubernetes manifests with typed Java bindings and fluent builders, and reuse descriptor logic across projects.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Kubernetes</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/kubernetes-java-descriptors/">Documentation</a><a href="https://github.com/yupiik/kubernetes-java-descriptors">GitHub</a></div>
+                </article>
+                <article id="fusion-mcp-server" class="card" role="listitem" aria-labelledby="fusion-mcp-server-title" data-category="ai-agents">
+                    <div>
+                        <p class="category">AI &amp; Agents</p>
+                        <h3 id="fusion-mcp-server-title" class="title">Fusion MCP Server</h3>
+                        <p class="desc">Expose Java methods as Model Context Protocol tools using Fusion's JSON-RPC API and MCP annotations.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">MCP</li><li class="badge-sm">JSON-RPC</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/fusion-mcp-server/">Documentation</a><a href="https://github.com/yupiik/fusion-mcp-server">GitHub</a></div>
+                </article>
+                <article id="hop-maven-plugin" class="card" role="listitem" aria-labelledby="hop-maven-plugin-title" data-category="data-engineering">
+                    <div>
+                        <p class="category">Data Engineering</p>
+                        <h3 id="hop-maven-plugin-title" class="title">Hop Maven Plugin</h3>
+                        <p class="desc">Run Apache Hop pipelines and workflows, create diagrams and documentation, and assemble Hop distributions from Maven.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Apache Hop</li><li class="badge-sm">Maven</li><li class="badge-sm">Java</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/hop-maven-plugin/">Documentation</a><a href="https://github.com/yupiik/hop-maven-plugin">GitHub</a></div>
+                </article>
+                <article id="hop-junit" class="card" role="listitem" aria-labelledby="hop-junit-title" data-category="data-engineering">
+                    <div>
+                        <p class="category">Data Engineering</p>
+                        <h3 id="hop-junit-title" class="title">Hop JUnit</h3>
+                        <p class="desc">Test Apache Hop pipelines and workflows with JUnit 5 extensions, fixtures and database assertions.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Apache Hop</li><li class="badge-sm">JUnit 5</li><li class="badge-sm">Java</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/hop-junit/">Documentation</a><a href="https://github.com/yupiik/hop-junit">GitHub</a></div>
+                </article>
+                <article id="logging" class="card" role="listitem" aria-labelledby="logging-title" data-category="developer-tools">
+                    <div>
+                        <p class="category">Developer Tools</p>
+                        <h3 id="logging-title" class="title">Yupiik Logging</h3>
+                        <p class="desc">Configure Java Util Logging with additional formatters and handlers, including runtime reconfiguration with GraalVM.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">JUL</li><li class="badge-sm">GraalVM</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/yupiik-logging/">Documentation</a><a href="https://github.com/yupiik/yupiik-logging">GitHub</a></div>
+                </article>
+                <article id="tools" class="card" role="listitem" aria-labelledby="tools-title" data-category="developer-tools">
+                    <div>
+                        <p class="category">Developer Tools</p>
+                        <h3 id="tools-title" class="title">Yupiik Tools</h3>
+                        <p class="desc">Automate developer tasks with Maven goals for documentation, slides and Git reports, plus Java command-line tools.</p>
+                        <ul class="badges" aria-label="Technologies"><li class="badge-sm">Java</li><li class="badge-sm">Maven</li></ul>
+                    </div>
+                    <div class="project-links"><a href="https://www.yupiik.io/tools-maven-plugin/">Documentation</a><a href="https://github.com/yupiik/tools-maven-plugin">GitHub</a></div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <section id="community" class="story section" aria-labelledby="community-title">
+        <div class="shell story-inner">
+            <div>
+                <p class="micro">03 / Join the community</p>
+                <h2 id="community-title">Open tools. Open ideas.<br><span class="accent">Open to contribution.</span></h2>
+                <p>Explore the source, share feedback in a project's issue tracker, or contribute to the tools you use. Start with each repository's contribution and license guidance.</p>
+            </div>
+            <a class="btn btn-primary" href="https://github.com/yupiik">Explore Yupiik on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+    </section>
+</main>
+<footer class="footer">
+    <div class="shell footer-inner">
+        <span>Yupiik / Open source · &copy; 2026 Yupiik. All rights reserved.</span>
+        <a href="https://github.com/yupiik">Yupiik on GitHub <span aria-hidden="true">↗</span></a>
+        <a href="https://www.yupiik.com">Yupiik company <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="shell">
+        <p class="trademark">Apache, <a href="https://hop.apache.org/">Apache Hop</a>, and Hop are trademarks or registered trademarks of the <a href="https://www.apache.org/">Apache Software Foundation</a>. No ASF endorsement is implied.</p>
+    </div>
+</footer>
 
 <script>
-    // Theme toggling with persistence + logo swap
+    // The head script has already resolved the theme; never follow OS changes.
     const themeBtn = document.getElementById('themeToggleBtn');
-    const themeIcon = document.getElementById('themeIcon');
-    const logo = document.getElementById('yupiikLogo');
-
-    function applyLogo(isLight) {
-        logo.src = isLight ? "assets/logo-light.png" : "assets/logo-dark.png";
-    }
 
     function setTheme(isLight, persist = false) {
-        if (isLight) {
-            document.documentElement.setAttribute('data-theme', 'light');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
-        themeIcon.innerHTML = isLight
-            ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />'
-            : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        const theme = isLight ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('theme-color').content = isLight ? '#F5F8F4' : '#0B1210';
+        const label = `Switch to ${isLight ? 'dark' : 'light'} theme`;
+        themeBtn.setAttribute('aria-label', label);
+        themeBtn.title = label;
+        document.getElementById('theme-label').textContent = isLight ? 'Dark' : 'Light';
         if (persist) {
-            try { localStorage.setItem('yupiik-theme', isLight ? 'light' : 'dark'); } catch(_) {}
+            try { localStorage.setItem('yupiik-theme', theme); } catch (_) { /* Theme still works in memory. */ }
         }
-        applyLogo(isLight);
     }
 
-    (function initThemeToggle(){
-        try {
-            const saved = localStorage.getItem('yupiik-theme');
-            const prefersLight = window.matchMedia('(prefers-color-scheme: light)');
-            const initialIsLight = saved ? saved === 'light' : prefersLight.matches;
-            setTheme(initialIsLight);
-            prefersLight.addEventListener?.('change', e => {
-                const savedNow = localStorage.getItem('yupiik-theme');
-                if (!savedNow) setTheme(e.matches);
-            });
-        } catch(_) {
-            const isLightAttr = document.documentElement.getAttribute('data-theme') === 'light';
-            applyLogo(isLightAttr);
-        }
-    }());
-
+    setTheme(document.documentElement.getAttribute('data-theme') === 'light');
     themeBtn.addEventListener('click', () => {
-        const isLight = document.documentElement.getAttribute('data-theme') !== 'light';
-        setTheme(isLight, true);
+        setTheme(document.documentElement.getAttribute('data-theme') !== 'light', true);
     });
     themeBtn.hidden = false;
 

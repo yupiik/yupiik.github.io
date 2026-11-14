@@ -4,12 +4,19 @@ const {spawn} = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const {pathToFileURL} = require('node:url');
+const http = require('node:http');
 const assert = require('node:assert/strict');
+const server = http.createServer((req, res) => {
+    const files = {'/':'index.html', '/assets/signal.css':'assets/signal.css', '/assets/logo-dark.png':'assets/logo-dark.png', '/assets/logo-light.png':'assets/logo-light.png'};
+    const file = files[req.url];
+    if (!file) { res.writeHead(404); res.end(); return; }
+    res.setHeader('Content-Type', file.endsWith('.css') ? 'text/css' : file.endsWith('.png') ? 'image/png' : 'text/html');
+    res.end(fs.readFileSync(path.resolve(__dirname, '../public', file)));
+});
 const output = fs.mkdtempSync(path.join(os.tmpdir(), 'yupiik-ux-'));
 const browser = spawn(process.env.BROWSER_BIN || '/usr/bin/brave-browser', [
     '--headless', '--no-sandbox', '--disable-gpu', '--disable-background-networking',
-    '--no-first-run', '--no-default-browser-check', '--host-resolver-rules=MAP * ~NOTFOUND',
+    '--no-first-run', '--no-default-browser-check', '--no-proxy-server', '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',
     `--user-data-dir=${path.join(output, 'profile')}`, '--remote-debugging-pipe'
 ], {stdio:['ignore', 'ignore', 'pipe', 'pipe', 'pipe']});
 let id = 0, buffer = '', errors = '';
@@ -44,11 +51,13 @@ function call(method, params = {}, sessionId) {
 }
 const timeout = setTimeout(() => { fail(new Error('Browser QA timed out')); browser.kill(); }, 45000);
 (async () => {
+    await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
+    const portalURL = `http://127.0.0.1:${server.address().port}/`;
     const {targetId} = await call('Target.createTarget', {url:'about:blank'});
     const {sessionId} = await call('Target.attachToTarget', {targetId, flatten:true});
     const c = (method, params) => call(method, params, sessionId);
     const evaluate = async expression => {
-        const response = await c('Runtime.evaluate', {expression, returnByValue:true});
+        const response = await c('Runtime.evaluate', {expression, returnByValue:true, awaitPromise:true});
         if (response.exceptionDetails) throw new Error(JSON.stringify(response.exceptionDetails));
         return response.result.value;
     };
@@ -66,16 +75,19 @@ const timeout = setTimeout(() => { fail(new Error('Browser QA timed out')); brow
     };
     const visible = () => evaluate("[...document.querySelectorAll('#grid article')].filter(a=>!a.hidden).length");
     const screenshot = async name => {
-        const shot = await c('Page.captureScreenshot', {captureBeyondViewport:true});
+        await evaluate('window.scrollTo(0,0)');
+        await new Promise(resolve => setTimeout(resolve, 150));
+        const {cssContentSize} = await c('Page.getLayoutMetrics');
+        const shot = await c('Page.captureScreenshot', {captureBeyondViewport:true, clip:{x:0,y:0,width:cssContentSize.width,height:cssContentSize.height,scale:1}});
         fs.writeFileSync(path.join(output, name + '.png'), Buffer.from(shot.data, 'base64'));
     };
     await c('Page.enable'); await c('Runtime.enable');
     await c('Emulation.setScriptExecutionDisabled', {value:true});
-    await c('Page.navigate', {url:pathToFileURL(path.resolve(__dirname, '../public/index.html')).href});
+    await c('Page.navigate', {url:portalURL});
     await ready('document.readyState === "complete"');
     for (const width of [320, 768, 1280]) {
         await c('Emulation.setDeviceMetricsOverride', {width, height:1000, deviceScaleFactor:1, mobile:false});
-        assert(await evaluate(`document.querySelectorAll('#grid article').length===9 && [...document.querySelectorAll('#grid article')].every(a=>a.getBoundingClientRect().height>0) && document.querySelectorAll('#grid a').length===18 && getComputedStyle(document.getElementById('project-tools')).display==='none' && getComputedStyle(document.getElementById('themeToggleBtn')).display==='none' && document.documentElement.scrollWidth<=innerWidth && [...document.images].every(i=>i.complete&&i.naturalWidth>0)`));
+        assert(await evaluate(`document.querySelectorAll('#grid article').length===9 && [...document.querySelectorAll('#grid article')].every(a=>a.getBoundingClientRect().height>0) && document.querySelectorAll('#grid a').length===18 && getComputedStyle(document.getElementById('project-tools')).display==='none' && getComputedStyle(document.getElementById('themeToggleBtn')).display==='none' && document.documentElement.scrollWidth<=innerWidth && [...document.images].every(i=>i.complete&&i.naturalWidth>0)`), JSON.stringify(await evaluate(`({width:innerWidth, scroll:document.documentElement.scrollWidth, images:[...document.images].map(i=>({src:i.src.slice(0,80),complete:i.complete,width:i.naturalWidth})),overflow:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth).map(e=>({tag:e.tagName,cls:e.className,right:e.getBoundingClientRect().right}))})`)));
         await screenshot(`nojs-${width}`);
     }
     console.log('PASS: no-JS cards, links, local images, hidden controls and layout at 320/768/1280px');
@@ -85,9 +97,12 @@ const timeout = setTimeout(() => { fail(new Error('Browser QA timed out')); brow
     assert.equal(await visible(), 9);
     assert.equal(await evaluate('localStorage.getItem("yupiik-theme")'), null);
     await c('Emulation.setEmulatedMedia', {features:[{name:'prefers-color-scheme', value:'light'}]});
-    await ready('document.documentElement.getAttribute("data-theme")==="light"');
+    assert.equal(await evaluate('document.documentElement.getAttribute("data-theme")'), 'dark');
+    await c('Page.reload'); await ready('document.readyState === "complete" && !document.getElementById("project-tools").hidden');
+    assert.equal(await evaluate('document.documentElement.getAttribute("data-theme")'), 'dark');
+    assert.equal(await evaluate('document.getElementById("theme-label").textContent'), 'Light');
     await c('Emulation.setEmulatedMedia', {features:[{name:'prefers-color-scheme', value:'dark'}]});
-    await ready('document.documentElement.getAttribute("data-theme")!=="light"');
+    assert.equal(await evaluate('document.documentElement.getAttribute("data-theme")'), 'dark');
     // Real keyboard events exercise the skip link, search, native select and reset.
     await key('Tab'); assert.equal(await evaluate('document.activeElement.className'), 'skip-link');
     await key('Enter'); assert.equal(await evaluate('document.activeElement.id'), 'content');
@@ -126,7 +141,7 @@ const timeout = setTimeout(() => { fail(new Error('Browser QA timed out')); brow
             const background=e=>{const c=rgb(getComputedStyle(e).backgroundColor);if(c.length<4||c[3]===1)return c.slice(0,3);const base=e.parentElement?background(e.parentElement):[255,255,255];return base.map((v,i)=>c[i]*c[3]+v*(1-c[3]));};
             const luminance=c=>c.slice(0,3).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((v,c,i)=>v+c*[.2126,.7152,.0722][i],0);
             const ratio=(a,b)=>{a=luminance(a);b=luminance(b);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);};
-            const elements=[...document.querySelectorAll('h1,h2,h3,.subtitle,.desc,.category,.badge-sm,.project-links a,nav a,label,input,select,button,.search-hint,.results,footer')].filter(e=>e.getBoundingClientRect().height>0);
+            const elements=[...document.querySelectorAll('h1,h2,h3,.subtitle,.eyebrow,.micro,.meta-line,.workflow strong,.workflow div>span,.endline,.feature>p,.feature>a,.story p,.btn,.stamps,.footer span,.footer a,.desc,.category,.badge-sm,.project-links a,nav a,label,input,select,button,.search-hint,.results,footer')].filter(e=>e.getBoundingClientRect().height>0);
             const text=Math.min(...elements.map(e=>ratio(rgb(getComputedStyle(e).color),background(e))));
             const input=document.getElementById('project-search');input.focus();
             return {text,ring:ratio(rgb(getComputedStyle(input).outlineColor),background(input.parentElement)),border:ratio(rgb(getComputedStyle(input).borderColor),background(input))};
@@ -152,13 +167,25 @@ const timeout = setTimeout(() => { fail(new Error('Browser QA timed out')); brow
     const saved = await evaluate('localStorage.getItem("yupiik-theme")'); assert(saved);
     await c('Page.reload'); await ready('document.readyState === "complete" && !document.getElementById("project-tools").hidden');
     assert.equal(await evaluate('document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"'), saved);
-    assert.equal(await evaluate('document.getElementById("yupiikLogo").getAttribute("src")'), `assets/logo-${saved}.png`);
+    assert(await evaluate(`getComputedStyle(document.querySelector('.logo-${saved}')).display !== 'none' && getComputedStyle(document.documentElement).colorScheme === '${saved}'`));
+    assert.equal(saved, 'light');
+    assert.equal(await evaluate('document.getElementById("theme-label").textContent'), 'Dark');
+    assert.equal(await evaluate('document.getElementById("themeToggleBtn").getAttribute("aria-label")'), 'Switch to dark theme');
+    await evaluate('document.getElementById("themeToggleBtn").click()');
+    await c('Page.reload'); await ready('document.readyState === "complete" && !document.getElementById("project-tools").hidden');
+    assert.equal(await evaluate('localStorage.getItem("yupiik-theme")'), 'dark');
+    assert.equal(await evaluate('document.documentElement.dataset.theme'), 'dark');
+    await evaluate('localStorage.setItem("yupiik-theme", "invalid")');
+    await c('Page.reload'); await ready('document.readyState === "complete" && !document.getElementById("project-tools").hidden');
+    assert.equal(await evaluate('document.documentElement.dataset.theme'), 'dark');
     await c('Page.addScriptToEvaluateOnNewDocument', {source:'Storage.prototype.getItem = Storage.prototype.setItem = () => { throw new Error("Storage blocked for QA"); };'});
     await c('Page.reload'); await ready('document.readyState === "complete" && !document.getElementById("project-tools").hidden');
+    assert.equal(await evaluate('document.documentElement.dataset.theme'), 'dark');
     await evaluate('document.getElementById("themeToggleBtn").click()');
+    assert.equal(await evaluate('document.documentElement.dataset.theme'), 'light');
     assert.equal(await visible(), 9);
     assert.equal(exceptions.length, 0, JSON.stringify(exceptions));
-    console.log('PASS: hidden links skipped by Tab, layouts in both themes, 200% text at 320px, reduced-motion hover, system theme updates, keyboard theme toggle/persistence/logo, blocked storage fallback, no script exceptions');
+    console.log('PASS: hidden links skipped by Tab, layouts in both themes, 200% text at 320px, reduced-motion hover, dark default on light OS and OS changes, invalid preference fallback, keyboard theme toggle/labels/persistence/CSS logos, blocked storage fallback, no script exceptions');
     console.log(`Screenshots: ${output}`);
-    await call('Browser.close'); clearTimeout(timeout);
-})().catch(error => {console.error(error);console.error(errors.slice(-1000));console.error(`Artifacts: ${output}`);clearTimeout(timeout);browser.kill();browser.stdio[3].destroy();browser.stdio[4].destroy();browser.stderr.destroy();process.exitCode=1;});
+    await call('Browser.close'); clearTimeout(timeout); server.close();
+})().catch(error => {console.error(error);console.error(errors.slice(-1000));console.error(`Artifacts: ${output}`);clearTimeout(timeout);browser.kill();browser.stdio[3].destroy();browser.stdio[4].destroy();browser.stderr.destroy();server.close();process.exitCode=1;});

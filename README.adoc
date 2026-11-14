@@ -41,8 +41,10 @@ Optional browser QA uses Node.js built-ins and an already installed Chromium-bas
 BROWSER_BIN=/path/to/chromium node tests/browser_smoke.cjs
 ----
 
-The browser check uses a temporary profile and writes screenshots outside `public/`; it checks the actual authored files without a build.
-Also review keyboard navigation, JavaScript-disabled rendering, small screens and both themes.
+The browser check starts a temporary loopback HTTP server, uses a temporary profile and writes screenshots outside `public/`; it checks the actual authored files without a build.
+It checks dark-first behavior independently of OS appearance, saved preferences, blocked storage, keyboard controls, filters, contrast, reduced motion and responsive layouts.
+For the local manual checklist, serve the repository root with `python3 -m http.server 8080 --bind 127.0.0.1` and visit `http://127.0.0.1:8080/tests/manual-qa.html`.
+Implementation and screenshot notes are in `docs/portal-modernization/IMPLEMENTATION-STATUS.md`.
 No validation command transforms the website.
 
 == Maintain the catalogue
@@ -60,13 +62,14 @@ Do not move or overwrite hosted project documentation paths; they are maintained
 == Publication and domain
 
 The complete deployment artifact is `public/`, copied or uploaded unchanged.
-The current checkout does not contain a portal upload/deploy workflow.
-The public workflow inventory includes GitHub's built-in `pages-build-deployment`, but its configured source folder and deployed commit have not been confirmed.
-The proposed manual-only, no-build Actions workflow and publication prerequisites are recorded in `docs/portal-modernization/IMPLEMENTATION-STATUS.md`; it is not installed or approved for execution.
+The existing `.github/workflows/pages-deploy.yml` uploads `public/` unchanged.
+It runs manually or automatically on pushes to `main` affecting `public/**` or that workflow.
+Do not push, publish or change Pages configuration without explicit maintainer approval.
+The deployed commit, repository Pages settings and existing documentation routing still require maintainer confirmation.
 
 The existing domain is `www.yupiik.io`, recorded in root `CNAME`.
 The homepage canonical URL is `https://www.yupiik.io/`.
-Root `CNAME` is outside the proposed artifact and has been left untouched.
+Root `CNAME` is outside the artifact and has been left untouched.
 For a custom Actions publication, GitHub Pages uses the custom domain in repository settings and does not require an artifact CNAME.
 Confirm those settings, HTTPS and existing project documentation routing before approving publication.
 Do not change Pages configuration, DNS or publication workflows without maintainer approval.

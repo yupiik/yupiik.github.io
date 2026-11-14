@@ -1,15 +1,84 @@
-[link=https://github.com/yupiik/yupiik.github.io/actions/workflows/pages/pages-build-deployment]
-image::https://github.com/yupiik/yupiik.github.io/actions/workflows/pages/pages-build-deployment/badge.svg[Pages Build Deployment]
+= Yupiik open-source portal
 
-= Yupiik IO aggregator site
+The portal is hand-maintained static HTML, CSS, JavaScript and images in `public/`.
+Work on `main`, the branch containing `public/index.html`.
+The project catalogue is authored directly in the HTML; JavaScript only enhances search, category filtering and theme selection.
+All published project descriptions and documentation/source links are available without JavaScript.
 
-== Mecanism
+== Preview and validation
 
-* An open source repository has a root pom.xml and its groupId is `io.yupiik`.
-* Each open source repository can have a `oss.json` in its root with metadata for the site generation
+Open `public/index.html` directly, or serve the directory with Python 3:
 
-== Command
+[source,shell]
+----
+python3 -m http.server 8080 --bind 127.0.0.1 --directory public
+----
 
-`mvn package` or `mvn clean package -Pgh-pages` to deploy it.
+Visit `http://127.0.0.1:8080/`. No dependency installation, site generation or credentials are needed.
 
-IMPORTANT: requires a `github.com` server in your `$HOME/.m2/settings.xml` (password=your github token and username=github-account).
+Run the offline, read-only structural checks with standard Python 3:
+
+[source,shell]
+----
+python3 tests/validate_portal.py
+----
+
+With Node.js installed, also check the authored inline JavaScript syntax:
+
+[source,shell]
+----
+python3 tests/validate_javascript.py
+----
+
+The validation-only workflow `.github/workflows/validate-portal.yml` runs these checks and checks browser-test syntax on pull requests and pushes to `main`.
+Its only permission is repository read access; it has no publication steps.
+The checks use the standard Python library and Node.js, without installing packages or changing `public/`.
+
+Optional browser QA uses Node.js built-ins and an already installed Chromium-based browser:
+
+[source,shell]
+----
+BROWSER_BIN=/path/to/chromium node tests/browser_smoke.cjs
+----
+
+The browser check uses a temporary profile and writes screenshots outside `public/`; it checks the actual authored files without a build.
+Also review keyboard navigation, JavaScript-disabled rendering, small screens and both themes.
+No validation command transforms the website.
+
+== Maintain the catalogue
+
+. Verify a project's official public repository, documentation, license and scope.
+. Edit its semantic card in `public/index.html`, including the category, description, technology labels and separate documentation/source links.
+. Keep the JSON-LD ItemList names, positions and destinations aligned with the cards.
+. Review title, description and social metadata when the ecosystem changes.
+. Run the checks above and record outcomes in `docs/portal-modernization/IMPLEMENTATION-STATUS.md`.
+
+Do not add a separate catalogue data file or a renderer.
+Yupiik Coding Agent remains pending in the inventory until its public details are verified and approved.
+Do not move or overwrite hosted project documentation paths; they are maintained separately from this portal.
+
+== Publication and domain
+
+The complete deployment artifact is `public/`, copied or uploaded unchanged.
+The current checkout does not contain a portal upload/deploy workflow.
+The public workflow inventory includes GitHub's built-in `pages-build-deployment`, but its configured source folder and deployed commit have not been confirmed.
+The proposed manual-only, no-build Actions workflow and publication prerequisites are recorded in `docs/portal-modernization/IMPLEMENTATION-STATUS.md`; it is not installed or approved for execution.
+
+The existing domain is `www.yupiik.io`, recorded in root `CNAME`.
+The homepage canonical URL is `https://www.yupiik.io/`.
+Root `CNAME` is outside the proposed artifact and has been left untouched.
+For a custom Actions publication, GitHub Pages uses the custom domain in repository settings and does not require an artifact CNAME.
+Confirm those settings, HTTPS and existing project documentation routing before approving publication.
+Do not change Pages configuration, DNS or publication workflows without maintainer approval.
+
+== Retained Maven and release files
+
+These files are outside `public/` and are not used to build or render the portal:
+
+* `pom.xml`: defines Maven release synchronization profiles and project release mappings.
+* `.mvn/jvm.config`: Maven JVM logging configuration.
+* `.github/settings.xml`: Maven settings used by release synchronization.
+* `.github/workflows/synchronize-github-releases.yml`: daily/manual release synchronization that still references Maven and those settings.
+
+Their continued use must be reviewed separately before any removal; the checked-in release workflow provides evidence that the Maven files cannot simply be assumed unused.
+Do not run that workflow as the website build or delete these files as part of portal maintenance.

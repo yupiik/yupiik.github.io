@@ -1,0 +1,26 @@
+name: Validate static portal
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout authored sources
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate static HTML, catalogue and metadata
+        run: python3 tests/validate_portal.py
+      - name: Check inline JavaScript syntax
+        run: python3 tests/validate_javascript.py
+      - name: Check optional browser test syntax
+        run: node --check tests/browser_smoke.cjs
